@@ -1,0 +1,83 @@
+import { z } from "zod";
+import {
+  insertWritingSchema,
+  type GetPortfolioResponse,
+  type GetWritingListResponse,
+  type GetWritingResponse,
+} from "./schema";
+
+export const errorSchemas = {
+  validation: z.object({
+    message: z.string(),
+    field: z.string().optional(),
+  }),
+  notFound: z.object({
+    message: z.string(),
+  }),
+  internal: z.object({
+    message: z.string(),
+  }),
+};
+
+export const api = {
+  portfolio: {
+    get: {
+      method: "GET" as const,
+      path: "/api/portfolio" as const,
+      responses: {
+        200: z.custom<GetPortfolioResponse>(),
+      },
+    },
+  },
+  writing: {
+    list: {
+      method: "GET" as const,
+      path: "/api/writing" as const,
+      input: z
+        .object({
+          q: z.string().optional(),
+          tag: z.string().optional(),
+          kind: z.string().optional(),
+        })
+        .optional(),
+      responses: {
+        200: z.custom<GetWritingListResponse>(),
+      },
+    },
+    get: {
+      method: "GET" as const,
+      path: "/api/writing/:id" as const,
+      responses: {
+        200: z.custom<GetWritingResponse>(),
+        404: errorSchemas.notFound,
+      },
+    },
+    create: {
+      method: "POST" as const,
+      path: "/api/writing" as const,
+      input: insertWritingSchema,
+      responses: {
+        201: z.custom<GetWritingResponse>(),
+        400: errorSchemas.validation,
+      },
+    },
+  },
+} as const;
+
+export function buildUrl(
+  path: string,
+  params?: Record<string, string | number>
+): string {
+  let url = path;
+  if (params) {
+    for (const [key, value] of Object.entries(params)) {
+      url = url.replace(`:${key}`, String(value));
+    }
+  }
+  return url;
+}
+
+export type PortfolioResponse = z.infer<typeof api.portfolio.get.responses[200]>;
+export type WritingListResponse = z.infer<typeof api.writing.list.responses[200]>;
+export type WritingResponse = z.infer<typeof api.writing.get.responses[200]>;
+export type WritingCreateInput = z.infer<typeof api.writing.create.input>;
