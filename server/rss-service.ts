@@ -1,7 +1,8 @@
 import Parser from "rss-parser";
-import { db } from "./db";
-import { writing as writingTable } from "../shared/schema";
-import { eq } from "drizzle-orm";
+
+// RSS service for fetching external content
+// Note: Currently configured for monitoring RSS feeds
+// For GitHub CMS approach, consider adding new content as markdown files manually
 
 const parser = new Parser({
   customFields: {
@@ -46,63 +47,17 @@ export class RSSService {
   }
 
   static async fetchAndSyncRSSFeeds(): Promise<{success: number, errors: string[]}> {
-    let success = 0;
-    const errors: string[] = [];
-
-    for (const source of RSS_SOURCES) {
-      try {
-        console.log(`Fetching RSS from ${source.name}: ${source.url}`);
-        const feed = await parser.parseURL(source.url);
-
-        for (const item of feed.items) {
-          if (!item.title || !item.link) continue;
-
-          const slug = this.generateSlug(item.title);
-          
-          // Check if article already exists
-          const existing = await db
-            .select()
-            .from(writingTable)
-            .where(eq(writingTable.url, item.link))
-            .limit(1);
-
-          if (existing.length > 0) {
-            continue; // Skip if already exists
-          }
-
-          // Extract content and metadata
-          const content = item['content:encoded'] || item.content || item.description || item.summary || '';
-          const cleanContent = content.replace(/<[^>]*>/g, ''); // Strip HTML for read time calculation
-          const summary = item.description || item.summary || cleanContent.substring(0, 200) + '...';
-
-          const articleData = {
-            title: item.title,
-            kind: source.kind,
-            source: source.name,
-            publishedAt: item.pubDate ? new Date(item.pubDate).toISOString().split('T')[0] : null,
-            url: item.link,
-            summary: summary.length > 500 ? summary.substring(0, 500) + '...' : summary,
-            slug: slug,
-            readTime: this.extractReadTime(cleanContent),
-            tags: item.categories || []
-          };
-
-          await db.insert(writingTable).values(articleData);
-          success++;
-          console.log(`Synced: ${item.title}`);
-        }
-      } catch (error) {
-        const errorMsg = `Failed to sync ${source.name}: ${error}`;
-        console.error(errorMsg);
-        errors.push(errorMsg);
-      }
-    }
-
-    return { success, errors };
+    return {
+      success: 0,
+      errors: ['RSS sync disabled - using GitHub CMS approach. Add new content manually as markdown files.']
+    };
   }
 
   static async syncRSSOnDemand(): Promise<{success: number, errors: string[]}> {
-    console.log('Starting manual RSS sync...');
-    return await this.fetchAndSyncRSSFeeds();
+    console.log('RSS sync disabled - using GitHub CMS approach');
+    return {
+      success: 0,
+      errors: ['RSS sync disabled - using GitHub CMS approach. Add new content manually as markdown files.']
+    };
   }
 }

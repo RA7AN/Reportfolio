@@ -151,7 +151,11 @@ export class GitHubService {
 
     const repos = profile.repositories.nodes.filter(repo => !repo.isPrivate);
     const totalStars = repos.reduce((sum, repo) => sum + repo.stargazerCount, 0);
-    const languages = [...new Set(repos.map(repo => repo.primaryLanguage?.name).filter(Boolean))];
+    const languages = Array.from(new Set(
+      repos
+        .map(repo => repo.primaryLanguage?.name)
+        .filter((lang): lang is string => Boolean(lang))
+    ));
 
     return {
       totalRepos: repos.length,
