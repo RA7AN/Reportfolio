@@ -13,13 +13,58 @@ import {
   skills,
   talks,
   writing,
+  certificates,
 } from "@shared/schema";
 import { db } from "./db";
 import { storage } from "./storage";
+import { RSSService } from "./rss-service";
+import { GitHubService } from "./github-service";
+import { ORCIDService } from "./orcid-service";
+
+async function seedCertificates() {
+  // Check if certificates already exist
+  const existingCerts = await db.select().from(certificates).limit(1);
+  if (existingCerts.length > 0) return;
+
+  // Add sample certificates
+  await db.insert(certificates).values([
+    {
+      title: "AWS Certified Developer - Associate",
+      issuer: "Amazon Web Services",
+      dateLabel: "March 2024",
+      year: "2024",
+      fileUrl: "/certificates/aws-developer-associate.pdf",
+      credentialId: "AWS-DEV-2024-001",
+      verificationUrl: "https://www.credly.com/badges/sample-aws-badge"
+    },
+    {
+      title: "Google Cloud Professional Cloud Architect",
+      issuer: "Google Cloud",
+      dateLabel: "January 2024", 
+      year: "2024",
+      fileUrl: "/certificates/gcp-cloud-architect.pdf",
+      credentialId: "GCP-CA-2024-002",
+      verificationUrl: "https://www.credential.net/sample-gcp-badge"
+    },
+    {
+      title: "Microsoft Azure Fundamentals",
+      issuer: "Microsoft",
+      dateLabel: "September 2023",
+      year: "2023",
+      fileUrl: "/certificates/azure-fundamentals.pdf",
+      credentialId: "AZ-900-2023-003",
+      verificationUrl: "https://www.credly.com/badges/sample-azure-badge"
+    }
+  ]);
+}
 
 async function seedDatabase() {
   const [existingProfile] = await db.select().from(profile).limit(1);
-  if (existingProfile) return;
+  if (existingProfile) {
+    // Profile exists, check if certificates need seeding
+    await seedCertificates();
+    return;
+  }
 
   await db.insert(profile).values({
     fullName: "Abdul Jawwad",
@@ -366,6 +411,9 @@ async function seedDatabase() {
       tags: ["writing", "literature"],
     },
   ]);
+
+  // Seed certificates
+  await seedCertificates();
 }
 
 export async function registerRoutes(
@@ -413,6 +461,82 @@ export async function registerRoutes(
         });
       }
       return res.status(500).json({ message: "Internal error" });
+    }
+  });
+
+  app.get(api.writing.getBySlug.path, async (req, res) => {
+    const item = await storage.getWritingBySlug(req.params.slug);
+    if (!item) {
+      return res.status(404).json({ message: "Not found" });
+    }
+    res.json(item);
+  });
+
+  app.get(api.certificates.list.path, async (_req, res) => {
+    const data = await storage.getPortfolio();
+    res.json(data.certificates);
+  });
+
+  // RSS sync endpoint
+  app.post(api.rss.sync.path, async (_req, res) => {
+    try {
+      const result = await RSSService.syncRSSOnDemand();
+      res.json(result);
+    } catch (error) {
+      console.error('RSS sync failed:', error);
+      res.status(500).json({ message: "RSS sync failed" });
+    }
+  });
+
+  // GitHub API endpoints
+  app.get(api.github.repositories.path, async (_req, res) => {
+    try {
+      const repositories = await GitHubService.getTopRepositories(20);
+      res.json(repositories);
+    } catch (error) {
+      console.error('Failed to fetch GitHub repositories:', error);
+      res.status(500).json({ message: "Failed to fetch repositories" });
+    }
+  });
+
+  app.get(api.github.pinned.path, async (_req, res) => {
+    try {
+      const pinned = await GitHubService.getPinnedRepositories();
+      res.json(pinned);
+    } catch (error) {
+      console.error('Failed to fetch pinned repositories:', error);
+      res.status(500).json({ message: "Failed to fetch pinned repositories" });
+    }
+  });
+
+  app.get(api.github.stats.path, async (_req, res) => {
+    try {
+      const stats = await GitHubService.getRepositoryStats();
+      res.json(stats);
+    } catch (error) {
+      console.error('Failed to fetch GitHub stats:', error);
+      res.status(500).json({ message: "Failed to fetch GitHub stats" });
+    }
+  });
+
+  // ORCID API endpoints
+  app.get(api.orcid.publications.path, async (_req, res) => {
+    try {
+      const publications = await ORCIDService.fetchORCIDPublications();
+      res.json(publications);
+    } catch (error) {
+      console.error('Failed to fetch ORCID publications:', error);
+      res.status(500).json({ message: "Failed to fetch ORCID publications" });
+    }
+  });
+
+  app.get(api.orcid.stats.path, async (_req, res) => {
+    try {
+      const stats = await ORCIDService.getPublicationStats();
+      res.json(stats);
+    } catch (error) {
+      console.error('Failed to fetch ORCID stats:', error);
+      res.status(500).json({ message: "Failed to fetch ORCID stats" });
     }
   });
 

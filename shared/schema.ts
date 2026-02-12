@@ -14,6 +14,7 @@ export const profile = pgTable("profile", {
   githubUrl: text("github_url"),
   orcidUrl: text("orcid_url"),
   objective: text("objective").notNull(),
+  bio: text("bio"),
 });
 
 export const experiences = pgTable("experiences", {
@@ -47,6 +48,8 @@ export const projects = pgTable("projects", {
   dateLabel: varchar("date_label", { length: 64 }).notNull(),
   highlights: text("highlights").array().notNull().default([]),
   sortOrder: serial("sort_order"),
+  isResearch: text("is_research").default("no"),
+  githubRepo: text("github_repo"),
 });
 
 export const publications = pgTable("publications", {
@@ -58,6 +61,7 @@ export const publications = pgTable("publications", {
   venue: text("venue"),
   url: text("url"),
   sortOrder: serial("sort_order"),
+  orcidId: text("orcid_id"),
 });
 
 export const talks = pgTable("talks", {
@@ -103,7 +107,20 @@ export const writing = pgTable("writing", {
   summary: text("summary"),
   contentMd: text("content_md"),
   tags: text("tags").array().notNull().default([]),
+  readTime: text("read_time"),
+  slug: text("slug").unique(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const certificates = pgTable("certificates", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  issuer: text("issuer").notNull(),
+  dateLabel: varchar("date_label", { length: 64 }).notNull(),
+  fileUrl: text("file_url").notNull(),
+  credentialId: text("credential_id"),
+  verificationUrl: text("verification_url"),
+  year: varchar("year", { length: 8 }).notNull(),
 });
 
 export const insertProfileSchema = createInsertSchema(profile).omit({ id: true });
@@ -116,6 +133,7 @@ export const insertSkillSchema = createInsertSchema(skills).omit({ id: true });
 export const insertHonorSchema = createInsertSchema(honors).omit({ id: true });
 export const insertLeadershipSchema = createInsertSchema(leadership).omit({ id: true });
 export const insertWritingSchema = createInsertSchema(writing).omit({ id: true, createdAt: true });
+export const insertCertificateSchema = createInsertSchema(certificates).omit({ id: true });
 
 export type Profile = typeof profile.$inferSelect;
 export type Experience = typeof experiences.$inferSelect;
@@ -127,6 +145,7 @@ export type Skill = typeof skills.$inferSelect;
 export type Honor = typeof honors.$inferSelect;
 export type Leadership = typeof leadership.$inferSelect;
 export type Writing = typeof writing.$inferSelect;
+export type Certificate = typeof certificates.$inferSelect;
 
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
 export type InsertExperience = z.infer<typeof insertExperienceSchema>;
@@ -138,6 +157,7 @@ export type InsertSkill = z.infer<typeof insertSkillSchema>;
 export type InsertHonor = z.infer<typeof insertHonorSchema>;
 export type InsertLeadership = z.infer<typeof insertLeadershipSchema>;
 export type InsertWriting = z.infer<typeof insertWritingSchema>;
+export type InsertCertificate = z.infer<typeof insertCertificateSchema>;
 
 export type GetPortfolioResponse = {
   profile: Profile;
@@ -149,8 +169,9 @@ export type GetPortfolioResponse = {
   skills: Skill[];
   honors: Honor[];
   leadership: Leadership[];
+  certificates: Certificate[];
 };
 
-export type WritingListItem = Pick<Writing, "id" | "title" | "kind" | "source" | "publishedAt" | "url" | "summary" | "tags">;
+export type WritingListItem = Pick<Writing, "id" | "title" | "kind" | "source" | "publishedAt" | "url" | "summary" | "tags" | "readTime" | "slug">;
 export type GetWritingListResponse = WritingListItem[];
 export type GetWritingResponse = Writing;

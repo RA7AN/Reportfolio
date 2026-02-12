@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   insertWritingSchema,
+  insertCertificateSchema,
   type GetPortfolioResponse,
   type GetWritingListResponse,
   type GetWritingResponse,
@@ -52,6 +53,14 @@ export const api = {
         404: errorSchemas.notFound,
       },
     },
+    getBySlug: {
+      method: "GET" as const,
+      path: "/api/writing/slug/:slug" as const,
+      responses: {
+        200: z.custom<GetWritingResponse>(),
+        404: errorSchemas.notFound,
+      },
+    },
     create: {
       method: "POST" as const,
       path: "/api/writing" as const,
@@ -59,6 +68,74 @@ export const api = {
       responses: {
         201: z.custom<GetWritingResponse>(),
         400: errorSchemas.validation,
+      },
+    },
+  },
+  certificates: {
+    list: {
+      method: "GET" as const,
+      path: "/api/certificates" as const,
+      responses: {
+        200: z.array(z.any()),
+      },
+    },  
+  },
+  github: {
+    repositories: {
+      method: "GET" as const,
+      path: "/api/github/repositories" as const,
+      responses: {
+        200: z.array(z.any()),
+      },
+    },
+    pinned: {
+      method: "GET" as const,
+      path: "/api/github/pinned" as const,
+      responses: {
+        200: z.array(z.any()),
+      },
+    },
+    stats: {
+      method: "GET" as const,
+      path: "/api/github/stats" as const,
+      responses: {
+        200: z.object({
+          totalRepos: z.number(),
+          totalStars: z.number(),
+          languages: z.array(z.string()),
+        }),
+      },
+    },
+  },
+  orcid: {
+    publications: {
+      method: "GET" as const,
+      path: "/api/orcid/publications" as const,
+      responses: {
+        200: z.array(z.any()),
+      },
+    },
+    stats: {
+      method: "GET" as const,
+      path: "/api/orcid/stats" as const,
+      responses: {
+        200: z.object({
+          totalPublications: z.number(),
+          byType: z.record(z.number()),
+          years: z.array(z.string()),
+        }),
+      },
+    },
+  },
+  rss: {
+    sync: {
+      method: "POST" as const,
+      path: "/api/rss/sync" as const,
+      responses: {
+        200: z.object({
+          success: z.number(),
+          errors: z.array(z.string()),
+        }),
       },
     },
   },

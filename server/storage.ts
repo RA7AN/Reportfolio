@@ -10,6 +10,7 @@ import {
   skills,
   talks,
   writing,
+  certificates,
   type GetPortfolioResponse,
   type GetWritingListResponse,
   type GetWritingResponse,
@@ -28,6 +29,7 @@ export interface IStorage {
   }): Promise<GetWritingListResponse>;
 
   getWriting(id: number): Promise<GetWritingResponse | undefined>;
+  getWritingBySlug(slug: string): Promise<GetWritingResponse | undefined>;
 
   createWriting(input: InsertWriting): Promise<GetWritingResponse>;
 }
@@ -39,7 +41,7 @@ export class DatabaseStorage implements IStorage {
       throw new Error("Profile not seeded");
     }
 
-    const [exp, edu, proj, pub, t, sk, hon, lead] = await Promise.all([
+    const [exp, edu, proj, pub, t, sk, hon, lead, certs] = await Promise.all([
       db.select().from(experiences).orderBy(desc(experiences.startDate), desc(experiences.id)),
       db.select().from(education).orderBy(desc(education.endDate), desc(education.id)),
       db.select().from(projects).orderBy(desc(projects.dateLabel), desc(projects.id)),
@@ -48,6 +50,7 @@ export class DatabaseStorage implements IStorage {
       db.select().from(skills).orderBy(desc(skills.id)),
       db.select().from(honors).orderBy(desc(honors.dateLabel), desc(honors.id)),
       db.select().from(leadership).orderBy(desc(leadership.dateLabel), desc(leadership.id)),
+      db.select().from(certificates).orderBy(desc(certificates.year), desc(certificates.dateLabel)),
     ]);
 
     return {
@@ -60,6 +63,7 @@ export class DatabaseStorage implements IStorage {
       skills: sk,
       honors: hon,
       leadership: lead,
+      certificates: certs,
     };
   }
 
@@ -97,6 +101,8 @@ export class DatabaseStorage implements IStorage {
         url: writing.url,
         summary: writing.summary,
         tags: writing.tags,
+        readTime: writing.readTime,
+        slug: writing.slug,
       })
       .from(writing)
       .where(where.length ? and(...where) : undefined)
@@ -107,6 +113,11 @@ export class DatabaseStorage implements IStorage {
 
   async getWriting(id: number): Promise<GetWritingResponse | undefined> {
     const [row] = await db.select().from(writing).where(eq(writing.id, id)).limit(1);
+    return row;
+  }
+
+  async getWritingBySlug(slug: string): Promise<GetWritingResponse | undefined> {
+    const [row] = await db.select().from(writing).where(eq(writing.slug, slug)).limit(1);
     return row;
   }
 

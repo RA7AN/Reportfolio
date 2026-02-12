@@ -682,13 +682,22 @@ export default function Home() {
                   <div className="text-xs text-muted-foreground" data-testid="footer-note">
                     © {new Date().getFullYear()} Abdul Jawwad. Built for readability.
                   </div>
-                  <Link
-                    data-testid="footer-writing-link"
-                    href="/writing"
-                    className="inline-flex items-center gap-2 text-xs font-semibold text-foreground/80 hover:text-foreground transition-colors"
-                  >
-                    Writing archive <ArrowUpRight className="w-4 h-4" />
-                  </Link>
+                  <div className="flex gap-4">
+                    <Link
+                      data-testid="footer-writing-link"
+                      href="/writing"
+                      className="inline-flex items-center gap-2 text-xs font-semibold text-foreground/80 hover:text-foreground transition-colors"
+                    >
+                      Writing archive <ArrowUpRight className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      data-testid="footer-certificates-link"
+                      href="/certificates"
+                      className="inline-flex items-center gap-2 text-xs font-semibold text-foreground/80 hover:text-foreground transition-colors"
+                    >
+                      Certificates <ArrowUpRight className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </MinimalSection>
