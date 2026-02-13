@@ -80,6 +80,18 @@ export const api = {
       },
     },  
   },
+  featured: {
+    get: {
+      method: "GET" as const,
+      path: "/api/featured" as const,
+      responses: {
+        200: z.object({
+          featuredProjects: z.array(z.string()),
+          featuredPublications: z.array(z.string()),
+        }),
+      },
+    },
+  },
   github: {
     repositories: {
       method: "GET" as const,

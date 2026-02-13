@@ -6,6 +6,9 @@ import { storage } from "./github-storage";
 import { RSSService } from "./rss-service";
 import { GitHubService } from "./github-service";
 import { ORCIDService } from "./orcid-service";
+import * as fs from "fs/promises";
+import * as path from "path";
+import matter from "gray-matter";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -20,6 +23,26 @@ export async function registerRoutes(
     } catch (error) {
       console.error('Error fetching portfolio:', error);
       res.status(500).json({ message: "Failed to load portfolio data" });
+    }
+  });
+
+  app.get(api.featured.get.path, async (_req, res) => {
+    try {
+      const featuredPath = path.join(process.cwd(), "content", "featured.md");
+      const content = await fs.readFile(featuredPath, "utf-8");
+      const { data, content: jsonContent } = matter(content);
+      const featuredConfig = JSON.parse(jsonContent.trim());
+      res.json({
+        ...data,
+        ...featuredConfig
+      });
+    } catch (error) {
+      console.error("Error fetching featured configuration:", error);
+      // Return empty arrays if file doesn't exist or has issues
+      res.json({
+        featuredProjects: [],
+        featuredPublications: []
+      });
     }
   });
 
