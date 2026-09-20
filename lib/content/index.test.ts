@@ -1,0 +1,63 @@
+import { describe, expect, it } from 'vitest';
+import {
+  getCertificates,
+  getEducation,
+  getExperiences,
+  getFeatured,
+  getHonors,
+  getLeadership,
+  getMusings,
+  getPortfolio,
+  getProfile,
+  getProjects,
+  getPublications,
+  getReads,
+  getSkills,
+  getTalks,
+  getWriting,
+} from './index';
+
+describe('content collections', () => {
+  it('parses profile', () => {
+    const profile = getProfile();
+    expect(profile.fullName).toBeTruthy();
+    expect(profile.email).toContain('@');
+  });
+
+  it('parses all structured collections', () => {
+    expect(getExperiences().length).toBeGreaterThan(0);
+    expect(getEducation().length).toBeGreaterThan(0);
+    expect(getProjects().length).toBeGreaterThan(0);
+    expect(getPublications().length).toBeGreaterThan(0);
+    expect(getTalks().length).toBeGreaterThan(0);
+    expect(getSkills().length).toBeGreaterThan(0);
+    expect(getHonors().length).toBeGreaterThan(0);
+    expect(getLeadership().length).toBeGreaterThan(0);
+    expect(getCertificates().length).toBeGreaterThan(0);
+  });
+
+  it('parses featured config', () => {
+    const featured = getFeatured();
+    expect(Array.isArray(featured.featuredEssays)).toBe(true);
+  });
+
+  it('parses writing with slugs', () => {
+    const writing = getWriting();
+    expect(writing.length).toBeGreaterThan(0);
+    for (const item of writing) {
+      expect(item.slug).toBeTruthy();
+      expect(item.title).toBeTruthy();
+    }
+  });
+
+  it('parses musings and reads', () => {
+    expect(getMusings().length).toBeGreaterThan(0);
+    expect(getReads().length).toBeGreaterThan(0);
+  });
+
+  it('aggregates portfolio', () => {
+    const portfolio = getPortfolio();
+    expect(portfolio.profile.fullName).toBeTruthy();
+    expect(portfolio.projects.length).toBeGreaterThan(0);
+  });
+});

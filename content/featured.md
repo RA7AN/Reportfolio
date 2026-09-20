@@ -5,11 +5,13 @@ lastUpdated: "2026-02-13"
 ---
 
 {
-  "featuredProjects": [
-    "1",
-    "2"
-  ],
+  "featuredProjects": [],
   "featuredPublications": [
+    "1",
+    "2", 
+    "3"
+  ],
+  "featuredEssays": [
     "1",
     "2",
     "3"

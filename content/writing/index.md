@@ -1,7 +1,7 @@
 ---
 type: "writing"
-count: 2
-lastUpdated: "2026-02-12T17:33:53.012Z"
+count: 3
+lastUpdated: "2026-02-13T10:00:00.000Z"
 ---
 
 [
@@ -39,5 +39,24 @@ lastUpdated: "2026-02-12T17:33:53.012Z"
     "readTime": null,
     "slug": null,
     "createdAt": "2026-02-12T15:43:07.495Z"
+  },
+  {
+    "id": 3,
+    "title": "The Architecture of Curiosity",
+    "kind": "essay",
+    "source": "Personal Blog",
+    "publishedAt": "2026",
+    "url": null,
+    "summary": "An exploration of how curiosity shapes our approach to learning, research, and building meaningful technology.",
+    "contentMd": "content/writing/the-architecture-of-curiosity.md",
+    "tags": [
+      "curiosity",
+      "learning",
+      "technology",
+      "philosophy"
+    ],
+    "readTime": "8 min read",
+    "slug": "the-architecture-of-curiosity",
+    "createdAt": "2026-02-13T10:00:00.000Z"
   }
 ]
