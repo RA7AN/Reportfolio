@@ -1,156 +1,228 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Award, BookOpen, Clock, Code, FileText, PenTool, Target } from 'lucide-react';
+import { EventHorizonVisual } from '@/components/home/EventHorizonVisual';
+import { LocalClock } from '@/components/home/LocalClock';
+import { SectionLabel } from '@/components/home/SectionLabel';
 import { Container } from '@/components/layout/Container';
 import { PageShell } from '@/components/layout/PageShell';
-import { cn } from '@/lib/utils';
-import { getFeatured, getPublications, getWriting } from '@/lib/content';
+import { Button } from '@/components/ui/button';
+import { WorkCard } from '@/components/work/WorkCard';
+import {
+  getFeaturedProjects,
+  getNow,
+  getProfile,
+  getPublications,
+  getResearchProjects,
+  getWritingList,
+} from '@/lib/content';
 
-const exploreLinks = [
-  {
-    title: 'Start Here',
-    description: 'Get an overview of everything available',
-    href: '/start-here',
-    icon: <Target className="h-4 w-4" />,
-  },
-  {
-    title: 'My Projects',
-    description: 'Explore all projects and technical work',
-    href: '/projects',
-    icon: <Code className="h-4 w-4" />,
-  },
-  {
-    title: 'Favorite Reads',
-    description: 'Books, papers, and articles that shaped my thinking',
-    href: '/reads',
-    icon: <BookOpen className="h-4 w-4" />,
-  },
-  {
-    title: 'Current Resume',
-    description: 'Professional experience and qualifications',
-    href: '/resume',
-    icon: <FileText className="h-4 w-4" />,
-  },
-];
+export const metadata: Metadata = {
+  title: 'Abdul Jawwad — AI Engineer · AI Researcher',
+  description:
+    'I build and study intelligent systems across agents, multimodal AI, and production software.',
+};
+
+function isPlaceholder(value: string | null | undefined) {
+  return !value || value.startsWith('[PLACEHOLDER');
+}
 
 export default function HomePage() {
-  const featured = getFeatured();
-  const writing = getWriting();
-  const publications = getPublications();
-
-  const featuredEssays = writing.filter((essay) =>
-    featured.featuredEssays.includes(String(essay.id)),
-  );
-  const featuredPublications = publications.filter((pub) =>
-    featured.featuredPublications.includes(String(pub.id)),
-  );
-
-  const featuredItems = [
-    ...featuredEssays.map((essay) => ({
-      title: essay.title,
-      href: essay.url || `/writing/${essay.slug}`,
-      type: 'essay' as const,
-      icon: <PenTool className="h-4 w-4" />,
-    })),
-    ...featuredPublications.map((pub) => ({
-      title: pub.title,
-      href: pub.url || '/resume',
-      type: 'publication' as const,
-      icon: <Award className="h-4 w-4" />,
-    })),
-  ];
+  const profile = getProfile();
+  const featured = getFeaturedProjects();
+  const now = getNow();
+  const research = getResearchProjects();
+  const publications = getPublications()
+    .filter((item) => item.kind !== 'Magazine')
+    .slice(0, 3);
+  const latestWriting = getWritingList()[0];
+  const city = profile.locationLabel ?? 'Jeddah';
+  const timeZone = profile.timezone ?? 'Asia/Riyadh';
 
   return (
     <PageShell>
-      <main className="pb-16 md:pb-24">
-        <Container>
-          <div className="rise-in pt-10 md:pt-14" id="intro">
-            <div className="max-w-2xl">
-              <h1 className="mb-6 text-2xl leading-relaxed font-bold sm:text-3xl md:text-4xl">
-                Welcome, traveller
-              </h1>
-              <p className="text-muted-foreground mb-2 text-lg leading-relaxed sm:text-xl">
-                I&apos;m <span className="text-foreground font-semibold">Abdul Jawwad</span> and
-                this is my digital home.
-              </p>
-              <p className="text-muted-foreground text-base leading-relaxed sm:text-lg">
-                These days, I&apos;m building the foundations of my universe.
-              </p>
+      <main className="pb-24">
+        <Container className="max-w-5xl">
+          <section className="pt-16 text-center md:pt-24" id="intro">
+            <LocalClock city={city} timeZone={timeZone} />
+            <h1 className="mt-10 text-3xl font-medium tracking-[0.18em] uppercase sm:text-5xl md:text-6xl">
+              Abdul Jawaad
+            </h1>
+            <p className="text-primary mt-5 font-mono text-xs tracking-[0.22em] uppercase">
+              {profile.headline}
+            </p>
+            <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-base leading-relaxed sm:text-lg">
+              {profile.objective}
+            </p>
+            <p className="text-muted-foreground/80 mx-auto mt-3 max-w-xl text-sm italic">
+              Building the foundations of my universe.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Button asChild>
+                <Link href="/projects">Explore work</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/resume">View CV</Link>
+              </Button>
             </div>
-          </div>
+            <div className="text-muted-foreground mt-6 flex flex-wrap justify-center gap-5 font-mono text-[11px] tracking-[0.14em] uppercase">
+              {profile.githubUrl ? (
+                <a href={profile.githubUrl} className="hover:text-primary" rel="noreferrer">
+                  GitHub
+                </a>
+              ) : null}
+              {profile.linkedinUrl ? (
+                <a href={profile.linkedinUrl} className="hover:text-primary" rel="noreferrer">
+                  LinkedIn
+                </a>
+              ) : null}
+              <a href={`mailto:${profile.email}`} className="hover:text-primary">
+                Email
+              </a>
+            </div>
+            <EventHorizonVisual />
+          </section>
 
-          <div className="mt-14 grid gap-8 md:mt-20 lg:grid-cols-2">
-            <div
-              className={cn(
-                'border-border/70 bg-card/60 rounded-2xl border p-6 shadow-[var(--shadow-md)] backdrop-blur',
-              )}
-            >
-              <h2 className="mb-6 text-xl font-semibold">Explore</h2>
-              <div className="space-y-3">
-                {exploreLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                      'group border-border/50 bg-card/40 block rounded-xl border p-4 backdrop-blur',
-                      'hover:bg-card/70 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-sm)]',
-                    )}
-                  >
-                    <div className="mb-2 flex items-center gap-3">
-                      <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
-                        {link.icon}
-                      </div>
-                      <h3 className="group-hover:text-primary font-medium transition-colors">
-                        {link.title}
-                      </h3>
-                    </div>
-                    <p className="text-muted-foreground text-sm">{link.description}</p>
-                  </Link>
-                ))}
+          <section className="mt-24" id="work">
+            <SectionLabel index="01" title="Selected work" />
+            <div className="grid gap-4 sm:grid-cols-2">
+              {featured.map((project) => (
+                <WorkCard key={project.id} project={project} href="/projects" />
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-24" id="now">
+            <SectionLabel index="02" title="Now" />
+            <p className="text-muted-foreground mb-6 font-mono text-[11px] tracking-[0.18em] uppercase">
+              {now.period}
+            </p>
+            <dl className="divide-border border-border divide-y border-y">
+              <NowRow label="Building" value={now.building} />
+              <NowRow label="Exploring" value={now.exploring.join(' · ')} />
+              <NowRow label="Experimenting" value={now.experimenting.join(' · ')} />
+              <NowRow
+                label="Reading"
+                value={now.reading}
+                placeholder={isPlaceholder(now.reading)}
+              />
+              <NowRow
+                label="Thinking about"
+                value={now.thinkingAbout}
+                placeholder={isPlaceholder(now.thinkingAbout)}
+              />
+            </dl>
+          </section>
+
+          <section className="mt-24" id="research">
+            <SectionLabel index="03" title="Research" />
+            <div className="grid gap-4 md:grid-cols-3">
+              {research.map((item) => (
+                <WorkCard key={item.id} project={item} href="/projects" />
+              ))}
+              {publications.map((pub) => (
+                <a
+                  key={pub.id}
+                  href={pub.url || '/resume'}
+                  className="border-border bg-card/40 hover:border-primary/50 rounded-sm border p-5 transition-colors"
+                >
+                  <p className="text-muted-foreground font-mono text-[10px] tracking-[0.18em] uppercase">
+                    {pub.kind} · {pub.year}
+                  </p>
+                  <h3 className="mt-3 text-base leading-snug font-medium">{pub.title}</h3>
+                  {pub.venue ? (
+                    <p className="text-muted-foreground mt-2 text-sm">{pub.venue}</p>
+                  ) : null}
+                </a>
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-24" id="signals">
+            <SectionLabel index="04" title="Signals" />
+            <div className="grid gap-4 md:grid-cols-2">
+              {latestWriting ? (
+                <Link
+                  href={`/writing/${latestWriting.slug}`}
+                  className="border-border bg-card/40 hover:border-primary/50 rounded-sm border p-5 transition-colors"
+                >
+                  <p className="text-muted-foreground font-mono text-[10px] tracking-[0.18em] uppercase">
+                    Latest writing
+                  </p>
+                  <h3 className="mt-3 text-lg font-medium">{latestWriting.title}</h3>
+                  {latestWriting.summary ? (
+                    <p className="text-muted-foreground mt-2 text-sm">{latestWriting.summary}</p>
+                  ) : null}
+                </Link>
+              ) : null}
+              <div className="border-border bg-card/40 rounded-sm border p-5">
+                <p className="text-muted-foreground font-mono text-[10px] tracking-[0.18em] uppercase">
+                  Currently reading
+                </p>
+                <p className="mt-3 text-lg font-medium">
+                  {isPlaceholder(now.reading) ? 'Not listed yet' : now.reading}
+                </p>
+                {isPlaceholder(now.reading) ? (
+                  <p className="text-muted-foreground mt-2 font-mono text-[10px]">{now.reading}</p>
+                ) : null}
               </div>
             </div>
+          </section>
 
-            <div
-              className={cn(
-                'border-border/70 bg-card/60 rounded-2xl border p-6 shadow-[var(--shadow-md)] backdrop-blur',
-              )}
+          <section className="mt-24" id="about">
+            <SectionLabel index="05" title="About" />
+            <p className="max-w-2xl text-base leading-relaxed">
+              {isPlaceholder(profile.bio) ? profile.objective : profile.bio}
+            </p>
+            {isPlaceholder(profile.bio) ? (
+              <p className="text-muted-foreground mt-3 font-mono text-[10px] tracking-[0.12em]">
+                {profile.bio}
+              </p>
+            ) : null}
+            <Link
+              href="/about"
+              className="text-primary mt-4 inline-block font-mono text-[11px] tracking-[0.16em] uppercase"
             >
-              <h2 className="mb-6 text-xl font-semibold">Featured Essays</h2>
-              <div className="space-y-3">
-                {featuredItems.slice(0, 5).map((item) => (
-                  <a
-                    key={`${item.type}-${item.title}`}
-                    href={item.href}
-                    target={item.href.startsWith('http') ? '_blank' : undefined}
-                    rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    className={cn(
-                      'group border-border/50 bg-card/40 block rounded-xl border p-4 backdrop-blur',
-                      'hover:bg-card/70 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-sm)]',
-                    )}
-                  >
-                    <div className="mb-2 flex items-center gap-3">
-                      <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
-                        {item.icon}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className="group-hover:text-primary truncate font-medium transition-colors">
-                          {item.title}
-                        </h3>
-                        <p className="text-muted-foreground text-xs capitalize">{item.type}</p>
-                      </div>
-                    </div>
-                  </a>
-                ))}
-                {featuredItems.length === 0 && (
-                  <div className="text-muted-foreground py-8 text-center">
-                    <Clock className="mx-auto mb-2 h-8 w-8 opacity-50" />
-                    <p className="text-sm">Featured work will appear here soon.</p>
-                  </div>
-                )}
-              </div>
+              More about me
+            </Link>
+          </section>
+
+          <section className="mt-24" id="contact">
+            <SectionLabel index="06" title="Let’s talk" />
+            <p className="text-muted-foreground max-w-xl text-sm">
+              Email, GitHub, or LinkedIn. CV is one click away.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild>
+                <a href={`mailto:${profile.email}`}>Email</a>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/resume">View CV</Link>
+              </Button>
             </div>
-          </div>
+          </section>
         </Container>
       </main>
     </PageShell>
+  );
+}
+
+function NowRow({
+  label,
+  value,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  placeholder?: boolean;
+}) {
+  return (
+    <div className="grid gap-2 py-4 sm:grid-cols-[10rem_1fr] sm:items-baseline">
+      <dt className="text-muted-foreground font-mono text-[11px] tracking-[0.16em] uppercase">
+        {label}
+      </dt>
+      <dd className={placeholder ? 'text-muted-foreground text-sm' : 'text-sm leading-relaxed'}>
+        {value}
+      </dd>
+    </div>
   );
 }

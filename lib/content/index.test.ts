@@ -4,9 +4,11 @@ import {
   getEducation,
   getExperiences,
   getFeatured,
+  getFeaturedProjects,
   getHonors,
   getLeadership,
   getMusings,
+  getNow,
   getPortfolio,
   getProfile,
   getProjects,
@@ -55,9 +57,27 @@ describe('content collections', () => {
     expect(getReads().length).toBeGreaterThan(0);
   });
 
+  it('parses now and featured work', () => {
+    const now = getNow();
+    expect(now.period).toBeTruthy();
+    expect(now.building).toBeTruthy();
+    expect(now.reading.startsWith('[PLACEHOLDER')).toBe(true);
+
+    const featured = getFeaturedProjects();
+    expect(featured.map((item) => item.slug)).toEqual([
+      'safesight',
+      'anthar-study',
+      'mmvtg',
+      'kyc-automation',
+    ]);
+    expect(getExperiences()[0]?.company).toBe('Revent');
+    expect(getProfile().headline).toContain('AI Engineer');
+  });
+
   it('aggregates portfolio', () => {
     const portfolio = getPortfolio();
     expect(portfolio.profile.fullName).toBeTruthy();
     expect(portfolio.projects.length).toBeGreaterThan(0);
+    expect(portfolio.now.period).toBeTruthy();
   });
 });

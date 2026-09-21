@@ -27,5 +27,11 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
   ],
   "sortOrder": 1,
   "isResearch": "no",
-  "githubRepo": null
+  "githubRepo": null,
+  "slug": "kyc-automation",
+  "oneLiner": "OCR, NER, and risk scoring for automated KYC decisions.",
+  "featured": true,
+  "featuredOrder": 4,
+  "kind": "project",
+  "cardTags": ["OCR", "NER", "Risk Assessment"]
 }

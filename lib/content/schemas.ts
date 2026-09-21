@@ -7,6 +7,8 @@ export const profileSchema = z.object({
   fullName: z.string(),
   headline: z.string(),
   location: z.string().optional(),
+  locationLabel: z.string().optional(),
+  timezone: z.string().optional(),
   email: z.string(),
   phonePrimary: nullableString,
   phoneSecondary: nullableString,
@@ -50,6 +52,12 @@ export const projectSchema = z.object({
   sortOrder: z.number().optional(),
   isResearch: nullableString,
   githubRepo: nullableString,
+  slug: z.string().optional(),
+  oneLiner: z.string().optional(),
+  featured: z.boolean().optional().default(false),
+  featuredOrder: z.number().optional(),
+  kind: z.enum(['project', 'research']).optional().default('project'),
+  cardTags: z.array(z.string()).optional(),
 });
 
 export const publicationSchema = z.object({
@@ -125,6 +133,15 @@ export const certificateSchema = z.object({
   sortOrder: z.number().optional(),
 });
 
+export const nowSchema = z.object({
+  period: z.string(),
+  building: z.string(),
+  exploring: z.array(z.string()),
+  experimenting: z.array(z.string()),
+  reading: z.string(),
+  thinkingAbout: z.string(),
+});
+
 export const featuredSchema = z.object({
   featuredProjects: z.array(z.string()).default([]),
   featuredPublications: z.array(z.string()).default([]),
@@ -171,6 +188,7 @@ export type Honor = z.infer<typeof honorSchema>;
 export type Leadership = z.infer<typeof leadershipSchema>;
 export type WritingFrontmatter = z.infer<typeof writingFrontmatterSchema>;
 export type Certificate = z.infer<typeof certificateSchema>;
+export type NowContent = z.infer<typeof nowSchema>;
 export type Featured = z.infer<typeof featuredSchema>;
 export type MusingNotebook = z.infer<typeof musingNotebookSchema>;
 export type ReadItem = z.infer<typeof readItemSchema>;

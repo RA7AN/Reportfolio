@@ -12,6 +12,7 @@ import {
   honorSchema,
   leadershipSchema,
   musingNotebookSchema,
+  nowSchema,
   profileSchema,
   projectSchema,
   publicationSchema,
@@ -26,6 +27,7 @@ import {
   type Honor,
   type Leadership,
   type MusingNotebook,
+  type NowContent,
   type Profile,
   type Project,
   type Publication,
@@ -218,6 +220,27 @@ export function getReads(): ReadItem[] {
   return parsed.data;
 }
 
+export function getNow(): NowContent {
+  const filePath = join(CONTENT_DIR, 'now', 'index.md');
+  const raw = readFileSync(filePath, 'utf-8');
+  const { content } = matter(raw);
+  const parsed = nowSchema.safeParse(parseJsonBody(content, filePath));
+  if (!parsed.success) {
+    throw new Error(`Invalid now: ${parsed.error.issues.map((i) => i.message).join('; ')}`);
+  }
+  return parsed.data;
+}
+
+export function getFeaturedProjects(): Project[] {
+  return getProjects()
+    .filter((project) => project.featured)
+    .sort((a, b) => (a.featuredOrder ?? 99) - (b.featuredOrder ?? 99));
+}
+
+export function getResearchProjects(): Project[] {
+  return getProjects().filter((project) => project.kind === 'research');
+}
+
 export function getPortfolio() {
   return {
     profile: getProfile(),
@@ -230,5 +253,6 @@ export function getPortfolio() {
     honors: getHonors(),
     leadership: getLeadership(),
     certificates: getCertificates(),
+    now: getNow(),
   };
 }

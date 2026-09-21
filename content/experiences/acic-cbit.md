@@ -1,7 +1,7 @@
 ---
 type: "experience"
 slug: "acic-cbit"
-sortOrder: 3
+sortOrder: 4
 lastUpdated: "2026-02-12T17:33:53.007Z"
 ---
 
@@ -16,5 +16,5 @@ lastUpdated: "2026-02-12T17:33:53.007Z"
   "highlights": [
     "Conducted research studying educational motivation across rural schools involving 50+ students."
   ],
-  "sortOrder": 3
+  "sortOrder": 4
 }

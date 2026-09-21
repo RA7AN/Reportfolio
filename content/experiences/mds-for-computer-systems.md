@@ -1,7 +1,7 @@
 ---
 type: "experience"
 slug: "mds-for-computer-systems"
-sortOrder: 2
+sortOrder: 3
 lastUpdated: "2026-02-12T17:33:53.007Z"
 ---
 
@@ -16,5 +16,5 @@ lastUpdated: "2026-02-12T17:33:53.007Z"
   "highlights": [
     "Configured and tested 8 network simulations using Cisco IOS."
   ],
-  "sortOrder": 2
+  "sortOrder": 3
 }

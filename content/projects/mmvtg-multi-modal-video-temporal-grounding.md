@@ -22,6 +22,12 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
     "Paper accepted for publication in IEEE."
   ],
   "sortOrder": 4,
-  "isResearch": "no",
-  "githubRepo": null
+  "isResearch": "yes",
+  "githubRepo": null,
+  "slug": "mmvtg",
+  "oneLiner": "Multi-modal video temporal grounding from natural language queries.",
+  "featured": true,
+  "featuredOrder": 3,
+  "kind": "research",
+  "cardTags": ["Multimodal AI", "Video Understanding", "Research"]
 }
