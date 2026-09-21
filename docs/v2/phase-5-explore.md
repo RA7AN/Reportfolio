@@ -1,8 +1,7 @@
-# Phase 5 — Explore **[deferred this pass]**
+# Phase 5 — Explore
 
 PRD: §22–23, §50, §52 Phase 5.
 
-**When:** after Work/Research routes exist.
-
-- Explore hub vs keep `/writing`, `/musings`, `/reads` (preserve permalinks).
-- Lightweight reads metadata; not a Goodreads clone.
+- [x] `/explore` hub (writing, musings, reads, research pointer)
+- [x] Permalinks `/writing`, `/musings`, `/reads` kept
+- [x] Lightweight reads; not a Goodreads clone

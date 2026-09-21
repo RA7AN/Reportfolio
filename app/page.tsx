@@ -58,7 +58,7 @@ export default function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild>
-                <Link href="/projects">Explore work</Link>
+                <Link href="/work">Explore work</Link>
               </Button>
               <Button asChild variant="outline">
                 <Link href="/resume">View CV</Link>
@@ -86,7 +86,7 @@ export default function HomePage() {
             <SectionLabel index="01" title="Selected work" />
             <div className="grid gap-4 sm:grid-cols-2">
               {featured.map((project) => (
-                <WorkCard key={project.id} project={project} href="/projects" />
+                <WorkCard key={project.id} project={project} />
               ))}
             </div>
           </section>
@@ -117,7 +117,7 @@ export default function HomePage() {
             <SectionLabel index="03" title="Research" />
             <div className="grid gap-4 md:grid-cols-3">
               {research.map((item) => (
-                <WorkCard key={item.id} project={item} href="/projects" />
+                <WorkCard key={item.id} project={item} />
               ))}
               {publications.map((pub) => (
                 <a

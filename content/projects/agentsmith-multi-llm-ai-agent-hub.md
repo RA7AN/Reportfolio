@@ -27,5 +27,6 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
   ],
   "sortOrder": 3,
   "isResearch": "no",
-  "githubRepo": null
+  "githubRepo": null,
+  "slug": "agentsmith"
 }

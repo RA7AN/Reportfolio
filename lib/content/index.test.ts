@@ -11,6 +11,7 @@ import {
   getNow,
   getPortfolio,
   getProfile,
+  getProjectBySlug,
   getProjects,
   getPublications,
   getReads,
@@ -72,6 +73,10 @@ describe('content collections', () => {
     ]);
     expect(getExperiences()[0]?.company).toBe('Revent');
     expect(getProfile().headline).toContain('AI Engineer');
+    const slugs = getProjects().map((item) => item.slug).filter(Boolean);
+    expect(new Set(slugs).size).toBe(slugs.length);
+    expect(getProjectBySlug('safesight')?.title).toBe('SafeSight');
+    expect(getProjectBySlug('anthar-study')?.kind).toBe('research');
   });
 
   it('aggregates portfolio', () => {

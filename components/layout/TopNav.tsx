@@ -2,28 +2,35 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Container } from '@/components/layout/Container';
 import { cn } from '@/lib/utils';
 
 const nav = [
-  { label: 'Work', href: '/projects' },
-  { label: 'Research', href: '/#research' },
-  { label: 'Explore', href: '/writing' },
+  { label: 'Work', href: '/work' },
+  { label: 'Research', href: '/research' },
+  { label: 'Explore', href: '/explore' },
   { label: 'About', href: '/about' },
 ];
+
+function isActive(href: string, pathname: string) {
+  if (href === '/work') return pathname === '/work' || pathname.startsWith('/projects/');
+  if (href === '/research') return pathname === '/research' || pathname.startsWith('/research/');
+  if (href === '/explore') {
+    return (
+      pathname === '/explore' ||
+      pathname === '/now' ||
+      pathname.startsWith('/writing') ||
+      pathname.startsWith('/musings') ||
+      pathname.startsWith('/reads')
+    );
+  }
+  return pathname === href;
+}
 
 export function TopNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [hash, setHash] = useState('');
-
-  useEffect(() => {
-    const sync = () => setHash(window.location.hash);
-    sync();
-    window.addEventListener('hashchange', sync);
-    return () => window.removeEventListener('hashchange', sync);
-  }, [pathname]);
 
   return (
     <header className="border-border/80 bg-background/75 sticky top-0 z-40 border-b backdrop-blur-md">
@@ -36,23 +43,20 @@ export function TopNav() {
           </Link>
 
           <nav className="hidden items-center gap-7 md:flex">
-            {nav.map((item) => {
-              const active = item.href.startsWith('/#')
-                ? pathname === '/' && hash === `#${item.href.split('#')[1]}`
-                : pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    'font-mono text-[11px] tracking-[0.16em] uppercase transition-colors',
-                    active ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
-                  )}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+            {nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'font-mono text-[11px] tracking-[0.16em] uppercase transition-colors',
+                  isActive(item.href, pathname)
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
             <Link
               href="/resume"
               className={cn(

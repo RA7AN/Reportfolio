@@ -4,6 +4,7 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import matter from 'gray-matter';
 import { z, type ZodTypeAny } from 'zod';
+import { slugify } from '@/lib/utils';
 import {
   certificateSchema,
   educationSchema,
@@ -97,6 +98,19 @@ export function getEducation(): Education[] {
 
 export function getProjects(): Project[] {
   return loadJsonCollection('projects', projectSchema);
+}
+
+export function projectSlug(project: Project) {
+  return project.slug || slugify(project.title);
+}
+
+export function hrefForProject(project: Project) {
+  const slug = projectSlug(project);
+  return project.kind === 'research' ? `/research/${slug}` : `/projects/${slug}`;
+}
+
+export function getProjectBySlug(slug: string): Project | undefined {
+  return getProjects().find((project) => projectSlug(project) === slug);
 }
 
 export function getPublications(): Publication[] {

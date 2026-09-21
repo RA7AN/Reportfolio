@@ -1,7 +1,8 @@
-# Phase 7 — Polish **[deferred this pass]**
+# Phase 7 — Polish
 
 PRD: §38–40, §52 Phase 7, §53.
 
-**When:** after Phases 4–5, before any production discussion.
-
-Responsive, a11y, performance, proofreading, link check, visual consistency. Respect `prefers-reduced-motion`.
+- [x] V2 chrome on about, resume, certificates, start-here, 404
+- [x] About copy uses current Revent positioning (not Deccan-as-present)
+- [x] Local typecheck / lint / test / build
+- [x] Localhost pass of new routes

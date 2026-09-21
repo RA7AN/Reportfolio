@@ -175,7 +175,7 @@ export function WritingListClient({ items }: { items: WritingCard[] }) {
               subtitle="Click into an item for the full text."
             >
               {filtered.length === 0 ? (
-                <div className="border-border/70 bg-card/60 text-muted-foreground rounded-2xl border p-6 text-sm shadow-[var(--shadow-xs)]">
+                <div className="border-border/70 bg-card/60 text-muted-foreground rounded-sm border p-6 text-sm shadow-[var(--shadow-xs)]">
                   No items match your filters.
                   <div className="mt-3">
                     <Button variant="outline" className="rounded-xl" onClick={clearAll}>
@@ -188,7 +188,7 @@ export function WritingListClient({ items }: { items: WritingCard[] }) {
                   {filtered.map((item) => (
                     <div
                       key={item.slug}
-                      className="border-border/70 bg-card/60 rounded-2xl border p-6 shadow-[var(--shadow-xs)] backdrop-blur transition-all hover:shadow-[var(--shadow-sm)]"
+                      className="border-border/70 bg-card/60 rounded-sm border p-6 shadow-[var(--shadow-xs)] backdrop-blur transition-all hover:shadow-[var(--shadow-sm)]"
                     >
                       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                         <div className="min-w-0">

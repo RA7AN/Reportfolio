@@ -29,5 +29,24 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
   "featured": true,
   "featuredOrder": 3,
   "kind": "research",
-  "cardTags": ["Multimodal AI", "Video Understanding", "Research"]
+  "cardTags": ["Multimodal AI", "Video Understanding", "Research"],
+  "demoUrl": null,
+  "paperUrl": null,
+  "sections": [
+    {
+      "id": "problem",
+      "title": "The problem",
+      "body": "Retrieve precise video segments from natural language queries (multi-modal video temporal grounding)."
+    },
+    {
+      "id": "context",
+      "title": "Context",
+      "body": "September 2024 – March 2025. PyTorch, CLIP, RAG, multimodal learning."
+    },
+    {
+      "id": "results",
+      "title": "Results",
+      "body": "Reported R1@0.5 of 60.5 and mAP of 61.55. Paper accepted for publication in IEEE. Metrics should stay contextualized, not presented as a scoreboard."
+    }
+  ]
 }

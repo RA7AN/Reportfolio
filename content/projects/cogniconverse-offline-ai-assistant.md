@@ -22,5 +22,6 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
   ],
   "sortOrder": 5,
   "isResearch": "no",
-  "githubRepo": null
+  "githubRepo": null,
+  "slug": "cogniconverse"
 }

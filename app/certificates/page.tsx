@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
 import { CertificateCard } from '@/components/certificates/CertificateCard';
 import { Container } from '@/components/layout/Container';
 import { PageShell } from '@/components/layout/PageShell';
@@ -21,42 +20,28 @@ export default function CertificatesPage() {
 
   return (
     <PageShell>
-      <main className="pb-16 md:pb-24">
-        <Container>
-          <div className="space-y-12 pt-10 md:pt-14">
-            <Link
-              href="/"
-              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
-            </Link>
-            <div className="space-y-4 text-center">
-              <h1 className="text-4xl font-bold">Certificates</h1>
-              <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
-                Professional certifications and credentials demonstrating continuous learning and
-                expertise across various domains.
-              </p>
-              <div className="text-muted-foreground text-sm">
-                {certificates.length} total certificate{certificates.length !== 1 ? 's' : ''}
+      <main>
+        <Container className="max-w-5xl pt-12 pb-24">
+          <h1 className="font-mono text-[11px] tracking-[0.22em] uppercase">Certificates</h1>
+          <p className="text-muted-foreground mt-3 text-sm">
+            {certificates.length} credential{certificates.length === 1 ? '' : 's'}.
+          </p>
+          {years.map((year) => (
+            <section key={year} className="mt-12">
+              <h2 className="font-mono text-[11px] tracking-[0.16em] uppercase">{year}</h2>
+              <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {byYear[year].map((certificate) => (
+                  <CertificateCard key={certificate.id} certificate={certificate} />
+                ))}
               </div>
-            </div>
-            {years.map((year) => (
-              <section key={year} className="space-y-6">
-                <div className="border-border border-b pb-2">
-                  <h2 className="text-2xl font-bold">{year}</h2>
-                  <p className="text-muted-foreground mt-1 text-sm">
-                    {byYear[year].length} certificate{byYear[year].length !== 1 ? 's' : ''}
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {byYear[year].map((certificate) => (
-                    <CertificateCard key={certificate.id} certificate={certificate} />
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
+            </section>
+          ))}
+          <Link
+            href="/resume"
+            className="text-muted-foreground hover:text-foreground mt-10 inline-block font-mono text-[11px] tracking-[0.16em] uppercase"
+          >
+            Back to CV
+          </Link>
         </Container>
       </main>
     </PageShell>

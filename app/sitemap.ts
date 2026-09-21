@@ -1,16 +1,19 @@
 import type { MetadataRoute } from 'next';
 import { env } from '@/lib/env';
-import { getWriting } from '@/lib/content';
+import { getProjects, getWriting, hrefForProject } from '@/lib/content';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = env.SITE_URL.replace(/\/$/, '');
   const staticPaths = [
     '/',
     '/about',
+    '/work',
+    '/research',
+    '/explore',
+    '/now',
     '/writing',
     '/musings',
     '/start-here',
-    '/projects',
     '/reads',
     '/resume',
     '/certificates',
@@ -28,6 +31,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: 'monthly' as const,
       priority: 0.6,
+    })),
+    ...getProjects().map((item) => ({
+      url: `${base}${hrefForProject(item)}`,
+      lastModified,
+      changeFrequency: 'monthly' as const,
+      priority: 0.65,
     })),
   ];
 }

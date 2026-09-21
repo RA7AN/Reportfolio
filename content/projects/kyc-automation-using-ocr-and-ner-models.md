@@ -33,5 +33,24 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
   "featured": true,
   "featuredOrder": 4,
   "kind": "project",
-  "cardTags": ["OCR", "NER", "Risk Assessment"]
+  "cardTags": ["OCR", "NER", "Risk Assessment"],
+  "demoUrl": null,
+  "paperUrl": null,
+  "sections": [
+    {
+      "id": "problem",
+      "title": "The problem",
+      "body": "KYC review mixes document extraction, identity signals, and risk decisions that are slow to do by hand."
+    },
+    {
+      "id": "approach",
+      "title": "Approach",
+      "body": "OCR-based document extraction, NER, and a weighted risk scoring engine for automated approval, review, or rejection."
+    },
+    {
+      "id": "system",
+      "title": "System",
+      "body": "Modular services: OCR (Python + PaddleOCR), backend API (Node.js), PostgreSQL-backed configuration for thresholds and weights."
+    }
+  ]
 }

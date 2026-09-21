@@ -55,7 +55,7 @@ export function ReadsClient({ reads }: { reads: ReadItem[] }) {
                   {filtered.map((read) => (
                     <div
                       key={read.id}
-                      className="border-border/70 bg-card/60 rounded-2xl border p-6 shadow-[var(--shadow-xs)] backdrop-blur"
+                      className="border-border/70 bg-card/60 rounded-sm border p-6 shadow-[var(--shadow-xs)] backdrop-blur"
                     >
                       <div className="mb-4 flex items-start justify-between gap-4">
                         <div className="min-w-0 flex-1">

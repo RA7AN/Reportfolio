@@ -1,13 +1,15 @@
 import Link from 'next/link';
+import { hrefForProject } from '@/lib/content';
 import { cn } from '@/lib/utils';
 import type { Project } from '@/lib/content/schemas';
 
-export function WorkCard({ project, href = '/projects' }: { project: Project; href?: string }) {
+export function WorkCard({ project, href }: { project: Project; href?: string }) {
   const tags = project.cardTags?.length ? project.cardTags : project.tools.slice(0, 4);
+  const target = href ?? hrefForProject(project);
 
   return (
     <Link
-      href={href}
+      href={target}
       className={cn(
         'group border-border bg-card/40 relative block overflow-hidden rounded-sm border p-5 transition-colors',
         'hover:border-primary/50',

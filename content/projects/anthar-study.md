@@ -24,5 +24,24 @@ lastUpdated: "2026-09-22T00:00:00.000Z"
   "featured": true,
   "featuredOrder": 2,
   "kind": "research",
-  "cardTags": ["AI Agents", "Evaluation", "Software Engineering"]
+  "cardTags": ["AI Agents", "Evaluation", "Software Engineering"],
+  "demoUrl": null,
+  "paperUrl": "https://www.deccan.ai/research/anthar-study-evaluating-ai-coding-agents-beyond-benchmarks",
+  "sections": [
+    {
+      "id": "question",
+      "title": "Question",
+      "body": "How do AI coding agents behave on real-world software engineering tasks, beyond synthetic benchmarks?"
+    },
+    {
+      "id": "data",
+      "title": "Data",
+      "body": "Co-authored evaluation of six AI coding agents across 43 real-world GitHub pull requests, associated with Deccan AI."
+    },
+    {
+      "id": "results",
+      "title": "Results",
+      "body": "[PLACEHOLDER — populate methodology and results from an authoritative source]"
+    }
+  ]
 }

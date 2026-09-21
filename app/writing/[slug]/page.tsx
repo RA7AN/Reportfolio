@@ -68,7 +68,7 @@ export default async function WritingDetailPage({ params }: Props) {
                 <span className="text-muted-foreground text-xs">—</span>
               )}
             </div>
-            <div className="border-border/70 bg-card/60 mt-6 overflow-hidden rounded-3xl border shadow-[var(--shadow-md)] backdrop-blur">
+            <div className="border-border/70 bg-card/60 mt-6 overflow-hidden rounded-sm border">
               <div className="p-6 sm:p-8 md:p-10">
                 <article>
                   <div className="flex flex-wrap items-center gap-2">

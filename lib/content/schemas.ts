@@ -58,6 +58,18 @@ export const projectSchema = z.object({
   featuredOrder: z.number().optional(),
   kind: z.enum(['project', 'research']).optional().default('project'),
   cardTags: z.array(z.string()).optional(),
+  demoUrl: nullableString,
+  paperUrl: nullableString,
+  sections: z
+    .array(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        body: z.string(),
+      }),
+    )
+    .optional()
+    .default([]),
 });
 
 export const publicationSchema = z.object({
