@@ -1,42 +1,44 @@
 import type { Metadata, Viewport } from 'next';
-import { Fraunces, IBM_Plex_Sans } from 'next/font/google';
+import { Caveat, Geist, Geist_Mono } from 'next/font/google';
+import { SiteUiProvider } from '@/components/layout/SiteUi';
 import { env } from '@/lib/env';
 import './globals.css';
 
-const ibmPlex = IBM_Plex_Sans({
-  variable: '--font-ibm-plex',
+const geistSans = Geist({
+  variable: '--font-geist-sans',
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  style: ['normal', 'italic'],
-  display: 'swap',
 });
 
-const fraunces = Fraunces({
-  variable: '--font-fraunces',
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
   subsets: ['latin'],
-  weight: ['500', '700'],
-  display: 'swap',
+});
+
+const caveat = Caveat({
+  variable: '--font-caveat',
+  subsets: ['latin'],
+  weight: ['400', '600'],
 });
 
 const SITE_DESCRIPTION =
-  "Welcome to Abdul Jawwad's digital home. Exploring the intersection of AI research, systems engineering, and meaningful technology.";
+  'I build and study intelligent systems across agents, multimodal AI, and production software.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.SITE_URL),
   title: {
-    default: 'Event Horizon — On a trajectory shaped by curiosity',
-    template: '%s — Event Horizon',
+    default: 'Abdul Jawwad — AI Engineer · AI Researcher',
+    template: '%s — Abdul Jawwad',
   },
   description: SITE_DESCRIPTION,
   openGraph: {
     type: 'website',
-    siteName: 'Event Horizon',
-    title: 'Event Horizon — On a trajectory shaped by curiosity',
+    siteName: 'Abdul Jawwad',
+    title: 'Abdul Jawwad — AI Engineer · AI Researcher',
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Event Horizon — On a trajectory shaped by curiosity',
+    title: 'Abdul Jawwad — AI Engineer · AI Researcher',
     description: SITE_DESCRIPTION,
   },
 };
@@ -45,13 +47,17 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
+  colorScheme: 'dark',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${ibmPlex.variable} ${fraunces.variable} font-sans antialiased`}>
-        {children}
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} font-sans antialiased`}
+        suppressHydrationWarning
+      >
+        <SiteUiProvider>{children}</SiteUiProvider>
       </body>
     </html>
   );
