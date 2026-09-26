@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 const caveat = Caveat({
   variable: '--font-caveat',
   subsets: ['latin'],
-  weight: ['400', '600'],
+  weight: '500',
 });
 
 const SITE_DESCRIPTION =

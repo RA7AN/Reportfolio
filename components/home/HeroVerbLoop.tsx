@@ -2,10 +2,20 @@
 
 import { HERO_VERBS } from '@/components/home/hero-verbs';
 import { cn } from '@/lib/utils';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 
 const HOLD_MS = 5000;
 const SWAP_MS = 300;
+
+function subscribeReduce(onStoreChange: () => void) {
+  const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+  media.addEventListener('change', onStoreChange);
+  return () => media.removeEventListener('change', onStoreChange);
+}
+
+function getReduce() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
 
 export function HeroVerbLoop() {
   const indexRef = useRef(0);
@@ -15,23 +25,21 @@ export function HeroVerbLoop() {
   const [incoming, setIncoming] = useState<number | null>(null);
   const [incomingReady, setIncomingReady] = useState(false);
   const [outgoingReady, setOutgoingReady] = useState(false);
-  const [reduce, setReduce] = useState(false);
   const [ready, setReady] = useState(false);
   const [width, setWidth] = useState<number>();
+  const reduce = useSyncExternalStore(subscribeReduce, getReduce, () => false);
 
   const swapping = outgoing != null && incoming != null;
   const measureIndex = swapping ? incoming : index;
 
   useEffect(() => {
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     const start = Math.floor(Math.random() * HERO_VERBS.length);
     indexRef.current = start;
-    setIndex(start);
-    setReduce(media.matches);
-    setReady(true);
-    const onChange = () => setReduce(media.matches);
-    media.addEventListener('change', onChange);
-    return () => media.removeEventListener('change', onChange);
+    const frame = window.requestAnimationFrame(() => {
+      setIndex(start);
+      setReady(true);
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   useLayoutEffect(() => {

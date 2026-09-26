@@ -43,9 +43,6 @@ function uniqueMarks(names: string[], extra: readonly StackMark[] = []) {
 }
 
 export function StackGrid({ skills }: { skills: Skill[] }) {
-  const build = skills.find((item) =>
-    /program|cloud|devops|web|database|other/i.test(item.category),
-  );
   const research = skills.find((item) => /machine|ai|research/i.test(item.category));
   const leftNames = skills
     .filter((item) => /program|cloud|devops|database|web/i.test(item.category))

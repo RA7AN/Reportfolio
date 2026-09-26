@@ -1,5 +1,6 @@
 import { companyLogoSrc } from '@/components/home/company-logos';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 function initials(name: string) {
   return name
@@ -27,7 +28,13 @@ export function CompanyMark({
     <span className={cn('relative z-10 shrink-0', className)}>
       <span className="bg-muted flex size-full items-center justify-center overflow-hidden rounded-[10px] text-[10px] font-medium">
         {src ? (
-          <img src={src} alt="" className={cn('size-full object-contain', imgClassName)} />
+          <Image
+            src={src}
+            alt=""
+            width={36}
+            height={36}
+            className={cn('size-full object-contain', imgClassName)}
+          />
         ) : (
           initials(company)
         )}

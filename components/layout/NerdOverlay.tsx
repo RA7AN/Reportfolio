@@ -1,7 +1,7 @@
 'use client';
 
 import { useSiteUi } from '@/components/layout/SiteUi';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react';
 
 type Box = {
   top: number;
@@ -32,10 +32,7 @@ function NerdInspect() {
   const [boxes, setBoxes] = useState<Box[]>([]);
 
   useLayoutEffect(() => {
-    if (!nerd) {
-      setBoxes([]);
-      return;
-    }
+    if (!nerd) return;
 
     const measure = () => {
       const nodes = document.querySelectorAll('main h1, main h2');
@@ -125,7 +122,7 @@ function NerdInspect() {
   );
 }
 
-function Chip({ children }: { children: string }) {
+function Chip({ children }: { children: ReactNode }) {
   return (
     <span className="text-note flex items-center gap-1 rounded-[4px] bg-[color-mix(in_srgb,var(--note)_12%,transparent)] px-1.5 py-0.5 font-mono text-[10px] leading-4 whitespace-nowrap">
       {children}
