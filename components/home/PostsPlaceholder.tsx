@@ -29,13 +29,15 @@ export function PostsPlaceholder() {
   const [count, setCount] = useState(3);
 
   return (
-    <section className="pt-28">
-      <p className="text-muted-foreground mb-2 font-mono text-[10px] tracking-[0.18em] uppercase">
+    <section
+      className="pt-20 sm:pt-24"
+      id="posts"
+      data-nerd="posts: dummy cards, no tweet embeds yet"
+    >
+      <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         on the timeline
       </p>
-      <h2 className="text-[1.65rem] leading-tight tracking-tight sm:text-3xl">
-        posts worth keeping
-      </h2>
+      <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">posts worth keeping</h2>
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         {posts.slice(0, count).map((post) => (
           <article key={post.handle} className="border-border rounded-2xl border p-4">
@@ -46,7 +48,7 @@ export function PostsPlaceholder() {
               </div>
               <span className="text-muted-foreground text-lg">𝕏</span>
             </div>
-            <p className="mt-3 text-[13px] leading-relaxed text-[#c4c2ba]">{post.body}</p>
+            <p className="mt-3 text-sm leading-relaxed">{post.body}</p>
           </article>
         ))}
       </div>

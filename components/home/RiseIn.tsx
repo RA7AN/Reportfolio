@@ -26,7 +26,10 @@ export function LetterTitle({ text, className }: { text: string; className?: str
   const chars = [...text];
   return (
     <h1
-      className={cn('text-[2.6rem] leading-none tracking-tight sm:text-6xl md:text-7xl', className)}
+      className={cn(
+        'w-fit max-w-full text-5xl font-medium tracking-tighter sm:text-7xl',
+        className,
+      )}
     >
       {chars.map((char, index) =>
         char === ' ' ? (

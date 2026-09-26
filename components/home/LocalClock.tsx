@@ -24,7 +24,7 @@ export function LocalClock({ city, timeZone }: { city: string; timeZone: string 
   }, [timeZone]);
 
   return (
-    <p className="text-muted-foreground text-[13px]">
+    <p className="text-muted-foreground font-mono text-xs">
       {city.toLowerCase()}
       <span className="mx-1.5">·</span>
       <span>{time ?? '—'}</span>

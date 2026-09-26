@@ -6,12 +6,16 @@ const reels = [
 
 export function ReelsPlaceholder() {
   return (
-    <section className="pt-28">
-      <p className="text-muted-foreground mb-2 font-mono text-[10px] tracking-[0.18em] uppercase">
+    <section
+      className="pt-20 sm:pt-24"
+      id="reels"
+      data-nerd="reels: placeholder tiles, no video yet"
+    >
+      <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         travel log
       </p>
-      <h2 className="text-[1.65rem] leading-tight tracking-tight sm:text-3xl">moving pictures</h2>
-      <p className="text-muted-foreground mt-2 text-[13px]">
+      <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">moving pictures</h2>
+      <p className="text-muted-foreground mt-2 text-sm leading-6 sm:text-base">
         reel placeholders. no instagram embeds yet.
       </p>
       <div className="mt-8 grid gap-4 sm:grid-cols-3">

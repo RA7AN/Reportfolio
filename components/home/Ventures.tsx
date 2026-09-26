@@ -38,12 +38,16 @@ export function Ventures() {
   ];
 
   return (
-    <section className="pt-28">
-      <p className="text-muted-foreground mb-2 font-mono text-[10px] tracking-[0.18em] uppercase">
+    <section
+      className="pt-20 sm:pt-24"
+      id="ventures"
+      data-nerd="ventures: placeholder bars, not scaled from years"
+    >
+      <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         ventures
       </p>
-      <h2 className="text-[1.65rem] leading-tight tracking-tight sm:text-3xl">things I started</h2>
-      <p className="text-muted-foreground mt-2 text-[13px]">
+      <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">things I started</h2>
+      <p className="text-muted-foreground mt-2 text-sm leading-6 sm:text-base">
         the bars are placeholders. amber means still alive.
       </p>
       <ul className="mt-8 space-y-3">
@@ -53,10 +57,10 @@ export function Ventures() {
             className="border-border grid items-center gap-3 rounded-2xl border px-4 py-3 sm:grid-cols-[10rem_1fr_8rem]"
           >
             <div>
-              <p className="text-[14px] font-medium">{item.name}</p>
-              <p className="text-muted-foreground text-[11px]">{item.when}</p>
+              <p className="text-base font-medium">{item.name}</p>
+              <p className="text-muted-foreground text-xs">{item.when}</p>
             </div>
-            <p className="text-[13px] text-[#c4c2ba]">{item.blurb}</p>
+            <p className="text-muted-foreground text-sm">{item.blurb}</p>
             <div className="h-[3px] overflow-hidden rounded-full bg-[#2a2a2a]">
               <div
                 className={item.live ? 'bg-note h-full' : 'h-full bg-[#5a5a5a]'}

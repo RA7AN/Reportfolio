@@ -11,12 +11,12 @@ const shots = [
 
 export function Filmstrip() {
   return (
-    <section className="pt-28">
-      <div className="mx-auto max-w-[920px] px-5 sm:px-8">
-        <p className="text-muted-foreground mb-2 font-mono text-[10px] tracking-[0.18em] uppercase">
+    <section className="pt-20 sm:pt-24" data-nerd="polaroids: css marquee, gradient placeholders">
+      <div className="mx-auto w-full max-w-5xl px-5 sm:px-8">
+        <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
           off screen
         </p>
-        <h2 className="text-[1.65rem] leading-tight tracking-tight sm:text-3xl">
+        <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">
           I travel with a camera and too many opinions
         </h2>
       </div>
@@ -40,7 +40,7 @@ export function Filmstrip() {
           ))}
         </div>
       </div>
-      <p className="text-muted-foreground mx-auto mt-2 max-w-[920px] px-5 text-[11px] sm:px-8">
+      <p className="text-muted-foreground mx-auto mt-2 max-w-5xl px-5 text-xs sm:px-8">
         polaroid placeholders · swap in real photos later
       </p>
     </section>

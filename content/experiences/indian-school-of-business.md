@@ -1,7 +1,7 @@
 ---
 type: "experience"
 slug: "indian-school-of-business"
-sortOrder: 4
+sortOrder: 6
 lastUpdated: "2026-02-12T17:33:53.007Z"
 ---
 
@@ -17,5 +17,5 @@ lastUpdated: "2026-02-12T17:33:53.007Z"
     "UNITE internship programme at Indian School of Business.",
     "Coordinated digital operations supporting placement of 200+ MBA graduates."
   ],
-  "sortOrder": 4
+  "sortOrder": 6
 }
