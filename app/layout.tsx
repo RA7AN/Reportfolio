@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Caveat, Geist, Geist_Mono } from 'next/font/google';
 import { SiteUiProvider } from '@/components/layout/SiteUi';
+import { SmoothScroll } from '@/components/layout/SmoothScroll';
 import { env } from '@/lib/env';
 import './globals.css';
 
@@ -41,6 +42,10 @@ export const metadata: Metadata = {
     title: 'Abdul Jawwad — AI Engineer · AI Researcher',
     description: SITE_DESCRIPTION,
   },
+  icons: {
+    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
+    apple: [{ url: '/apple-icon.svg', type: 'image/svg+xml' }],
+  },
 };
 
 export const viewport: Viewport = {
@@ -52,12 +57,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
-        <SiteUiProvider>{children}</SiteUiProvider>
+        <SiteUiProvider>
+          <SmoothScroll>{children}</SmoothScroll>
+        </SiteUiProvider>
       </body>
     </html>
   );

@@ -22,10 +22,12 @@ export default function LinksPage() {
     <PageShell>
       <main className="pb-24">
         <HomeInner className="pt-16">
-          <p className="text-muted-foreground mb-2 font-mono text-[10px] tracking-[0.18em] uppercase">
+          <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
             links
           </p>
-          <h1 className="text-3xl tracking-tight">link in bio, basically</h1>
+          <h1 className="text-2xl font-medium tracking-tight sm:text-3xl">
+            link in bio, basically
+          </h1>
           <ul className="mt-10 space-y-3">
             {links.map((item) => (
               <li key={item.label}>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { HandNote } from '@/components/layout/SiteIcons';
 
 const JEDDAH: [number, number] = [21.5433, 39.1728];
 
@@ -100,7 +101,12 @@ export function Globe() {
         : []),
     ];
 
+    let visible = true;
     const tick = () => {
+      if (!visible) {
+        raf = 0;
+        return;
+      }
       if (!dragging && !reduce) phi += 0.003;
       globe?.update({ phi, theta, markers });
       if (width > 0 && overlayRef.current) {
@@ -166,7 +172,17 @@ export function Globe() {
     canvas.addEventListener('pointerup', onUp);
     window.addEventListener('resize', onResize);
 
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = Boolean(entry?.isIntersecting);
+        if (visible && !raf) raf = window.requestAnimationFrame(tick);
+      },
+      { rootMargin: '80px' },
+    );
+    observer.observe(wrap);
+
     return () => {
+      observer.disconnect();
       window.cancelAnimationFrame(raf);
       canvas.removeEventListener('pointerdown', onDown);
       canvas.removeEventListener('pointermove', onMove);
@@ -177,19 +193,21 @@ export function Globe() {
   }, [visitor]);
 
   return (
-    <section className="pt-20" id="globe">
+    <section
+      className="pt-20 sm:pt-24"
+      id="globe"
+      data-nerd="globe: cobe webgl, ipwho.is + open-meteo"
+    >
       <div className="grid items-center gap-10 md:grid-cols-2">
         <div>
-          <p className="text-muted-foreground mb-2 font-mono text-[10px] tracking-[0.18em] uppercase">
+          <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
             right now
           </p>
-          <h2 className="text-[1.65rem] leading-tight tracking-tight sm:text-3xl">
-            two dots on a globe
-          </h2>
-          <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-[#c4c2ba]">
+          <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">two dots on a globe</h2>
+          <p className="text-muted-foreground mt-4 max-w-sm text-lg leading-7">
             you are somewhere on this globe, that much I know.
           </p>
-          <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-[#c4c2ba]">
+          <p className="text-muted-foreground mt-3 max-w-sm text-lg leading-7">
             I am in <span className="text-foreground">jeddah</span>
             {temp != null ? (
               <>
@@ -198,7 +216,9 @@ export function Globe() {
             ) : null}
             . small world.
           </p>
-          <p className="font-hand text-note mt-6 text-xl">give it a spin</p>
+          <HandNote arrow="down-right" className="mt-8">
+            give it a spin
+          </HandNote>
         </div>
         <div ref={wrapRef} className="relative mx-auto aspect-square w-full max-w-[420px]">
           <canvas

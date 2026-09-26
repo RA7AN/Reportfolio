@@ -2,14 +2,18 @@ const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
 export function BookingPlaceholder({ email }: { email: string }) {
   return (
-    <section className="pt-28 pb-8" id="work-with-me">
-      <p className="text-muted-foreground mb-2 font-mono text-[10px] tracking-[0.18em] uppercase">
+    <section
+      className="pt-20 pb-16 sm:pt-24"
+      id="work-with-me"
+      data-nerd="call: fake calendar, mail until cal.com"
+    >
+      <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         work with me
       </p>
-      <h2 className="text-[1.65rem] leading-tight tracking-tight sm:text-3xl">
+      <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">
         have a product that needs someone who ships?
       </h2>
-      <p className="text-muted-foreground mt-2 text-[13px]">
+      <p className="text-muted-foreground mt-2 text-sm leading-6 sm:text-base">
         grab 30 minutes. bring the messy version, that is the fun part.
       </p>
       <div className="border-border mt-8 overflow-hidden rounded-2xl border">
@@ -46,7 +50,7 @@ export function BookingPlaceholder({ email }: { email: string }) {
           calendar placeholder · not Cal.com
         </p>
       </div>
-      <p className="text-muted-foreground mt-4 text-[13px]">
+      <p className="text-muted-foreground mt-4 text-sm">
         calendars not your thing?{' '}
         <a className="text-foreground decoration-border underline" href={`mailto:${email}`}>
           {email}

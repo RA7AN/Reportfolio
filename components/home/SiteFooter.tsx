@@ -17,8 +17,11 @@ export function SiteFooter({
   const [on, setOn] = useState(false);
 
   return (
-    <footer className="border-border mt-8 border-t">
-      <div className="mx-auto max-w-[920px] px-5 py-16 sm:px-8">
+    <footer
+      className="border-border mt-8 border-t"
+      data-nerd="footer: placeholder cassette, no canvas game"
+    >
+      <div className="mx-auto w-full max-w-5xl px-5 py-16 sm:px-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="font-hand text-muted-foreground text-[17px]">

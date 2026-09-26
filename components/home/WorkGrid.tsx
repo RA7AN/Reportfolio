@@ -22,16 +22,16 @@ function WorkCard({ project, index }: { project: Project; index: number }) {
         <span>{String(index + 1).padStart(2, '0')}</span>
         <span>{project.dateLabel}</span>
       </div>
-      <h3 className="mt-6 text-[17px] font-medium tracking-tight">{project.title}</h3>
-      <p className="text-note mt-1 text-[13px]">↳ {project.highlights[0]}</p>
-      <dl className="mt-6 space-y-3 text-[12px] leading-relaxed">
+      <h3 className="mt-6 text-lg font-medium tracking-tight">{project.title}</h3>
+      <p className="text-note mt-1 text-sm">↳ {project.highlights[0]}</p>
+      <dl className="mt-6 space-y-3 text-sm leading-relaxed">
         <div>
-          <dt className="text-muted-foreground text-[10px] tracking-[0.14em] uppercase">problem</dt>
-          <dd className="mt-1 text-[#c4c2ba]">{problemOf(project)}</dd>
+          <dt className="text-muted-foreground text-xs tracking-widest uppercase">problem</dt>
+          <dd className="text-muted-foreground mt-1">{problemOf(project)}</dd>
         </div>
         <div>
-          <dt className="text-muted-foreground text-[10px] tracking-[0.14em] uppercase">role</dt>
-          <dd className="mt-1 text-[#c4c2ba]">{roleOf(project)}</dd>
+          <dt className="text-muted-foreground text-xs tracking-widest uppercase">role</dt>
+          <dd className="text-muted-foreground mt-1">{roleOf(project)}</dd>
         </div>
       </dl>
       <div className="text-muted-foreground mt-auto flex items-end justify-between gap-3 pt-6 text-[11px]">
@@ -55,14 +55,16 @@ export function WorkGrid({ projects }: { projects: Project[] }) {
   const shown = expanded ? projects : featured;
 
   return (
-    <section className="pt-28">
-      <p className="text-muted-foreground mb-2 font-mono text-[10px] tracking-[0.18em] uppercase">
+    <section
+      className="pt-20 sm:pt-24"
+      id="work"
+      data-nerd="selected work: git cms cards, hover lift 2px"
+    >
+      <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         selected work
       </p>
-      <h2 className="text-[1.65rem] leading-tight tracking-tight sm:text-3xl">
-        proof of shipped things
-      </h2>
-      <p className="text-muted-foreground mt-2 max-w-xl text-[13px]">
+      <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">proof of shipped things</h2>
+      <p className="text-muted-foreground mt-2 max-w-xl text-sm leading-6 sm:text-base">
         recent client work is mixed with public builds. here is the shape of it: problem, role,
         details on a call.
       </p>
