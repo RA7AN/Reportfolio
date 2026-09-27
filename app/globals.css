@@ -611,6 +611,110 @@ html.nerd body {
     right: 17%;
   }
 }
+.agent-pipeline {
+  top: 27%;
+  right: -2%;
+  width: min(92%, 820px);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  opacity: 0.72;
+  mask-image: linear-gradient(to right, transparent 0%, black 42%, black 100%);
+}
+.agent-pipeline__flow {
+  gap: 0;
+  align-items: center;
+}
+.agent-stage-wrap {
+  flex: 1;
+}
+.agent-stage {
+  min-height: 3.75rem;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+}
+.agent-stage::after {
+  display: none;
+}
+.agent-stage__line {
+  display: block;
+  width: var(--line-width);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--foreground) 22%, transparent),
+    transparent
+  );
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.agent-stage__node {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.28rem;
+  height: 0.28rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 48%, transparent);
+  border-radius: 50%;
+  background: var(--background);
+  transform: translate(-50%, -50%);
+  animation: hero-node 3.8s ease-in-out infinite;
+}
+.agent-stage--warm .agent-stage__line {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent) 28%, transparent),
+    transparent
+  );
+}
+.agent-stage--violet .agent-stage__line {
+  background: linear-gradient(90deg, transparent, rgb(164 145 214 / 0.28), transparent);
+}
+.agent-stage--blue .agent-stage__line {
+  background: linear-gradient(90deg, transparent, rgb(115 163 210 / 0.3), transparent);
+}
+.agent-stage--green .agent-stage__line {
+  background: linear-gradient(90deg, transparent, rgb(121 190 156 / 0.28), transparent);
+}
+.agent-stage--white .agent-stage__line {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--foreground) 30%, transparent),
+    transparent
+  );
+}
+.agent-stage__connector {
+  width: 11%;
+  height: 1px;
+  flex: 0 0 11%;
+  background: color-mix(in srgb, var(--foreground) 12%, transparent);
+}
+.agent-stage__connector b {
+  display: block;
+  width: 0.22rem;
+  height: 0.22rem;
+  margin: -0.1rem 0 0 auto;
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 28%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--foreground) 28%, transparent);
+  transform: rotate(45deg);
+}
+@media (max-width: 767px) {
+  .agent-pipeline {
+    top: 31%;
+    right: -18%;
+    width: 760px;
+    opacity: 0.58;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
