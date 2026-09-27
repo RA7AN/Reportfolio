@@ -774,3 +774,146 @@ html.nerd body {
     transition: color 120ms ease;
   }
 }
+
+@keyframes hero-tesseract {
+  from {
+    transform: rotateX(62deg) rotateZ(-36deg);
+  }
+  to {
+    transform: rotateX(62deg) rotateZ(324deg);
+  }
+}
+@keyframes hero-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.hero-field {
+  top: -3rem;
+  right: -9rem;
+  width: min(78vw, 1040px);
+  height: 730px;
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 25%,
+    rgb(0 0 0 / 0.08) 43%,
+    black 70%,
+    black 100%
+  );
+}
+.hero-field__ambient {
+  top: 8%;
+  right: 3%;
+  width: 72%;
+  height: 72%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 16%, transparent),
+    color-mix(in srgb, #7889a8 9%, transparent) 36%,
+    transparent 70%
+  );
+  filter: blur(48px);
+}
+.tesseract-field {
+  position: absolute;
+  top: 2%;
+  right: 2%;
+  width: min(74%, 700px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+}
+.tesseract-field__halo {
+  position: absolute;
+  inset: 10%;
+  border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 90px color-mix(in srgb, var(--accent) 13%, transparent);
+  animation: hero-orbit 28s linear infinite;
+}
+.tesseract-field__halo::before,
+.tesseract-field__halo::after {
+  position: absolute;
+  inset: 13%;
+  content: '';
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  border-radius: 50%;
+  transform: rotate(60deg);
+}
+.tesseract-field__halo::after {
+  transform: rotate(-60deg);
+}
+.tesseract-field__core {
+  position: relative;
+  width: 49%;
+  aspect-ratio: 1;
+  transform-style: preserve-3d;
+  animation: hero-tesseract 24s linear infinite;
+  filter: drop-shadow(0 22px 42px rgb(0 0 0 / 0.35));
+}
+.tesseract-field__cube {
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--foreground) 58%, transparent);
+  transform: rotate(45deg) skew(-8deg, -8deg);
+  box-shadow: 0 0 38px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.tesseract-field__cube--inner {
+  inset: 19%;
+  border-color: color-mix(in srgb, var(--accent-2) 68%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--accent-2) 16%, transparent);
+}
+.tesseract-field__axis {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 72%;
+  background: linear-gradient(
+    transparent,
+    color-mix(in srgb, var(--foreground) 45%, transparent),
+    transparent
+  );
+}
+.tesseract-field__axis--one {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.tesseract-field__axis--two {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+.tesseract-field__axis--three {
+  transform: translate(-50%, -50%) rotate(90deg);
+  opacity: 0.55;
+}
+@media (max-width: 767px) {
+  .hero-field {
+    top: 20rem;
+    right: -13rem;
+    width: 46rem;
+    height: 410px;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 8%,
+      black 38%,
+      black 88%,
+      transparent 100%
+    );
+  }
+  .tesseract-field {
+    top: 0;
+    right: 0;
+    width: 70%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tesseract-field__core,
+  .tesseract-field__halo {
+    animation-play-state: paused;
+  }
+}
