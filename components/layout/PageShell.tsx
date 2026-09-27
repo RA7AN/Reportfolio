@@ -1,3 +1,4 @@
+import { LiveSiderails } from '@/components/layout/LiveSiderails';
 import { NerdOverlay } from '@/components/layout/NerdOverlay';
 import { TopNav } from '@/components/layout/TopNav';
 import { cn } from '@/lib/utils';
@@ -7,6 +8,7 @@ export function PageShell({ children, className }: PropsWithChildren<{ className
   return (
     <div className={cn('flex min-h-screen flex-col', className)}>
       <TopNav />
+      <LiveSiderails />
       <div className="flex-1">{children}</div>
       <NerdOverlay />
     </div>
