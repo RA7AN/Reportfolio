@@ -4,6 +4,7 @@ import { ExperienceList } from '@/components/home/ExperienceList';
 import { Filmstrip } from '@/components/home/Filmstrip';
 import { Globe } from '@/components/home/Globe';
 import { HomeInner } from '@/components/home/HomeInner';
+import { HeroOrbit } from '@/components/home/HeroOrbit';
 import { HeroVerbLoop } from '@/components/home/HeroVerbLoop';
 import { LetterTitle, RiseIn } from '@/components/home/RiseIn';
 import { LocalClock } from '@/components/home/LocalClock';
@@ -47,8 +48,16 @@ export default function HomePage() {
   return (
     <PageShell>
       <main>
-        <HomeInner className="pt-10 pb-16 sm:pt-36 sm:pb-24">
-          <section data-nerd="hero: css stagger 40ms, rise-in 0.5s cubic">
+        <HomeInner
+          id="overview"
+          data-rail-section="overview"
+          className="pt-10 pb-16 sm:pt-36 sm:pb-24"
+        >
+          <section
+            className="hero-copy relative"
+            data-nerd="hero: css stagger 40ms, rise-in 0.5s cubic"
+          >
+            <HeroOrbit />
             <RiseIn
               delay={0.05}
               as="p"
@@ -128,7 +137,7 @@ export default function HomePage() {
           </section>
         </HomeInner>
 
-        <HomeInner>
+        <HomeInner id="work" data-rail-section="work">
           <ExperienceList items={experiences} />
           <WorkGrid projects={projects} />
           <Ventures />
@@ -137,7 +146,7 @@ export default function HomePage() {
 
         <Filmstrip />
 
-        <HomeInner>
+        <HomeInner id="notes" data-rail-section="notes">
           <Globe />
           <PostsPlaceholder />
           <WritingPreview items={writing} />
