@@ -54,6 +54,11 @@ export function HeroField() {
       }}
     >
       <motion.div className="hero-field__glow" style={reducedMotion ? undefined : { x, y }} />
+      <div className="hero-field__grid" />
+      <div className="hero-field__orbital orbital-one" />
+      <div className="hero-field__orbital orbital-two" />
+      <div className="hero-field__signal signal-one" />
+      <div className="hero-field__signal signal-two" />
       <motion.svg
         className="hero-field__network"
         viewBox="0 0 100 100"

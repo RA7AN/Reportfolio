@@ -194,6 +194,39 @@ html.light {
     transform: scale(1.35);
   }
 }
+@keyframes hero-orbit {
+  0%,
+  100% {
+    transform: rotate(-24deg) scale(0.96);
+    opacity: 0.48;
+  }
+  50% {
+    transform: rotate(-20deg) scale(1.04);
+    opacity: 0.9;
+  }
+}
+@keyframes hero-orbit-reverse {
+  0%,
+  100% {
+    transform: rotate(28deg) scale(1.04);
+    opacity: 0.32;
+  }
+  50% {
+    transform: rotate(22deg) scale(0.96);
+    opacity: 0.72;
+  }
+}
+@keyframes hero-signal {
+  0%,
+  100% {
+    transform: scale(0.7);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 1;
+  }
+}
 @keyframes hero-trace {
   0% {
     stroke-dashoffset: 110;
@@ -352,6 +385,70 @@ html.nerd body {
   filter: blur(26px);
   animation: hero-breathe 8s ease-in-out infinite;
 }
+.hero-field__grid {
+  position: absolute;
+  inset: 8% 4% 10% 18%;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--foreground) 9%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--foreground) 9%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse at 60% 45%, black 0%, transparent 72%);
+  transform: perspective(500px) rotateX(58deg) rotateZ(-12deg) scale(1.25);
+  transform-origin: center;
+}
+.hero-field__orbital {
+  position: absolute;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 50%;
+  transform: rotate(-24deg);
+  box-shadow: 0 0 34px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.orbital-one {
+  top: 22%;
+  right: 10%;
+  width: 54%;
+  height: 26%;
+  animation: hero-orbit 14s ease-in-out infinite;
+}
+.orbital-two {
+  top: 27%;
+  right: 3%;
+  width: 64%;
+  height: 18%;
+  border-color: color-mix(in srgb, var(--accent-2) 35%, transparent);
+  transform: rotate(28deg);
+  animation: hero-orbit-reverse 18s ease-in-out infinite;
+}
+.hero-field__signal {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--foreground);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent),
+    0 0 18px var(--accent);
+  animation: hero-signal 5s ease-in-out infinite;
+}
+.signal-one {
+  top: 34%;
+  right: 25%;
+}
+.signal-two {
+  top: 61%;
+  right: 31%;
+  animation-delay: -2.2s;
+  background: var(--accent-2);
+}
 .hero-field__network {
   position: absolute;
   inset: 0;
@@ -447,6 +544,8 @@ html.nerd body {
   .marquee-track,
   html.crt-flash,
   .hero-field__glow,
+  .hero-field__orbital,
+  .hero-field__signal,
   .hero-field__node,
   .hero-field__trace {
     animation: none !important;
