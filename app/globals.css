@@ -395,13 +395,20 @@ html.nerd body {
 .hero-field {
   position: absolute;
   z-index: 0;
-  top: -4rem;
-  right: -5rem;
-  width: min(74vw, 900px);
-  height: 620px;
+  top: 0;
+  right: -1rem;
+  width: min(72vw, 980px);
+  height: 680px;
   overflow: visible;
   pointer-events: auto;
-  mask-image: linear-gradient(to right, transparent 0%, black 18%, black 92%, transparent 100%);
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    transparent 30%,
+    black 62%,
+    black 92%,
+    transparent 100%
+  );
 }
 .hero-field__ambient {
   position: absolute;
@@ -438,17 +445,43 @@ html.nerd body {
 }
 .agent-pipeline {
   position: absolute;
-  top: 19%;
-  right: 4%;
-  width: min(94%, 790px);
-  padding: 1.1rem;
-  border: 1px solid color-mix(in srgb, var(--foreground) 13%, transparent);
-  border-radius: 1.35rem;
-  background: color-mix(in srgb, var(--background) 71%, transparent);
-  box-shadow:
-    0 24px 80px color-mix(in srgb, var(--accent) 11%, transparent),
-    inset 0 1px color-mix(in srgb, white 9%, transparent);
-  backdrop-filter: blur(14px);
+  top: 24%;
+  right: -7%;
+  width: 108%;
+  height: 25rem;
+  padding: 0.45rem 0;
+  border: 0;
+  border-radius: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 4.65rem,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 4.7rem,
+    transparent 4.75rem
+  );
+  box-shadow: none;
+  opacity: 0.92;
+}
+.agent-pipeline::before,
+.agent-pipeline::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 1px;
+  content: '';
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--foreground) 11%, transparent) 58%,
+    color-mix(in srgb, var(--accent) 20%, transparent),
+    transparent
+  );
+}
+.agent-pipeline::before {
+  top: -5.5rem;
+}
+.agent-pipeline::after {
+  bottom: -5.5rem;
 }
 .agent-pipeline__header,
 .agent-pipeline__footer {
