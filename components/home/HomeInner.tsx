@@ -1,10 +1,18 @@
 import { cn } from '@/lib/utils';
-import type { PropsWithChildren } from 'react';
+import type { HTMLAttributes, PropsWithChildren } from 'react';
 
 export const shellWidth = 'mx-auto w-full max-w-5xl px-5 sm:px-8';
 
-export function HomeInner({ className, children }: PropsWithChildren<{ className?: string }>) {
-  return <div className={cn(shellWidth, className)}>{children}</div>;
+export function HomeInner({
+  className,
+  children,
+  ...props
+}: PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
+  return (
+    <div className={cn(shellWidth, className)} {...props}>
+      {children}
+    </div>
+  );
 }
 
 export function SectionEyebrow({ children }: { children: string }) {
