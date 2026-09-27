@@ -850,7 +850,7 @@ html.nerd body {
 }
 .tesseract-field__core {
   position: relative;
-  width: 49%;
+  width: 68%;
   aspect-ratio: 1;
   transform-style: preserve-3d;
   animation: hero-tesseract 24s linear infinite;
@@ -858,15 +858,48 @@ html.nerd body {
 }
 .tesseract-field__cube {
   position: absolute;
-  inset: 0;
-  border: 1px solid color-mix(in srgb, var(--foreground) 58%, transparent);
-  transform: rotate(45deg) skew(-8deg, -8deg);
+  width: 54%;
+  height: 54%;
+  left: 23%;
+  top: 23%;
+  border: 1px solid color-mix(in srgb, var(--foreground) 62%, transparent);
+  transform: rotateX(58deg) rotateZ(45deg);
   box-shadow: 0 0 38px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 .tesseract-field__cube--inner {
-  inset: 19%;
-  border-color: color-mix(in srgb, var(--accent-2) 68%, transparent);
+  width: 32%;
+  height: 32%;
+  left: 34%;
+  top: 34%;
+  border-color: color-mix(in srgb, var(--accent-2) 76%, transparent);
+  transform: translate(22%, -22%) rotateX(58deg) rotateZ(45deg);
   box-shadow: 0 0 24px color-mix(in srgb, var(--accent-2) 16%, transparent);
+}
+.tesseract-field__bridge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 42%;
+  transform-origin: center;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--foreground) 55%, transparent),
+    color-mix(in srgb, var(--accent-2) 42%, transparent)
+  );
+  opacity: 0.8;
+}
+.tesseract-field__bridge--one {
+  transform: translate(-50%, -50%) rotate(27deg);
+}
+.tesseract-field__bridge--two {
+  transform: translate(-50%, -50%) rotate(-27deg);
+}
+.tesseract-field__bridge--three {
+  transform: translate(-50%, -50%) rotate(153deg);
+}
+.tesseract-field__bridge--four {
+  transform: translate(-50%, -50%) rotate(-153deg);
 }
 .tesseract-field__axis {
   position: absolute;

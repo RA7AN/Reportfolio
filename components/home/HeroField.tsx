@@ -46,6 +46,10 @@ export function HeroField() {
         <div className="tesseract-field__core">
           <span className="tesseract-field__cube tesseract-field__cube--outer" />
           <span className="tesseract-field__cube tesseract-field__cube--inner" />
+          <span className="tesseract-field__bridge tesseract-field__bridge--one" />
+          <span className="tesseract-field__bridge tesseract-field__bridge--two" />
+          <span className="tesseract-field__bridge tesseract-field__bridge--three" />
+          <span className="tesseract-field__bridge tesseract-field__bridge--four" />
           <span className="tesseract-field__axis tesseract-field__axis--one" />
           <span className="tesseract-field__axis tesseract-field__axis--two" />
           <span className="tesseract-field__axis tesseract-field__axis--three" />
