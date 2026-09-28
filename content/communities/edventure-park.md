@@ -1,6 +1,6 @@
 ---
 type: "community"
-slug: "placeholder-student-chapter"
+slug: "edventure-park"
 sortOrder: 2
 lastUpdated: "2026-09-29T00:00:00.000Z"
 ---

@@ -1,6 +1,6 @@
 ---
 type: "community"
-slug: "placeholder-hackathon-community"
+slug: "communicando"
 sortOrder: 5
 lastUpdated: "2026-09-29T00:00:00.000Z"
 ---

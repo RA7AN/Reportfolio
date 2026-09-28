@@ -1,6 +1,6 @@
 ---
 type: "community"
-slug: "placeholder-online-cohort"
+slug: "robotics-and-innovation"
 sortOrder: 4
 lastUpdated: "2026-09-29T00:00:00.000Z"
 ---

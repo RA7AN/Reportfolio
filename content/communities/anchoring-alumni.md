@@ -1,6 +1,6 @@
 ---
 type: "community"
-slug: "placeholder-meetup-community"
+slug: "anchoring-alumni"
 sortOrder: 6
 lastUpdated: "2026-09-29T00:00:00.000Z"
 ---

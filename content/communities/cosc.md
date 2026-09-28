@@ -1,6 +1,6 @@
 ---
 type: "community"
-slug: "placeholder-developer-community"
+slug: "cosc"
 sortOrder: 3
 lastUpdated: "2026-09-29T00:00:00.000Z"
 ---
