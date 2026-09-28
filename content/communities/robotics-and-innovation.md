@@ -9,13 +9,12 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
   "id": 4,
   "title": "Deputy Marketing Head",
   "org": "Robotics and Innovation",
-  "dateLabel": "20XX - 20XX",
-  "active": "no",
-  "barPercent": 40,
+  "dateLabel": "2022 - 2023",
   "url": "https://www.instagram.com/robotics_cbit/?hl=en",
   "logo": "/communities/robotics-and-innovation-logo.jpeg",
+  "logoFill": "yes",
   "highlights": [
-    "placeholder · one line on the group and what you ran. replace this row or delete the file."
+    "Handled marketing and outreach for the club's robotics and innovation events."
   ],
   "sortOrder": 4
 }

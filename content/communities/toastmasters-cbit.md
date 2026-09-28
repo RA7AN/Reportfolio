@@ -9,9 +9,7 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
   "id": 1,
   "title": "Treasurer, Pathways Mentor, and Junior Coordinator",
   "org": "Toastmasters Int'l, D126",
-  "dateLabel": "Oct 2022 - Nov 2024",
-  "active": "yes",
-  "barPercent": 55,
+  "dateLabel": "2022 - 2024",
   "url": "https://www.toastmasters.org/",
   "logo": "/communities/Toastmasters-logo-2.png",
   "highlights": [

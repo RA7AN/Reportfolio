@@ -7,15 +7,14 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
 
 {
   "id": 2,
-  "title": "Campus Lead · your role here (core member, events lead, mentor)",
+  "title": "Campus Lead",
   "org": "Edventure Park",
-  "dateLabel": "20XX - 20XX",
-  "active": "yes",
-  "barPercent": 78,
+  "dateLabel": "2023 - 2025",
   "url": "https://edventurepark.com/",
   "logo": "/communities/edventurepark-logo-2.jpeg",
+  "logoFill": "yes",
   "highlights": [
-    "placeholder · one line on what the club was and what you actually ran. replace this row or delete the file."
+    "Organised campus meetups, workshops, and events for the Edventure Park student community."
   ],
   "sortOrder": 2
 }

@@ -105,8 +105,8 @@ export const communitySchema = z.object({
   dateLabel: z.string(),
   url: nullableString,
   logo: nullableString,
-  active: z.enum(['yes', 'no']).optional(),
-  barPercent: z.number().min(0).max(100).optional(),
+  // "yes" lets an opaque logo cover its whole rounded frame instead of sitting inset
+  logoFill: z.enum(['yes', 'no']).optional(),
   highlights: z.array(z.string()),
   sortOrder: z.number().optional(),
 });

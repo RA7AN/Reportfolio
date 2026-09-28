@@ -9,13 +9,12 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
   "id": 3,
   "title": "Junior Developer",
   "org": "Cosc",
-  "dateLabel": "20XX - 20XX",
-  "active": "yes",
-  "barPercent": 62,
-  "url": "https://example.com/",
+  "dateLabel": "2023 - 2024",
+  "url": "",
   "logo": "/communities/cosc-logo.jpeg",
+  "logoFill": "yes",
   "highlights": [
-    "placeholder · one line on the community and your part in it. replace this row or delete the file."
+    "Built and shipped student-led software projects with the club's developer team."
   ],
   "sortOrder": 3
 }
