@@ -24,7 +24,7 @@ function barStyle(dateLabel: string, nowYear: number): CSSProperties {
 
   const years = [...dateLabel.matchAll(/\b(?:19|20)\d{2}\b/g)].map((match) => Number(match[0]));
   // nothing to read: leave the track empty instead of inventing a duration
-  if (years.length === 0) return { marginLeft: '0%', width: '0%' };
+  if (years.length === 0) return { left: '0%', width: '0%' };
 
   const openEnded = /\b(now|present|current)\b/i.test(dateLabel);
   const startYear = Math.min(...years);
@@ -36,7 +36,7 @@ function barStyle(dateLabel: string, nowYear: number): CSSProperties {
 
   const clampedLeft = Math.min(Math.max(left, 0), 100);
   return {
-    marginLeft: `${round(clampedLeft)}%`,
+    left: `${round(clampedLeft)}%`,
     width: `${round(Math.min(Math.max(width, 0), 100 - clampedLeft))}%`,
   };
 }
@@ -69,7 +69,7 @@ export function Communities({ items }: { items: Community[] }) {
             whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ ...RISE, delay: reduceMotion ? 0 : Math.min(index, 4) * 0.06 }}
-            className="border-border group grid items-center gap-4 rounded-2xl border px-4 py-3.5 transition-colors duration-200 hover:border-[#5a5a5a] sm:grid-cols-[18rem_minmax(0,1fr)_10rem]"
+            className="border-border group hover:bg-muted/60 grid items-center gap-4 rounded-2xl border px-4 py-3.5 transition-colors duration-200 hover:border-[#5a5a5a] sm:grid-cols-[18rem_minmax(0,1fr)_10rem]"
           >
             <div className="flex items-center gap-3.5">
               <CompanyMark
@@ -103,8 +103,12 @@ export function Communities({ items }: { items: Community[] }) {
               </div>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">{item.highlights[0]}</p>
-            <div aria-hidden className="h-[3px] w-full overflow-hidden rounded-full bg-[#2a2a2a]">
-              <div className="bg-note h-full" style={barStyle(item.dateLabel, nowYear)} />
+            <div aria-hidden className="relative h-1.5 w-full">
+              <div className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-[#2a2a2a]" />
+              <div
+                className="bg-note absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full"
+                style={barStyle(item.dateLabel, nowYear)}
+              />
             </div>
           </motion.li>
         ))}

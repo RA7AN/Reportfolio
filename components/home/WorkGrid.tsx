@@ -17,7 +17,7 @@ function WorkCard({ project, index }: { project: Project; index: number }) {
   const nda = !href;
 
   return (
-    <article className="border-border flex flex-col rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3a3a3a]">
+    <article className="border-border hover:bg-muted/60 flex flex-col rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3a3a3a]">
       <div className="text-muted-foreground flex items-start justify-between gap-3 text-[11px]">
         <span>{String(index + 1).padStart(2, '0')}</span>
         <span>{project.dateLabel}</span>
