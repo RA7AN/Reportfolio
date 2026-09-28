@@ -1,7 +1,7 @@
 ---
 type: "project"
 slug: "kyc-automation-using-ocr-and-ner-models"
-sortOrder: 1
+sortOrder: 3
 lastUpdated: "2026-02-12T17:33:53.008Z"
 ---
 
@@ -25,7 +25,7 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
     "Built modular microservices including OCR processing (Python + PaddleOCR), backend API (Node.js), and database-driven configuration system (PostgreSQL) enabling dynamic risk thresholds and scoring weights.",
     "Designed weighted risk scoring engine combining identity matching, document completeness, financial strength, and document quality signals to generate automated approval, review, or rejection decisions."
   ],
-  "sortOrder": 1,
+  "sortOrder": 3,
   "isResearch": "no",
   "githubRepo": null
 }

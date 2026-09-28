@@ -6,6 +6,7 @@ import matter from 'gray-matter';
 import { z, type ZodTypeAny } from 'zod';
 import {
   certificateSchema,
+  communitySchema,
   educationSchema,
   experienceSchema,
   featuredSchema,
@@ -20,6 +21,7 @@ import {
   talkSchema,
   writingFrontmatterSchema,
   type Certificate,
+  type Community,
   type Education,
   type Experience,
   type Featured,
@@ -115,6 +117,10 @@ export function getHonors(): Honor[] {
 
 export function getLeadership(): Leadership[] {
   return loadJsonCollection('leadership', leadershipSchema);
+}
+
+export function getCommunities(): Community[] {
+  return loadJsonCollection('communities', communitySchema);
 }
 
 export function getCertificates(): Certificate[] {
@@ -230,5 +236,6 @@ export function getPortfolio() {
     honors: getHonors(),
     leadership: getLeadership(),
     certificates: getCertificates(),
+    communities: getCommunities(),
   };
 }

@@ -1,7 +1,7 @@
 ---
 type: "project"
 slug: "mmvtg-multi-modal-video-temporal-grounding"
-sortOrder: 4
+sortOrder: 6
 lastUpdated: "2026-02-12T17:33:53.008Z"
 ---
 
@@ -21,7 +21,7 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
     "Achieved R1@0.5 score of 60.5 and mAP of 61.55, surpassing prior SOTA.",
     "Paper accepted for publication in IEEE."
   ],
-  "sortOrder": 4,
+  "sortOrder": 6,
   "isResearch": "no",
   "githubRepo": null
 }

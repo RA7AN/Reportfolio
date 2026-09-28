@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { BookingPlaceholder } from '@/components/home/BookingPlaceholder';
+import { Communities } from '@/components/home/Communities';
 import { ExperienceList } from '@/components/home/ExperienceList';
 import { Filmstrip } from '@/components/home/Filmstrip';
 import { Globe } from '@/components/home/Globe';
@@ -12,12 +13,12 @@ import { ReelsPlaceholder } from '@/components/home/ReelsPlaceholder';
 import { SiteFooter } from '@/components/home/SiteFooter';
 import { StackGrid } from '@/components/home/StackGrid';
 import { StackMarks } from '@/components/home/StackMarks';
-import { Ventures } from '@/components/home/Ventures';
 import { WorkGrid } from '@/components/home/WorkGrid';
 import { WritingPreview } from '@/components/home/WritingPreview';
 import { ScribbleArrow } from '@/components/layout/SiteIcons';
 import { PageShell } from '@/components/layout/PageShell';
 import {
+  getCommunities,
   getExperiences,
   getProfile,
   getProjects,
@@ -35,6 +36,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   const profile = getProfile();
+  const communities = getCommunities();
   const experiences = getExperiences();
   const projects = getProjects();
   const publications = getPublications();
@@ -131,7 +133,7 @@ export default function HomePage() {
         <HomeInner>
           <ExperienceList items={experiences} />
           <WorkGrid projects={projects} />
-          <Ventures />
+          <Communities items={communities} />
           <StackGrid skills={skills} />
         </HomeInner>
 

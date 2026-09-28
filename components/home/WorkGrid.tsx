@@ -50,9 +50,13 @@ function WorkCard({ project, index }: { project: Project; index: number }) {
 
 export function WorkGrid({ projects }: { projects: Project[] }) {
   const [expanded, setExpanded] = useState(false);
-  const featured = useMemo(() => projects.slice(0, 4), [projects]);
-  const rest = useMemo(() => projects.slice(4), [projects]);
-  const shown = expanded ? projects : featured;
+  const visible = useMemo(
+    () => projects.filter((project) => project.showOnLanding !== 'no'),
+    [projects],
+  );
+  const featured = useMemo(() => visible.slice(0, 4), [visible]);
+  const rest = useMemo(() => visible.slice(4), [visible]);
+  const shown = expanded ? visible : featured;
 
   return (
     <section

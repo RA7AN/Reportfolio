@@ -1,7 +1,7 @@
 ---
 type: "project"
 slug: "cogniconverse-offline-ai-assistant"
-sortOrder: 5
+sortOrder: 7
 lastUpdated: "2026-02-12T17:33:53.008Z"
 ---
 
@@ -20,7 +20,8 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
     "Model deployed on a remote server and made accessible to rural users through SMS.",
     "Selected as official entry to Smart India Hackathon 2023."
   ],
-  "sortOrder": 5,
+  "sortOrder": 7,
   "isResearch": "no",
+  "showOnLanding": "no",
   "githubRepo": null
 }
