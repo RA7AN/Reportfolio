@@ -64,7 +64,7 @@ export function Communities({ items }: { items: Community[] }) {
     <section
       className="pt-20 sm:pt-24"
       id="communities"
-      data-nerd="communities: git cms rows, per-row rise on view, sine crest over the 2021-now baseline from the date labels, initials fallback for logos"
+      data-nerd="communities: git cms rows, per-row rise on view, one line per row that crests over the active years on a 2021-now baseline, initials fallback for logos"
     >
       <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         leadership
@@ -119,14 +119,31 @@ export function Communities({ items }: { items: Community[] }) {
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">{item.highlights[0]}</p>
             <div aria-hidden className="relative h-4 w-full">
-              {/* the 2021-to-now baseline the crest rises from */}
-              <div className="absolute inset-x-0 top-full h-[3px] rounded-full bg-[#2a2a2a]" />
               <svg
                 viewBox="0 0 100 100"
                 preserveAspectRatio="none"
-                className="text-note absolute inset-0 h-full w-full"
+                className="text-note absolute inset-0 h-full w-full overflow-visible"
               >
-                <path d={crestPath(item.dateLabel, nowYear)} fill="currentColor" />
+                {/* one 2021-to-now line: flat grey, then it curves up and back down across the years */}
+                <line
+                  x1={0}
+                  y1={100}
+                  x2={100}
+                  y2={100}
+                  stroke="#2a2a2a"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+                <path
+                  d={crestPath(item.dateLabel, nowYear)}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  vectorEffect="non-scaling-stroke"
+                />
               </svg>
             </div>
           </motion.li>
