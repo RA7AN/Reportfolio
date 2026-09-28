@@ -75,9 +75,9 @@ export function Communities({ items }: { items: Community[] }) {
               <CompanyMark
                 company={item.org}
                 src={item.logo}
-                size={56}
-                className="size-14"
-                imgClassName={item.logoFill === 'yes' ? 'object-cover p-0' : 'p-1.5'}
+                size={44}
+                className="size-11"
+                imgClassName={item.logoFill === 'yes' ? 'object-cover p-0' : 'p-1'}
               />
               <div className="min-w-0">
                 <p className="flex items-center gap-1.5 text-base font-medium tracking-tight lowercase">
