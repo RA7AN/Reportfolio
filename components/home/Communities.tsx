@@ -1,6 +1,5 @@
 'use client';
 
-import type { CSSProperties } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 
@@ -10,35 +9,51 @@ import type { Community } from '@/lib/content/schemas';
 // matches the .rise-in keyframes in globals.css (0.5s, translateY(14px))
 const RISE = { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const };
 
-// the track always covers 2021 through the current year, one equal slice per calendar year,
-// so the amber segment's offset reads as "when it started" and its length as "how long it ran"
+// the baseline always covers 2021 through the current year, one equal slice per calendar year,
+// so the crest's offset reads as "when it started" and its width as "how long it ran"
 const TRACK_START_YEAR = 2021;
 
-// keep the inline styles short: sub-pixel precision is meaningless on a 3px track
+// points used to approximate the sine crest; 16 stays smooth across the whole row width
+const CREST_STEPS = 16;
+
+// sub-pixel precision is meaningless here and it keeps the path string short
 function round(value: number): number {
-  return Number(value.toFixed(3));
+  return Number(value.toFixed(2));
 }
 
-function barStyle(dateLabel: string, nowYear: number): CSSProperties {
-  const totalYears = Math.max(nowYear + 1 - TRACK_START_YEAR, 1);
+type BarSpan = { left: number; width: number };
 
+// the entry's own years as percentages of the 2021-to-now baseline, or null when the label has none
+function barSpan(dateLabel: string, nowYear: number): BarSpan | null {
   const years = [...dateLabel.matchAll(/\b(?:19|20)\d{2}\b/g)].map((match) => Number(match[0]));
-  // nothing to read: leave the track empty instead of inventing a duration
-  if (years.length === 0) return { left: '0%', width: '0%' };
+  // nothing to read: leave the baseline unlit instead of inventing a duration
+  if (years.length === 0) return null;
 
   const openEnded = /\b(now|present|current)\b/i.test(dateLabel);
   const startYear = Math.min(...years);
   const endYear = openEnded ? nowYear : Math.max(...years);
 
+  const totalYears = Math.max(nowYear + 1 - TRACK_START_YEAR, 1);
   const left = ((startYear - TRACK_START_YEAR) / totalYears) * 100;
   // the end year counts as a full year of membership, so the span is inclusive
   const width = ((endYear - startYear + 1) / totalYears) * 100;
 
   const clampedLeft = Math.min(Math.max(left, 0), 100);
-  return {
-    left: `${round(clampedLeft)}%`,
-    width: `${round(Math.min(Math.max(width, 0), 100 - clampedLeft))}%`,
-  };
+  return { left: clampedLeft, width: Math.min(Math.max(width, 0), 100 - clampedLeft) };
+}
+
+// one positive half-cycle of a sine inside a 0-100 viewBox: baseline at y=100, crest at y=0
+function crestPath(dateLabel: string, nowYear: number): string {
+  const span = barSpan(dateLabel, nowYear);
+  if (!span) return '';
+
+  const points = Array.from({ length: CREST_STEPS + 1 }, (_, index) => {
+    const t = index / CREST_STEPS;
+    return `${round(span.left + span.width * t)} ${round(100 - 100 * Math.sin(Math.PI * t))}`;
+  });
+
+  const [first, ...rest] = points;
+  return `M ${first} L ${rest.join(' L ')} Z`;
 }
 
 export function Communities({ items }: { items: Community[] }) {
@@ -49,7 +64,7 @@ export function Communities({ items }: { items: Community[] }) {
     <section
       className="pt-20 sm:pt-24"
       id="communities"
-      data-nerd="communities: git cms rows, per-row rise on view, bars span 2021 to now from the date labels, initials fallback for logos"
+      data-nerd="communities: git cms rows, per-row rise on view, sine crest over the 2021-now baseline from the date labels, initials fallback for logos"
     >
       <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         leadership
@@ -103,12 +118,16 @@ export function Communities({ items }: { items: Community[] }) {
               </div>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">{item.highlights[0]}</p>
-            <div aria-hidden className="relative h-1.5 w-full">
-              <div className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-[#2a2a2a]" />
-              <div
-                className="bg-note absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full"
-                style={barStyle(item.dateLabel, nowYear)}
-              />
+            <div aria-hidden className="relative h-4 w-full">
+              {/* the 2021-to-now baseline the crest rises from */}
+              <div className="absolute inset-x-0 top-full h-[3px] rounded-full bg-[#2a2a2a]" />
+              <svg
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                className="text-note absolute inset-0 h-full w-full"
+              >
+                <path d={crestPath(item.dateLabel, nowYear)} fill="currentColor" />
+              </svg>
             </div>
           </motion.li>
         ))}
