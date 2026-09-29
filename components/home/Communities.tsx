@@ -9,7 +9,12 @@ import type { Community } from '@/lib/content/schemas';
 // matches the .rise-in keyframes in globals.css (0.5s, translateY(14px))
 const RISE = { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const };
 // the line starts a beat after its row has risen, then draws itself across the years
-const LINE_DRAW = { duration: 0.55, ease: 'easeOut' as const };
+const LINE_DRAW = { duration: 0.9, ease: 'easeOut' as const };
+
+const TRACK_COLOR = '#2a2a2a';
+
+// how much of the span it takes to fade grey into amber and back again
+const COLOR_FADE = 0.25;
 
 // the row owns the in-view trigger, and the line inherits "visible" from it so both move as one
 const ROW = {
@@ -50,17 +55,21 @@ function barSpan(dateLabel: string, nowYear: number): BarSpan | null {
   return { left: clampedLeft, width: Math.min(Math.max(width, 0), 100 - clampedLeft) };
 }
 
-// one swell inside a 0-100 viewBox: flat at y=100, peaking at y=0 halfway across the span.
-// sin^2 leaves and rejoins the flat line with no slope, so the joins read as one continuous line.
-// left unclosed on purpose - a closed path would stroke a base segment under the swell.
-function crestPath(span: BarSpan): string {
-  const points = Array.from({ length: CREST_STEPS + 1 }, (_, index) => {
-    const t = index / CREST_STEPS;
-    return `${round(span.left + span.width * t)} ${round(100 - 100 * Math.sin(Math.PI * t) ** 2)}`;
-  });
+// the whole 2021-to-now line as a single path: flat, one swell across the entry's own years,
+// then flat again. The swell uses sin^2, which leaves and rejoins the flat runs with no slope,
+// so it stays one continuous line rather than a shape sitting on top of one.
+function trackPath(span: BarSpan): string {
+  const points = ['0 100', `${round(span.left)} 100`];
 
-  const [first, ...rest] = points;
-  return `M ${first} L ${rest.join(' L ')}`;
+  for (let step = 1; step <= CREST_STEPS; step += 1) {
+    const t = step / CREST_STEPS;
+    points.push(
+      `${round(span.left + span.width * t)} ${round(100 - 100 * Math.sin(Math.PI * t) ** 2)}`,
+    );
+  }
+
+  points.push('100 100');
+  return `M ${points[0]} L ${points.slice(1).join(' L ')}`;
 }
 
 function ActivityLine({
@@ -77,56 +86,69 @@ function ActivityLine({
   reduceMotion: boolean;
 }) {
   const span = barSpan(dateLabel, nowYear);
-  const clipId = `community-crest-${id}`;
+  const gradientId = `community-line-${id}`;
+  const clipId = `community-draw-${id}`;
   const transition = { ...LINE_DRAW, delay };
+  const fade = span ? span.width * COLOR_FADE : 0;
 
   return (
-    <div aria-hidden className="relative h-4 w-full">
+    <div aria-hidden className="relative h-4 w-full translate-y-1">
       <svg
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
-        className="text-note absolute inset-0 h-full w-full overflow-visible"
+        className="absolute inset-0 h-full w-full overflow-visible"
       >
-        {/* the flat 2021-to-now line the swell rises out of */}
-        <line
-          x1={0}
-          y1={100}
-          x2={100}
-          y2={100}
-          stroke="#2a2a2a"
+        {span ? (
+          <defs>
+            {/* same line, recoloured: grey at the join, amber through the middle of the span,
+                grey again by the time it settles back onto the baseline */}
+            <linearGradient
+              id={gradientId}
+              gradientUnits="userSpaceOnUse"
+              x1={0}
+              y1={0}
+              x2={100}
+              y2={0}
+            >
+              <stop offset={0} stopColor={TRACK_COLOR} />
+              <stop offset={round(span.left / 100)} stopColor={TRACK_COLOR} />
+              <stop
+                offset={round((span.left + fade) / 100)}
+                style={{ stopColor: 'var(--note, #e8b923)' }}
+              />
+              <stop
+                offset={round((span.left + span.width - fade) / 100)}
+                style={{ stopColor: 'var(--note, #e8b923)' }}
+              />
+              <stop offset={round((span.left + span.width) / 100)} stopColor={TRACK_COLOR} />
+              <stop offset={1} stopColor={TRACK_COLOR} />
+            </linearGradient>
+            {/* wiped in from 2021, and padded so the clip never shaves the stroke */}
+            <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+              {reduceMotion ? (
+                <rect x={-2} y={-10} width={104} height={120} />
+              ) : (
+                <motion.rect
+                  x={-2}
+                  y={-10}
+                  height={120}
+                  variants={{ hidden: { width: 0 }, visible: { width: 104 } }}
+                  transition={transition}
+                />
+              )}
+            </clipPath>
+          </defs>
+        ) : null}
+        <path
+          d={span ? trackPath(span) : 'M 0 100 L 100 100'}
+          clipPath={span ? `url(#${clipId})` : undefined}
+          fill="none"
+          stroke={span ? `url(#${gradientId})` : TRACK_COLOR}
           strokeWidth={2}
           strokeLinecap="round"
+          strokeLinejoin="round"
           vectorEffect="non-scaling-stroke"
         />
-        {span ? (
-          <>
-            <defs>
-              <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
-                {reduceMotion ? (
-                  <rect x={round(span.left)} y={0} width={round(span.width)} height={100} />
-                ) : (
-                  <motion.rect
-                    x={round(span.left)}
-                    y={0}
-                    height={100}
-                    variants={{ hidden: { width: 0 }, visible: { width: span.width } }}
-                    transition={transition}
-                  />
-                )}
-              </clipPath>
-            </defs>
-            <path
-              d={crestPath(span)}
-              clipPath={`url(#${clipId})`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              vectorEffect="non-scaling-stroke"
-            />
-          </>
-        ) : null}
       </svg>
     </div>
   );
