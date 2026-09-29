@@ -8,12 +8,20 @@ import type { Community } from '@/lib/content/schemas';
 
 // matches the .rise-in keyframes in globals.css (0.5s, translateY(14px))
 const RISE = { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const };
+// the line starts a beat after its row has risen, then draws itself across the years
+const LINE_DRAW = { duration: 0.55, ease: 'easeOut' as const };
+
+// the row owns the in-view trigger, and the line inherits "visible" from it so both move as one
+const ROW = {
+  hidden: { opacity: 0, y: 14 },
+  visible: { opacity: 1, y: 0 },
+};
 
 // the baseline always covers 2021 through the current year, one equal slice per calendar year,
 // so the crest's offset reads as "when it started" and its width as "how long it ran"
 const TRACK_START_YEAR = 2021;
 
-// points used to approximate the sine crest; 16 stays smooth across the whole row width
+// points used to approximate the crest; 16 stays smooth across the whole row width
 const CREST_STEPS = 16;
 
 // sub-pixel precision is meaningless here and it keeps the path string short
@@ -26,7 +34,7 @@ type BarSpan = { left: number; width: number };
 // the entry's own years as percentages of the 2021-to-now baseline, or null when the label has none
 function barSpan(dateLabel: string, nowYear: number): BarSpan | null {
   const years = [...dateLabel.matchAll(/\b(?:19|20)\d{2}\b/g)].map((match) => Number(match[0]));
-  // nothing to read: leave the baseline unlit instead of inventing a duration
+  // nothing to read: leave the baseline flat instead of inventing a duration
   if (years.length === 0) return null;
 
   const openEnded = /\b(now|present|current)\b/i.test(dateLabel);
@@ -42,29 +50,97 @@ function barSpan(dateLabel: string, nowYear: number): BarSpan | null {
   return { left: clampedLeft, width: Math.min(Math.max(width, 0), 100 - clampedLeft) };
 }
 
-// one positive half-cycle of a sine inside a 0-100 viewBox: baseline at y=100, crest at y=0
-function crestPath(dateLabel: string, nowYear: number): string {
-  const span = barSpan(dateLabel, nowYear);
-  if (!span) return '';
-
+// one swell inside a 0-100 viewBox: flat at y=100, peaking at y=0 halfway across the span.
+// sin^2 leaves and rejoins the flat line with no slope, so the joins read as one continuous line.
+// left unclosed on purpose - a closed path would stroke a base segment under the swell.
+function crestPath(span: BarSpan): string {
   const points = Array.from({ length: CREST_STEPS + 1 }, (_, index) => {
     const t = index / CREST_STEPS;
-    return `${round(span.left + span.width * t)} ${round(100 - 100 * Math.sin(Math.PI * t))}`;
+    return `${round(span.left + span.width * t)} ${round(100 - 100 * Math.sin(Math.PI * t) ** 2)}`;
   });
 
   const [first, ...rest] = points;
-  return `M ${first} L ${rest.join(' L ')} Z`;
+  return `M ${first} L ${rest.join(' L ')}`;
+}
+
+function ActivityLine({
+  id,
+  dateLabel,
+  nowYear,
+  delay,
+  reduceMotion,
+}: {
+  id: number;
+  dateLabel: string;
+  nowYear: number;
+  delay: number;
+  reduceMotion: boolean;
+}) {
+  const span = barSpan(dateLabel, nowYear);
+  const clipId = `community-crest-${id}`;
+  const transition = { ...LINE_DRAW, delay };
+
+  return (
+    <div aria-hidden className="relative h-4 w-full">
+      <svg
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        className="text-note absolute inset-0 h-full w-full overflow-visible"
+      >
+        {/* the flat 2021-to-now line the swell rises out of */}
+        <line
+          x1={0}
+          y1={100}
+          x2={100}
+          y2={100}
+          stroke="#2a2a2a"
+          strokeWidth={2}
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
+        {span ? (
+          <>
+            <defs>
+              <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+                {reduceMotion ? (
+                  <rect x={round(span.left)} y={0} width={round(span.width)} height={100} />
+                ) : (
+                  <motion.rect
+                    x={round(span.left)}
+                    y={0}
+                    height={100}
+                    variants={{ hidden: { width: 0 }, visible: { width: span.width } }}
+                    transition={transition}
+                  />
+                )}
+              </clipPath>
+            </defs>
+            <path
+              d={crestPath(span)}
+              clipPath={`url(#${clipId})`}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          </>
+        ) : null}
+      </svg>
+    </div>
+  );
 }
 
 export function Communities({ items }: { items: Community[] }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotion() ?? false;
   const nowYear = new Date().getFullYear();
 
   return (
     <section
       className="pt-20 sm:pt-24"
       id="communities"
-      data-nerd="communities: git cms rows, per-row rise on view, one line per row that crests over the active years on a 2021-now baseline, initials fallback for logos"
+      data-nerd="communities: git cms rows, per-row rise on view, one line per row that crests over its active years and draws itself in, initials fallback for logos"
     >
       <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         leadership
@@ -80,8 +156,9 @@ export function Communities({ items }: { items: Community[] }) {
             // each row animates itself on entry: rows mounted after the section has already
             // been viewed (cms edits, fast refresh) still get their rise instead of
             // being stranded at opacity 0 by a one-shot parent stagger
-            initial={reduceMotion ? false : { opacity: 0, y: 14 }}
-            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+            variants={ROW}
+            initial={reduceMotion ? false : 'hidden'}
+            whileInView={reduceMotion ? undefined : 'visible'}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ ...RISE, delay: reduceMotion ? 0 : Math.min(index, 4) * 0.06 }}
             className="border-border group hover:bg-muted/60 grid items-center gap-4 rounded-2xl border px-4 py-3.5 transition-colors duration-200 hover:border-[#5a5a5a] sm:grid-cols-[18rem_minmax(0,1fr)_10rem]"
@@ -118,34 +195,13 @@ export function Communities({ items }: { items: Community[] }) {
               </div>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">{item.highlights[0]}</p>
-            <div aria-hidden className="relative h-4 w-full">
-              <svg
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-                className="text-note absolute inset-0 h-full w-full overflow-visible"
-              >
-                {/* one 2021-to-now line: flat grey, then it curves up and back down across the years */}
-                <line
-                  x1={0}
-                  y1={100}
-                  x2={100}
-                  y2={100}
-                  stroke="#2a2a2a"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  vectorEffect="non-scaling-stroke"
-                />
-                <path
-                  d={crestPath(item.dateLabel, nowYear)}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  vectorEffect="non-scaling-stroke"
-                />
-              </svg>
-            </div>
+            <ActivityLine
+              id={item.id}
+              dateLabel={item.dateLabel}
+              nowYear={nowYear}
+              delay={(reduceMotion ? 0 : Math.min(index, 4) * 0.06) + 0.1}
+              reduceMotion={reduceMotion}
+            />
           </motion.li>
         ))}
       </ul>
