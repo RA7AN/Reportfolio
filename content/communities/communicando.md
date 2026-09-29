@@ -13,7 +13,7 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
   "url": "https://www.instagram.com/communicando/?hl=en",
   "logo": "/communities/communicando-logo-2.png",
   "highlights": [
-    "Coordinated events, socials, and member outreach for the college's communications club."
+    "Organised events, socials, and outreach for the college's flagship literary community."
   ],
   "sortOrder": 5
 }

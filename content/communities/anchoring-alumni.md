@@ -14,7 +14,7 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
   "logo": "/communities/cs-logo.jpeg",
   "logoFill": "yes",
   "highlights": [
-    "Hosted alumni meetups as compère, anchoring sessions and stage segments."
+    "Hosted formal events such as alumni meetups, orientations, and annual events as compère and anchor."
   ],
   "sortOrder": 6
 }

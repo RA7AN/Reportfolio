@@ -13,7 +13,7 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
   "url": "https://www.toastmasters.org/",
   "logo": "/communities/Toastmasters-logo-2.png",
   "highlights": [
-    "Served as elected Treasurer and Executive Committee member, overseeing budgeting, financial planning, funding allocation, and operational administration for club activities.",
+    "Served as elected Treasurer and Executive Committee member, overseeing budgeting, financial planning, funding allocation, and operational administration for the CBIT chapter.",
     "Led ideation, planning, recruitment, public relations, and execution of regular meetings, workshops, and inter-club events, contributing to sustained membership growth and engagement."
   ],
   "sortOrder": 1

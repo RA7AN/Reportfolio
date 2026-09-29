@@ -14,7 +14,7 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
   "logo": "/communities/edventurepark-logo-2.jpeg",
   "logoFill": "yes",
   "highlights": [
-    "Organised campus meetups, workshops, and events for the Edventure Park student community."
+    "Organised campus meetups, workshops, and events for the Edventure Park student startup incubation community."
   ],
   "sortOrder": 2
 }

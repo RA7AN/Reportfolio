@@ -13,7 +13,7 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
     "url": "https://www.toastmasters.org/",
     "logo": "/communities/Toastmasters-logo-2.png",
     "highlights": [
-      "Served as elected Treasurer and Executive Committee member, overseeing budgeting, financial planning, funding allocation, and operational administration for club activities.",
+      "Served as elected Treasurer and Executive Committee member, overseeing budgeting, financial planning, funding allocation, and operational administration for the CBIT chapter.",
       "Led ideation, planning, recruitment, public relations, and execution of regular meetings, workshops, and inter-club events, contributing to sustained membership growth and engagement."
     ],
     "sortOrder": 1
@@ -27,7 +27,7 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
     "logo": "/communities/edventurepark-logo-2.jpeg",
     "logoFill": "yes",
     "highlights": [
-      "Organised campus meetups, workshops, and events for the Edventure Park student community."
+      "Organised campus meetups, workshops, and events for the Edventure Park student startup incubation community."
     ],
     "sortOrder": 2
   },
@@ -65,7 +65,7 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
     "url": "https://www.instagram.com/communicando/?hl=en",
     "logo": "/communities/communicando-logo-2.png",
     "highlights": [
-      "Coordinated events, socials, and member outreach for the college's communications club."
+      "Organised events, socials, and outreach for the college's flagship literary community."
     ],
     "sortOrder": 5
   },
@@ -78,7 +78,7 @@ lastUpdated: "2026-09-29T00:00:00.000Z"
     "logo": "/communities/cs-logo.jpeg",
     "logoFill": "yes",
     "highlights": [
-      "Hosted alumni meetups as compère, anchoring sessions and stage segments."
+      "Hosted formal events such as alumni meetups, orientations, and annual events as compère and anchor."
     ],
     "sortOrder": 6
   }
