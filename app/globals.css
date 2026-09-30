@@ -226,6 +226,18 @@ html.light {
   animation: grid-cell-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
+/* the grid stays invisible until it charges, so the settled server render never flashes
+   through on reload; noscript brings the settled grid back for visitors without JS */
+@media (prefers-reduced-motion: no-preference) {
+  .grid-chart {
+    opacity: 0;
+  }
+
+  .grid-chart.grid-charged {
+    opacity: 1;
+  }
+}
+
 .marquee-track {
   animation: marquee 42s linear infinite;
 }

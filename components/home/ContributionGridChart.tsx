@@ -94,7 +94,13 @@ export function ContributionGridChart({
   }
 
   return (
-    <div ref={ref} aria-hidden className="w-full max-w-40">
+    <div
+      ref={ref}
+      aria-hidden
+      className={cn('grid-chart w-full max-w-40', animating && 'grid-charged')}
+    >
+      {/* with JS off the observer never charges, so noscript un-hides the settled grid */}
+      <noscript dangerouslySetInnerHTML={{ __html: '<style>.grid-chart{opacity:1}</style>' }} />
       <div key={run} className="flex w-fit gap-[3px]">
         {active.map((isActive, column) => (
           <div key={column} className="flex flex-col gap-[3px]">
