@@ -185,6 +185,27 @@ html.light {
   }
 }
 
+@keyframes pixel-blink {
+  0%,
+  100% {
+    opacity: calc(var(--blink-max, 1) * 0.18);
+  }
+  50% {
+    opacity: var(--blink-max, 1);
+  }
+}
+
+@keyframes grid-cell-in {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: var(--cell-opacity, 1);
+    transform: none;
+  }
+}
+
 .rise-in {
   animation: rise-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -195,6 +216,26 @@ html.light {
 
 .dot-ping {
   animation: ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.pixel-blink {
+  animation: pixel-blink 1.2s ease-in-out infinite;
+}
+
+.grid-cell {
+  animation: grid-cell-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* the grid stays invisible until it charges, so the settled server render never flashes
+   through on reload; noscript brings the settled grid back for visitors without JS */
+@media (prefers-reduced-motion: no-preference) {
+  .grid-chart {
+    opacity: 0;
+  }
+
+  .grid-chart.grid-charged {
+    opacity: 1;
+  }
 }
 
 .marquee-track {
@@ -320,6 +361,8 @@ html.nerd body {
   .rise-in,
   .blink,
   .dot-ping,
+  .pixel-blink,
+  .grid-cell,
   .marquee-track,
   html.crt-flash {
     animation: none !important;

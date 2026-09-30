@@ -139,7 +139,8 @@ function ExperienceTimeline({ items }: { items: Experience[] }) {
 
     const active = placed.find((row) => row.current) ?? placed[placed.length - 1];
     const packedRight = Math.max(...placed.map((row) => row.left + row.width), 0);
-    const nowX = active ? active.left + active.width + 24 : xOf(now);
+    // the now line rides the latest role's right edge rather than floating past it
+    const nowX = active ? active.left + active.width : xOf(now);
     const width = Math.max(axisWidth, packedRight + 64, nowX + 48);
 
     return { years, width, nowX, placed, lanes, laneCount: count, recordedYears };
@@ -227,8 +228,9 @@ function ExperienceTimeline({ items }: { items: Experience[] }) {
                 key={row.item.id}
                 className={cn(
                   'absolute z-10 flex items-center gap-2.5 rounded-2xl px-2.5 py-2',
+                  // the current pill touches the now line, so its trailing padding tucks in
                   row.current
-                    ? 'bg-[#3a3118] shadow-[inset_0_0_0_1px_rgba(232,185,35,0.28)]'
+                    ? 'bg-[#3a3118] pr-1 shadow-[inset_0_0_0_1px_rgba(232,185,35,0.28)]'
                     : 'bg-[#161616]',
                 )}
                 style={{
