@@ -50,6 +50,7 @@ function PixelGrid() {
 
 export function HeroMuseLoop() {
   const indexRef = useRef(0);
+  const swapTimer = useRef<number | null>(null);
   const [index, setIndex] = useState(0);
   const [outgoing, setOutgoing] = useState<number | null>(null);
   const [incoming, setIncoming] = useState<number | null>(null);
@@ -85,7 +86,8 @@ export function HeroMuseLoop() {
       setIncoming(next);
       setIncomingReady(false);
       setOutgoingReady(false);
-      window.setTimeout(() => {
+      swapTimer.current = window.setTimeout(() => {
+        swapTimer.current = null;
         indexRef.current = next;
         setIndex(next);
         setOutgoing(null);
@@ -95,18 +97,53 @@ export function HeroMuseLoop() {
     };
 
     const id = window.setInterval(tick, HOLD_MS);
-    return () => window.clearInterval(id);
+    return () => {
+      window.clearInterval(id);
+      if (swapTimer.current != null) {
+        window.clearTimeout(swapTimer.current);
+        swapTimer.current = null;
+      }
+    };
   }, [ready, reduce]);
+
+  // if motion turns off mid-swap, settle the incoming word instead of sliding on
+  useEffect(() => {
+    if (!reduce || incoming == null) return;
+    if (swapTimer.current != null) {
+      window.clearTimeout(swapTimer.current);
+      swapTimer.current = null;
+    }
+
+    // deferred like the transition kick-off: effects must not set state synchronously
+    let settleFrame = 0;
+    const frame = window.requestAnimationFrame(() => {
+      settleFrame = window.requestAnimationFrame(() => {
+        indexRef.current = incoming;
+        setIndex(incoming);
+        setOutgoing(null);
+        setIncoming(null);
+        setIncomingReady(false);
+      });
+    });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(settleFrame);
+    };
+  }, [reduce, incoming]);
 
   useEffect(() => {
     if (incoming == null && outgoing == null) return;
+    let innerFrame = 0;
     const frame = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
+      innerFrame = window.requestAnimationFrame(() => {
         setIncomingReady(true);
         setOutgoingReady(true);
       });
     });
-    return () => window.cancelAnimationFrame(frame);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(innerFrame);
+    };
   }, [incoming, outgoing]);
 
   // the trailing dots ride along with each word so nothing sits after the reserved slot

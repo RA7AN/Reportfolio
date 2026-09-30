@@ -13,8 +13,12 @@ export function CountUp({ value, delay = 0, duration = 900 }: CountUpProps) {
   const [display, setDisplay] = useState(value);
 
   useEffect(() => {
-    if (value <= 1) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // nonanimated paths sync too, so a changed value never leaves the old count up;
+    // deferred a frame because effects must not set state synchronously
+    if (value <= 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const frame = window.requestAnimationFrame(() => setDisplay(value));
+      return () => window.cancelAnimationFrame(frame);
+    }
 
     let frame = 0;
     let start = 0;

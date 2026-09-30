@@ -80,13 +80,19 @@ export default function HomePage() {
             <RiseIn
               delay={0.5}
               as="p"
-              aria-label="Full-stack Engineer, aspiring researcher and dreamer. I design reliable, useful AI agents by day, and on AGI I spend the night thinking."
               className="text-muted-foreground mt-5 max-w-3xl text-lg leading-7 sm:text-xl"
             >
-              Full-stack Engineer, aspiring researcher and dreamer. I design reliable,{' '}
-              {/* force the split after "reliable," so the two lines stay even on wide screens */}
-              <br className="hidden lg:block" />
-              useful AI agents by day, and on AGI I spend the night <HeroMuseLoop />
+              {/* the visual line hides its looping suffix, so the sr-only span carries the full sentence */}
+              <span aria-hidden="true">
+                Full-stack Engineer, aspiring researcher and dreamer. I design reliable,{' '}
+                {/* force the split after "reliable," so the two lines stay even on wide screens */}
+                <br className="hidden lg:block" />
+                useful AI agents by day, and on AGI I spend the night <HeroMuseLoop />
+              </span>
+              <span className="sr-only">
+                Full-stack Engineer, aspiring researcher and dreamer. I design reliable, useful AI
+                agents by day, and on AGI I spend the night thinking.
+              </span>
             </RiseIn>
             <RiseIn delay={0.6} className="mt-4">
               <LocalClock city={city} timeZone={timeZone} />
