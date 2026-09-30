@@ -83,8 +83,10 @@ export default function HomePage() {
               aria-label="Full-stack Engineer, aspiring researcher and dreamer. I design useful AI agents by day, and on AGI I spend the night thinking."
               className="text-muted-foreground mt-5 max-w-3xl text-lg leading-7 sm:text-xl"
             >
-              Full-stack Engineer, aspiring researcher and dreamer. I design useful AI agents by
-              day, and on AGI I spend the night <HeroMuseLoop />
+              Full-stack Engineer, aspiring researcher and dreamer. I design{' '}
+              {/* force the split after "design" so the two lines stay even on wide screens */}
+              <br className="hidden lg:block" />
+              useful AI agents by day, and on AGI I spend the night <HeroMuseLoop />
             </RiseIn>
             <RiseIn delay={0.6} className="mt-4">
               <LocalClock city={city} timeZone={timeZone} />
