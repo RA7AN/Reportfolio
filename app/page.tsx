@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { BookingPlaceholder } from '@/components/home/BookingPlaceholder';
 import { Communities } from '@/components/home/Communities';
+import { CountUp } from '@/components/home/CountUp';
 import { ExperienceList } from '@/components/home/ExperienceList';
 import { Filmstrip } from '@/components/home/Filmstrip';
 import { Globe } from '@/components/home/Globe';
@@ -79,11 +80,11 @@ export default function HomePage() {
             <RiseIn
               delay={0.5}
               as="p"
-              aria-label="Full-stack Engineer, aspiring researcher and reader. I design reliable, useful AI agents by day, and on AGI I spend the night thinking."
-              className="text-muted-foreground mt-5 max-w-xl text-lg leading-7 sm:text-xl"
+              aria-label="Full-stack Engineer, aspiring researcher and dreamer. I design useful AI agents by day, and on AGI I spend the night thinking."
+              className="text-muted-foreground mt-5 max-w-3xl text-lg leading-7 sm:text-xl"
             >
-              Full-stack Engineer, aspiring researcher and reader. I design reliable, useful AI
-              agents by day, and on AGI I spend the night <HeroMuseLoop />
+              Full-stack Engineer, aspiring researcher and dreamer. I design useful AI agents by
+              day, and on AGI I spend the night <HeroMuseLoop />
             </RiseIn>
             <RiseIn delay={0.6} className="mt-4">
               <LocalClock city={city} timeZone={timeZone} />
@@ -120,12 +121,12 @@ export default function HomePage() {
             <RiseIn
               delay={1}
               className="border-border mt-16 grid grid-cols-2 gap-8 border-y py-10 sm:grid-cols-4 sm:py-12"
-              data-nerd="stats: cms row counts, no count-up yet"
+              data-nerd="stats: cms row counts, count-up from 1"
             >
-              <Stat value={`${experiences.length}+`} label="roles so far" />
-              <Stat value={`${projects.length}+`} label="projects shipped" />
-              <Stat value={`${publications.length}+`} label="papers and notes" />
-              <Stat value={`${talks.length}+`} label="talks given" />
+              <Stat value={experiences.length} label="roles so far" />
+              <Stat value={projects.length} label="projects shipped" />
+              <Stat value={publications.length} label="papers and notes" />
+              <Stat value={talks.length} label="talks given" />
             </RiseIn>
           </section>
         </HomeInner>
@@ -157,10 +158,13 @@ export default function HomePage() {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
+function Stat({ value, label }: { value: number; label: string }) {
   return (
     <div>
-      <p className="text-3xl font-medium tracking-tight sm:text-4xl">{value}</p>
+      <p className="text-3xl font-medium tracking-tight tabular-nums sm:text-4xl">
+        {/* counts from 1 as the row finishes rising in (rise-in delay is 1s) */}
+        <CountUp value={value} delay={1000} />+
+      </p>
       <p className="text-muted-foreground mt-2 text-sm">{label}</p>
     </div>
   );
