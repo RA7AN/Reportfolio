@@ -80,11 +80,11 @@ export default function HomePage() {
             <RiseIn
               delay={0.5}
               as="p"
-              aria-label="Full-stack Engineer, aspiring researcher and dreamer. I design useful AI agents by day, and on AGI I spend the night thinking."
+              aria-label="Full-stack Engineer, aspiring researcher and dreamer. I design reliable, useful AI agents by day, and on AGI I spend the night thinking."
               className="text-muted-foreground mt-5 max-w-3xl text-lg leading-7 sm:text-xl"
             >
-              Full-stack Engineer, aspiring researcher and dreamer. I design{' '}
-              {/* force the split after "design" so the two lines stay even on wide screens */}
+              Full-stack Engineer, aspiring researcher and dreamer. I design reliable,{' '}
+              {/* force the split after "reliable," so the two lines stay even on wide screens */}
               <br className="hidden lg:block" />
               useful AI agents by day, and on AGI I spend the night <HeroMuseLoop />
             </RiseIn>

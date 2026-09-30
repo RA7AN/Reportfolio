@@ -7,7 +7,7 @@ import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties }
 const HOLD_MS = 5000;
 const SWAP_MS = 300;
 
-// the longest word plus the period reserves the slot, so the sentence never reflows
+// the longest word plus the trailing dots reserves the slot, so the sentence never reflows
 const LONGEST = HERO_MUSES.reduce((longest, word) =>
   word.length > longest.length ? word : longest,
 );
@@ -109,19 +109,14 @@ export function HeroMuseLoop() {
     return () => window.cancelAnimationFrame(frame);
   }, [incoming, outgoing]);
 
-  // the period rides along with each word so nothing sits after the reserved slot
-  const renderWord = (i: number) => (
-    <>
-      {HERO_MUSES[i]}
-      <span className="text-muted-foreground">.</span>
-    </>
-  );
+  // the trailing dots ride along with each word so nothing sits after the reserved slot
+  const renderWord = (i: number) => <>{HERO_MUSES[i]}...</>;
 
   return (
     <span className="text-note" aria-hidden="true">
       <PixelGrid />
       <span className="relative inline-block align-baseline">
-        <span className="invisible whitespace-nowrap">{LONGEST}.</span>
+        <span className="invisible whitespace-nowrap">{LONGEST}...</span>
         <span className="absolute inset-0 overflow-hidden whitespace-nowrap">
           {swapping ? (
             <>
