@@ -185,6 +185,16 @@ html.light {
   }
 }
 
+@keyframes pixel-blink {
+  0%,
+  100% {
+    opacity: calc(var(--blink-max, 1) * 0.18);
+  }
+  50% {
+    opacity: var(--blink-max, 1);
+  }
+}
+
 .rise-in {
   animation: rise-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -195,6 +205,10 @@ html.light {
 
 .dot-ping {
   animation: ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.pixel-blink {
+  animation: pixel-blink 1.2s ease-in-out infinite;
 }
 
 .marquee-track {
@@ -320,6 +334,7 @@ html.nerd body {
   .rise-in,
   .blink,
   .dot-ping,
+  .pixel-blink,
   .marquee-track,
   html.crt-flash {
     animation: none !important;

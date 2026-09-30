@@ -5,7 +5,7 @@ import { ExperienceList } from '@/components/home/ExperienceList';
 import { Filmstrip } from '@/components/home/Filmstrip';
 import { Globe } from '@/components/home/Globe';
 import { HomeInner } from '@/components/home/HomeInner';
-import { HeroVerbLoop } from '@/components/home/HeroVerbLoop';
+import { HeroMuseLoop } from '@/components/home/HeroMuseLoop';
 import { LetterTitle, RiseIn } from '@/components/home/RiseIn';
 import { LocalClock } from '@/components/home/LocalClock';
 import { PostsPlaceholder } from '@/components/home/PostsPlaceholder';
@@ -79,11 +79,11 @@ export default function HomePage() {
             <RiseIn
               delay={0.5}
               as="p"
-              aria-label="Full-stack Engineer, AI researcher and reader. I design reliable, useful AI agents by day and think about AGI at night."
+              aria-label="Full-stack Engineer, aspiring researcher and reader. I design reliable, useful AI agents by day, and on AGI I spend the night thinking."
               className="text-muted-foreground mt-5 max-w-xl text-lg leading-7 sm:text-xl"
             >
-              Full-stack Engineer, AI researcher and reader. I design reliable, useful AI agents by
-              day and <HeroVerbLoop /> AGI at night.
+              Full-stack Engineer, aspiring researcher and reader. I design reliable, useful AI
+              agents by day, and on AGI I spend the night <HeroMuseLoop />
             </RiseIn>
             <RiseIn delay={0.6} className="mt-4">
               <LocalClock city={city} timeZone={timeZone} />
