@@ -49,6 +49,7 @@ export const projectSchema = z.object({
   highlights: z.array(z.string()),
   sortOrder: z.number().optional(),
   isResearch: nullableString,
+  showOnLanding: z.enum(['yes', 'no']).optional(),
   githubRepo: nullableString,
 });
 
@@ -93,6 +94,19 @@ export const leadershipSchema = z.object({
   title: z.string(),
   org: z.string(),
   dateLabel: z.string(),
+  highlights: z.array(z.string()),
+  sortOrder: z.number().optional(),
+});
+
+export const communitySchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  org: z.string(),
+  dateLabel: z.string(),
+  url: nullableString,
+  logo: nullableString,
+  // "yes" lets an opaque logo cover its whole rounded frame instead of sitting inset
+  logoFill: z.enum(['yes', 'no']).optional(),
   highlights: z.array(z.string()),
   sortOrder: z.number().optional(),
 });
@@ -169,6 +183,7 @@ export type Talk = z.infer<typeof talkSchema>;
 export type Skill = z.infer<typeof skillSchema>;
 export type Honor = z.infer<typeof honorSchema>;
 export type Leadership = z.infer<typeof leadershipSchema>;
+export type Community = z.infer<typeof communitySchema>;
 export type WritingFrontmatter = z.infer<typeof writingFrontmatterSchema>;
 export type Certificate = z.infer<typeof certificateSchema>;
 export type Featured = z.infer<typeof featuredSchema>;

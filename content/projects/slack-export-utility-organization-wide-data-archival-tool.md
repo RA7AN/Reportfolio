@@ -1,7 +1,7 @@
 ---
 type: "project"
 slug: "slack-export-utility-organization-wide-data-archival-tool"
-sortOrder: 2
+sortOrder: 4
 lastUpdated: "2026-02-12T17:33:53.008Z"
 ---
 
@@ -21,7 +21,8 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
     "Enabled 150+ employees to securely archive critical operational data, preventing large-scale data loss due to administrative permission and ownership transfer issues.",
     "Produced technical documentation and walkthrough video enabling non-technical users to independently perform exports."
   ],
-  "sortOrder": 2,
+  "sortOrder": 4,
   "isResearch": "no",
+  "showOnLanding": "no",
   "githubRepo": null
 }

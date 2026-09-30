@@ -17,7 +17,7 @@ function WorkCard({ project, index }: { project: Project; index: number }) {
   const nda = !href;
 
   return (
-    <article className="border-border flex flex-col rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3a3a3a]">
+    <article className="border-border hover:bg-muted/60 flex flex-col rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3a3a3a]">
       <div className="text-muted-foreground flex items-start justify-between gap-3 text-[11px]">
         <span>{String(index + 1).padStart(2, '0')}</span>
         <span>{project.dateLabel}</span>
@@ -50,9 +50,13 @@ function WorkCard({ project, index }: { project: Project; index: number }) {
 
 export function WorkGrid({ projects }: { projects: Project[] }) {
   const [expanded, setExpanded] = useState(false);
-  const featured = useMemo(() => projects.slice(0, 4), [projects]);
-  const rest = useMemo(() => projects.slice(4), [projects]);
-  const shown = expanded ? projects : featured;
+  const visible = useMemo(
+    () => projects.filter((project) => project.showOnLanding !== 'no'),
+    [projects],
+  );
+  const featured = useMemo(() => visible.slice(0, 4), [visible]);
+  const rest = useMemo(() => visible.slice(4), [visible]);
+  const shown = expanded ? visible : featured;
 
   return (
     <section

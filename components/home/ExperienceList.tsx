@@ -355,7 +355,7 @@ export function ExperienceList({ items }: { items: Experience[] }) {
               <li key={item.id} className="relative">
                 <button
                   type="button"
-                  className="flex w-full items-start gap-3.5 py-3 text-left"
+                  className="hover:bg-muted/60 -mx-3 flex w-[calc(100%+1.5rem)] items-start gap-3.5 rounded-2xl px-3 py-3 text-left transition-colors duration-200"
                   onClick={() => setOpenId(open ? null : item.id)}
                   aria-expanded={open}
                 >

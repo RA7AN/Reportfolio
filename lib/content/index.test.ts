@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   getCertificates,
+  getCommunities,
   getEducation,
   getExperiences,
   getFeatured,
@@ -32,7 +33,8 @@ describe('content collections', () => {
     expect(getTalks().length).toBeGreaterThan(0);
     expect(getSkills().length).toBeGreaterThan(0);
     expect(getHonors().length).toBeGreaterThan(0);
-    expect(getLeadership().length).toBeGreaterThan(0);
+    expect(Array.isArray(getLeadership())).toBe(true);
+    expect(getCommunities().length).toBeGreaterThan(0);
     expect(getCertificates().length).toBeGreaterThan(0);
   });
 

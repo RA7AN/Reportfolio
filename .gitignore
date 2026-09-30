@@ -8,3 +8,6 @@ dist
 .env*.local
 *.env
 tsconfig.tsbuildinfo
+
+# Local Freebuff chat exports (never part of the site)
+freebuff-chat-*.md
