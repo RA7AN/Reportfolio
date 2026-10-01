@@ -1,0 +1,42 @@
+# Refreshes public/dev-activity.json from the three contribution accounts.
+# Repo setup: GH_ACTIVITY_USER_1..3 as repository variables,
+# GH_ACTIVITY_TOKEN_1..3 as repository secrets (read-only tokens).
+name: dev activity
+
+on:
+  schedule:
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # skips quietly until GH_ACTIVITY_USER_1 is set as a repository variable,
+      # so the schedule does not fail red every night on an unconfigured repo
+      - if: vars.GH_ACTIVITY_USER_1 != ''
+        run: npm run dev-activity
+        env:
+          GH_ACTIVITY_USER_1: ${{ vars.GH_ACTIVITY_USER_1 }}
+          GH_ACTIVITY_TOKEN_1: ${{ secrets.GH_ACTIVITY_TOKEN_1 }}
+          GH_ACTIVITY_USER_2: ${{ vars.GH_ACTIVITY_USER_2 }}
+          GH_ACTIVITY_TOKEN_2: ${{ secrets.GH_ACTIVITY_TOKEN_2 }}
+          GH_ACTIVITY_USER_3: ${{ vars.GH_ACTIVITY_USER_3 }}
+          GH_ACTIVITY_TOKEN_3: ${{ secrets.GH_ACTIVITY_TOKEN_3 }}
+      - name: commit the refreshed dataset
+        run: |
+          git add public/dev-activity.json
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: refresh dev activity data"
+          git push

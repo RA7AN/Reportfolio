@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="Poem cover placeholder">
+  <defs>
+    <linearGradient id="cover" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4b3a50"/>
+      <stop offset="0.55" stop-color="#3b2e37"/>
+      <stop offset="1" stop-color="#2e2119"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="300" fill="url(#cover)"/>
+  <text x="240" y="138" text-anchor="middle" fill="#ded9cf" font-family="ui-serif, Georgia, serif" font-style="italic" font-size="27">Do Not Gentle</text>
+  <text x="240" y="172" text-anchor="middle" fill="#ded9cf" font-family="ui-serif, Georgia, serif" font-style="italic" font-size="27">Into That Moonlight</text>
+  <text x="240" y="236" text-anchor="middle" fill="#a89f92" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">replace public/publications/4.svg</text>
+</svg>
