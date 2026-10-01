@@ -24,6 +24,10 @@ export type DevActivityData = {
   types: { commits: number; issues: number; prs: number; reviews: number };
   // names are intentionally not emitted (private/employer repos); count only
   repoCount: number;
+  // the default calendar view: rolling 52 weeks ending with the current week
+  weeks: DevActivityWeek[];
+  // total of the 52 weeks preceding the window — the rolling view's delta base
+  previousTotal: number;
   // newest first; the calendar switcher picks one of these
   years: DevActivityYear[];
 };

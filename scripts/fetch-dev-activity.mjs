@@ -1,8 +1,8 @@
 // Merges contribution data from the three GitHub accounts into one static dataset
-// for the development activity section: a rolling 52-week window that feeds the
-// radar, plus full calendar-year grids from the oldest account's creation year to
-// now for the year switcher. Runs via `npm run dev-activity` locally (reads
-// .env.local / .env) and from .github/workflows/dev-activity.yml daily.
+// for the development activity section: a rolling 52-week window (radar + the
+// default calendar view), plus full calendar-year grids from the oldest account's
+// creation year to now for the year switcher. Runs via `npm run dev-activity`
+// locally (reads .env.local / .env) and from .github/workflows/dev-activity.yml daily.
 //
 // Expected env: GH_ACTIVITY_USER_1..3 + GH_ACTIVITY_TOKEN_1..3. Tokens need the
 // read:user scope and must query their own account: without read:user, GitHub counts
@@ -274,6 +274,25 @@ async function main() {
     return { year, total: yearTotal, types: yearTypes, weeks: yearWeeks };
   });
 
+  // the rolling view's delta base: the 52 weeks before the window, summed from the
+  // year collections already fetched — no extra api calls
+  const prevTo = from - DAY_MS;
+  const prevFrom = prevTo - (WEEKS * 7 - 1) * DAY_MS;
+  const prevFromIso = new Date(prevFrom).toISOString().slice(0, 10);
+  const prevToIso = new Date(prevTo).toISOString().slice(0, 10);
+  const prevByDate = new Map();
+  for (const list of yearCollections.values()) {
+    for (const collection of list) {
+      for (const week of collection.contributionCalendar.weeks) {
+        for (const day of week.contributionDays) {
+          if (day.date < prevFromIso || day.date > prevToIso) continue;
+          prevByDate.set(day.date, (prevByDate.get(day.date) ?? 0) + day.contributionCount);
+        }
+      }
+    }
+  }
+  const previousTotal = [...prevByDate.values()].reduce((sum, count) => sum + count, 0);
+
   const data = {
     generatedAt: to.toISOString(),
     windowFrom: weeks[0].start,
@@ -284,13 +303,18 @@ async function main() {
     // repository names stay out of the public JSON: private and employer repos
     // must never leak through the deployed site — only the aggregate count
     repoCount: ranked.length,
+    // the default calendar view: 52 columns ending with the current week, so the
+    // grid spans the tail of last year without ever showing future months
+    weeks,
+    // total of the 52 weeks before the window — the rolling view's delta base
+    previousTotal,
     // newest first; the ui switches the calendar between these
     years: yearData,
   };
   writeFileSync(OUT, `${JSON.stringify(data, null, 2)}\n`);
   console.log(`wrote ${OUT}`);
   console.log(
-    `${total} contributions across ${accounts.length} account(s); ${ranked.length} repos touched; years ${firstYear}–${years[0]}`,
+    `${total} contributions across ${accounts.length} account(s) (prev window ${previousTotal}); ${ranked.length} repos touched; years ${firstYear}–${years[0]}`,
   );
 }
 

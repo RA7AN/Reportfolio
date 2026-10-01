@@ -398,22 +398,40 @@ function RadarChart({
 
 export function DevelopmentActivity({ data }: { data: DevActivityData }) {
   const reduceMotion = useReducedMotion() ?? false;
-  // newest year first in the dataset; the switcher grounds the stat in a calendar year
-  const [activeYear, setActiveYear] = useState(data.years[0]?.year ?? new Date().getFullYear());
-  const selectedIndex = Math.max(
-    0,
-    data.years.findIndex((entry) => entry.year === activeYear),
-  );
-  const selected = data.years[selectedIndex];
-  const previous = selectedIndex < data.years.length - 1 ? data.years[selectedIndex + 1] : null;
-  const delta =
-    previous && previous.total > 0
-      ? Math.round(((selected.total - previous.total) / previous.total) * 100)
+  // null is the default view: the rolling last-52-weeks grid ending at the latest
+  // day; picking a pill switches to that calendar year (future months stay shown)
+  const [activeYear, setActiveYear] = useState<number | null>(null);
+  const selected =
+    activeYear === null ? null : (data.years.find((entry) => entry.year === activeYear) ?? null);
+  const selectedIndex = selected
+    ? data.years.findIndex((entry) => entry.year === selected.year)
+    : -1;
+  const previous =
+    selectedIndex >= 0 && selectedIndex < data.years.length - 1
+      ? data.years[selectedIndex + 1]
       : null;
+  // a year pill compares the calendar year against its predecessor; the default
+  // rolling view compares the last 52 weeks against the 52 weeks before the window
+  const delta =
+    selected && previous && previous.total > 0
+      ? {
+          value: Math.round(((selected.total - previous.total) / previous.total) * 100),
+          label: `vs ${previous.year}`,
+        }
+      : !selected && data.previousTotal > 0
+        ? {
+            value: Math.round(((data.total - data.previousTotal) / data.previousTotal) * 100),
+            label: 'vs last year',
+          }
+        : null;
   const selectableYears = data.years.filter((entry) => entry.year >= FIRST_SELECTABLE_YEAR);
+  // no year picked -> the rolling grid; a pill -> that year's full jan-dec grid
+  const weeks = selected ? selected.weeks : data.weeks;
+  const statTotal = selected ? selected.total : data.total;
 
-  if (!selected) {
-    // the pipeline always emits at least the current year; this guards a hand-edited file
+  if (!weeks || weeks.length === 0) {
+    // the pipeline always emits the rolling grid and at least the current year;
+    // this guards a hand-edited file
     return null;
   }
 
@@ -421,7 +439,7 @@ export function DevelopmentActivity({ data }: { data: DevActivityData }) {
     <section
       className="pt-20 sm:pt-24"
       id="dev-activity"
-      data-nerd="development activity: merged accounts, year-switchable grid charges on view, radar draws once"
+      data-nerd="development activity: merged accounts, rolling last-year grid or any calendar year, radar draws once"
     >
       <p className="text-muted-foreground mb-2 flex items-center gap-2 font-mono text-xs tracking-widest uppercase">
         <span className="pixel-blink bg-note inline-block size-[5px]" aria-hidden />
@@ -447,34 +465,35 @@ export function DevelopmentActivity({ data }: { data: DevActivityData }) {
         <div className="border-border flex flex-col justify-center rounded-2xl border p-4 sm:p-5">
           {/* the headline stat reads fully amber; only the delta stays grey */}
           <p className="text-note mb-3 font-mono text-xs">
-            <span className="tabular-nums">{selected.total.toLocaleString('en-US')}</span>{' '}
-            contributions in {selected.year}
-            {delta !== null && previous ? (
+            <span className="tabular-nums">{statTotal.toLocaleString('en-US')}</span> contributions
+            in {selected ? selected.year : 'the last year'}
+            {delta ? (
               <span className="text-muted-foreground ml-2 tabular-nums">
-                {delta > 0 ? '↑' : delta < 0 ? '↓' : ''}
-                {Math.abs(delta)}% vs {previous.year}
+                {delta.value > 0 ? '↑' : delta.value < 0 ? '↓' : ''}
+                {Math.abs(delta.value)}% {delta.label}
               </span>
             ) : null}
           </p>
           <div className="overflow-x-auto">
             <ContributionGrid
-              key={selected.year}
-              weeks={selected.weeks}
+              key={selected ? selected.year : 'rolling'}
+              weeks={weeks}
               reduceMotion={reduceMotion}
             />
           </div>
           <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-            {/* the year switcher lines up with the legend, github-profile style */}
+            {/* the year switcher lines up with the legend, github-profile style;
+                re-clicking the active pill returns to the rolling last-year view */}
             <div className="flex flex-wrap items-center gap-1.5">
               {selectableYears.map((entry) => (
                 <button
                   key={entry.year}
                   type="button"
-                  onClick={() => setActiveYear(entry.year)}
-                  aria-pressed={entry.year === selected.year}
+                  onClick={() => setActiveYear(entry.year === activeYear ? null : entry.year)}
+                  aria-pressed={entry.year === activeYear}
                   className={cn(
                     'rounded-full border px-2 py-0.5 font-mono text-[10px] tracking-widest tabular-nums transition-colors',
-                    entry.year === selected.year
+                    entry.year === activeYear
                       ? 'border-note text-note'
                       : 'border-border text-muted-foreground hover:text-foreground',
                   )}
