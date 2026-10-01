@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="Paper screenshot placeholder">
+  <rect width="480" height="300" fill="#cfcfcd"/>
+  <rect x="24" y="24" width="432" height="168" rx="8" fill="#8c8c8a"/>
+  <rect x="40" y="40" width="120" height="136" rx="4" fill="#a9a9a7"/>
+  <circle cx="320" cy="108" r="52" fill="#a9a9a7"/>
+  <rect x="24" y="212" width="300" height="9" rx="3" fill="#61615f"/>
+  <rect x="24" y="232" width="380" height="7" rx="3" fill="#9b9b99"/>
+  <rect x="24" y="248" width="340" height="7" rx="3" fill="#9b9b99"/>
+  <text x="240" y="284" text-anchor="middle" fill="#7f7f7d" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14">replace public/publications/3.svg</text>
+</svg>

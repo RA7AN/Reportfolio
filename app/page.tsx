@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+import { AchievementsPreview } from '@/components/home/AchievementsPreview';
 import { BookingPlaceholder } from '@/components/home/BookingPlaceholder';
 import { Communities } from '@/components/home/Communities';
 import { CountUp } from '@/components/home/CountUp';
+import { DevelopmentActivity } from '@/components/home/DevelopmentActivity';
 import { ExperienceList } from '@/components/home/ExperienceList';
 import { Filmstrip } from '@/components/home/Filmstrip';
 import { Globe } from '@/components/home/Globe';
@@ -10,6 +12,7 @@ import { HeroMuseLoop } from '@/components/home/HeroMuseLoop';
 import { LetterTitle, RiseIn } from '@/components/home/RiseIn';
 import { LocalClock } from '@/components/home/LocalClock';
 import { PostsPlaceholder } from '@/components/home/PostsPlaceholder';
+import { PublicationsPreview } from '@/components/home/PublicationsPreview';
 import { ReelsPlaceholder } from '@/components/home/ReelsPlaceholder';
 import { SiteFooter } from '@/components/home/SiteFooter';
 import { StackGrid } from '@/components/home/StackGrid';
@@ -18,6 +21,7 @@ import { WorkGrid } from '@/components/home/WorkGrid';
 import { WritingPreview } from '@/components/home/WritingPreview';
 import { ScribbleArrow } from '@/components/layout/SiteIcons';
 import { PageShell } from '@/components/layout/PageShell';
+import { getDevActivity } from '@/lib/dev-activity';
 import {
   getCommunities,
   getExperiences,
@@ -44,6 +48,7 @@ export default function HomePage() {
   const talks = getTalks();
   const skills = getSkills();
   const writing = getWritingList().slice(0, 3);
+  const devActivity = getDevActivity();
   const city = profile.location ?? 'Jeddah';
   const timeZone = 'Asia/Riyadh';
 
@@ -144,6 +149,10 @@ export default function HomePage() {
           <WorkGrid projects={projects} />
           <Communities items={communities} />
           <StackGrid skills={skills} />
+          {/* publications is a mockup — placement open for iteration */}
+          <PublicationsPreview />
+          {/* development activity: real merged data from the ingestion pipeline */}
+          {devActivity ? <DevelopmentActivity data={devActivity} /> : null}
         </HomeInner>
 
         <Filmstrip />
@@ -153,6 +162,8 @@ export default function HomePage() {
           <PostsPlaceholder />
           <WritingPreview items={writing} />
           <ReelsPlaceholder />
+          {/* achievements is a mockup — placement open for iteration */}
+          <AchievementsPreview />
           <BookingPlaceholder email={profile.email} />
         </HomeInner>
       </main>
