@@ -96,16 +96,16 @@ export function AchievementsPreview({ items }: { items: Honor[] }) {
         </ul>
       )}
       {hidden.length > 0 && (
-        <div className="mt-4 flex justify-center">
+        <div className="mt-8 flex flex-col items-center gap-2">
           <button
             type="button"
             onClick={() => setExpanded((value) => !value)}
-            className="text-muted-foreground hover:text-foreground rounded-full border border-white/10 px-3 py-1.5 font-mono text-[10px] tracking-widest uppercase transition-colors"
+            className="border-border bg-background text-muted-foreground hover:text-foreground rounded-full border px-5 py-2 text-[13px] transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
           >
-            {expanded ? 'show less' : `load more (${hidden.length})`}
+            {expanded ? 'show less' : 'load more'}
           </button>
           {expanded ? (
-            <ul className="mt-3 grid gap-3 sm:grid-cols-3">
+            <ul className="mt-4 grid w-full gap-3 sm:grid-cols-3">
               {hidden.map((award) => (
                 <AwardCard key={award.id} award={award} />
               ))}
