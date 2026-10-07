@@ -137,13 +137,14 @@ export function IntroGate() {
         type="button"
         onClick={dismiss}
         className={cn(
-          'intro-gate bg-background fixed inset-0 z-[70] flex cursor-pointer flex-col items-center justify-center gap-7 px-6',
+          'intro-gate bg-background fixed inset-0 z-[70] flex cursor-pointer flex-col items-center justify-center gap-7 px-6 sm:gap-9',
           leaving && 'pointer-events-none opacity-0',
         )}
       >
-        <NeuralGlyph className="w-56" />
+        {/* glyph and type scale up together so the curtain holds its balance on big screens */}
+        <NeuralGlyph className="w-56 sm:w-72 lg:w-96" />
 
-        <div className="font-mono text-xs leading-6">
+        <div className="font-mono text-xs leading-6 sm:text-sm sm:leading-7 lg:text-base lg:leading-8">
           {BOOT_LINES.map((line, index) => (
             <p
               key={line}
@@ -155,19 +156,19 @@ export function IntroGate() {
           ))}
         </div>
 
-        <span aria-hidden className="flex gap-[3px]">
+        <span aria-hidden className="flex gap-[3px] sm:gap-1">
           {Array.from({ length: BLOCKS }, (_, index) => (
             <span
               key={index}
               className={cn(
-                'size-[7px]',
+                'size-[7px] sm:size-2',
                 (index / BLOCKS) * 100 < pct ? 'bg-note' : 'bg-[#2a2a2a]',
               )}
             />
           ))}
         </span>
 
-        <p className="text-muted-foreground font-mono text-[10px] tracking-widest uppercase">
+        <p className="text-muted-foreground font-mono text-[10px] tracking-widest uppercase sm:text-xs">
           {pct}% · tap anywhere to skip <span className="blink">▌</span>
         </p>
       </button>
