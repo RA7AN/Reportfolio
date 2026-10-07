@@ -34,7 +34,7 @@ function AwardCard({ award, amber = false }: { award: Honor; amber?: boolean }) 
             'absolute inset-0 bg-gradient-to-t transition-opacity duration-300 group-hover:opacity-75',
             amber
               ? 'from-[#171208] via-[#171208]/85 to-[#171208]/40'
-              : 'from-background via-background/85 to-background/40',
+              : 'from-background via-background/92 to-background/60',
           )}
         />
         <span className="absolute top-3 right-3 z-10 rounded-full border border-white/10 bg-black/45 px-2 py-0.5 font-mono text-[10px] tracking-widest text-white/80 backdrop-blur-sm">
@@ -96,7 +96,7 @@ export function AchievementsPreview({ items }: { items: Honor[] }) {
         </ul>
       )}
       {hidden.length > 0 && (
-        <div className="mt-4">
+        <div className="mt-4 flex justify-center">
           <button
             type="button"
             onClick={() => setExpanded((value) => !value)}
