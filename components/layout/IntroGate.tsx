@@ -83,8 +83,8 @@ function NeuralGlyph({ className }: { className?: string }) {
 
 const BOOT_LINES = [
   '> booting portfolio v2.0-beta',
-  '> notice: work in progress — rooms unfurnished',
-  '> pixels may still be wet',
+  '> notice: weights still converging — architecture under construction',
+  '> gradients may still be wet',
 ];
 
 export function IntroGate() {
