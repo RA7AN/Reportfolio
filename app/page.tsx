@@ -9,6 +9,7 @@ import { Filmstrip } from '@/components/home/Filmstrip';
 import { Globe } from '@/components/home/Globe';
 import { HomeInner } from '@/components/home/HomeInner';
 import { HeroMuseLoop } from '@/components/home/HeroMuseLoop';
+import { IntroGate } from '@/components/layout/IntroGate';
 import { LetterTitle, RiseIn } from '@/components/home/RiseIn';
 import { LocalClock } from '@/components/home/LocalClock';
 import { PostsPlaceholder } from '@/components/home/PostsPlaceholder';
@@ -54,6 +55,9 @@ export default function HomePage() {
 
   return (
     <PageShell>
+      {/* wip curtain: lifts into the hero's staggered rise-in, which stays paused
+          (html.intro-pending) until the gate is dismissed */}
+      <IntroGate />
       <main>
         <HomeInner className="pt-10 pb-16 sm:pt-36 sm:pb-24">
           <section data-nerd="hero: css stagger 40ms, rise-in 0.5s cubic">
@@ -149,8 +153,7 @@ export default function HomePage() {
           <WorkGrid projects={projects} />
           <Communities items={communities} />
           <StackGrid skills={skills} />
-          {/* publications is a mockup — placement open for iteration */}
-          <PublicationsPreview />
+          <PublicationsPreview items={publications} />
           {/* development activity: real merged data from the ingestion pipeline */}
           {devActivity ? <DevelopmentActivity data={devActivity} /> : null}
         </HomeInner>

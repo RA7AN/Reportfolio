@@ -1,80 +1,48 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import type { Publication } from '@/lib/content/schemas';
 import { cn } from '@/lib/utils';
-
-// placeholder rows — swap for getPublications() once the section design settles
-const rows = [
-  {
-    kind: 'Journal',
-    title: 'Cross-Attention Video Temporal Grounding for Real-Time Urban Analytics',
-    venue: 'IEEE Access',
-    year: '2026',
-    image: '/publications/1.svg',
-    featured: true,
-  },
-  {
-    kind: 'Conference',
-    title: 'A Review on Cross-Temporal Video Grounding and Moment Localization',
-    venue:
-      'Proceedings of the 2nd International Conference on Data Analytics and Intelligence Computing',
-    year: '2025',
-    image: '/publications/2.svg',
-    featured: false,
-  },
-  {
-    kind: 'Journal',
-    title: 'Cross-Attention Video Temporal Grounding for Smart-City CCTV',
-    venue: 'Springer',
-    year: '2025',
-    image: '/publications/3.svg',
-    featured: false,
-  },
-  {
-    kind: 'Preprint',
-    title: 'Evaluating Coding Agents Beyond Benchmarks',
-    venue: 'arXiv',
-    year: '2025',
-    image: '/publications/5.svg',
-    featured: false,
-  },
-  {
-    kind: 'Poem',
-    title: 'Do Not Gentle Into That Moonlight',
-    venue: 'Muse India',
-    year: '2024',
-    image: '/publications/4.svg',
-    featured: false,
-  },
-  {
-    kind: 'Poem',
-    title: 'Small Hours, Long Commutes',
-    venue: 'Notebook',
-    year: '2023',
-    image: '/publications/6.svg',
-    featured: false,
-  },
-];
 
 // how many grid cards show before the button reveals the rest
 const VISIBLE_COUNT = 3;
 
 // a pinned entry wins the top slot; with nothing pinned the most recent year does
-const featured =
-  rows.find((row) => row.featured) ??
-  rows.reduce((a, b) => (Number(b.year) > Number(a.year) ? b : a));
-const rest = rows.filter((row) => row !== featured);
+function pickFeatured(items: Publication[]) {
+  const pinned = items.find((item) => item.featured);
+  if (pinned) return { item: pinned, pinned: true };
+  const newest = [...items].sort((a, b) => Number(b.year) - Number(a.year))[0];
+  return { item: newest, pinned: false };
+}
 
-function Thumb({ src, className }: { src: string; className?: string }) {
+// the card's primary link: the article if we have it, else its doi
+function primaryHref(item: Publication) {
+  if (item.url) return item.url;
+  return item.doi ? `https://doi.org/${item.doi}` : undefined;
+}
+
+function Thumb({ item, className }: { item: Publication; className?: string }) {
   return (
     <span className={cn('relative block overflow-hidden rounded-xl', className)}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt=""
-        className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
-      />
+      {item.image ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={item.image}
+          alt=""
+          className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      ) : (
+        // no cover art yet: a quiet pixel cluster holds the frame
+        <span className="bg-muted flex size-full items-center justify-center transition-transform duration-300 group-hover:scale-105">
+          <span className="grid grid-cols-2 gap-[2px]">
+            <span className="bg-note size-[5px] opacity-40" />
+            <span className="bg-note size-[5px] opacity-70" />
+            <span className="bg-note size-[5px] opacity-70" />
+            <span className="bg-note size-[5px]" />
+          </span>
+        </span>
+      )}
       {/* the tint keeps bright art calm on the dark card, and lightens on hover */}
       <span
         aria-hidden
@@ -95,70 +63,142 @@ function Thumb({ src, className }: { src: string; className?: string }) {
   );
 }
 
-export function PublicationsPreview() {
+// an anchor even without a href keeps the card markup identical; without one it
+// simply is not focusable
+function CardLink({
+  item,
+  className,
+  children,
+}: {
+  item: Publication;
+  className?: string;
+  children: ReactNode;
+}) {
+  const href = primaryHref(item);
+  return (
+    <a
+      href={href}
+      target={href ? '_blank' : undefined}
+      rel={href ? 'noopener noreferrer' : undefined}
+      className={className}
+    >
+      {children}
+    </a>
+  );
+}
+
+export function PublicationsPreview({ items }: { items: Publication[] }) {
   const [expanded, setExpanded] = useState(false);
+  if (items.length === 0) return null;
+
+  const { item: featured, pinned } = pickFeatured(items);
+  const rest = items.filter((item) => item !== featured);
   const shown = expanded ? rest : rest.slice(0, VISIBLE_COUNT);
 
   return (
     <section
       className="pt-20 sm:pt-24"
       id="publications"
-      data-nerd="publications: featured card + grid, tinted thumbs with pixel clusters"
+      data-nerd="publications: real cms data, featured card + grid, tinted thumbs with pixel clusters"
     >
       <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         publications
       </p>
       <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">things I have published</h2>
       <p className="text-muted-foreground mt-2 max-w-xl text-sm leading-6 sm:text-base">
-        conference papers, review notes, and one poem that snuck in
+        papers, a case study, and one poem that snuck in
       </p>
 
-      <article className="border-border group relative mt-8 rounded-2xl border p-5 transition-colors duration-200 hover:border-[#5a5a5a]">
-        <ArrowUpRight
-          className="text-muted-foreground group-hover:text-note absolute top-5 right-5 size-4 transition-colors duration-200"
-          aria-hidden
-        />
-        <Thumb src={featured.image} className="aspect-[3/2] w-56 max-w-full" />
-        <p className="text-note mt-4 font-mono text-[10px] tracking-widest uppercase">
-          latest · {featured.kind}
-        </p>
-        <h3 className="mt-1.5 text-xl font-medium tracking-tight sm:text-2xl">{featured.title}</h3>
-        <p className="text-muted-foreground mt-1.5 text-sm">
-          {featured.venue} · {featured.year}
-        </p>
-      </article>
+      <div className="border-border group relative mt-8 rounded-2xl border p-5 transition-colors duration-200 hover:border-[#5a5a5a]">
+        <CardLink item={featured} className="group relative block">
+          <article>
+            <ArrowUpRight
+              className="text-muted-foreground group-hover:text-note absolute top-5 right-5 size-4 transition-colors duration-200"
+              aria-hidden
+            />
+            <Thumb item={featured} className="aspect-[3/2] w-56 max-w-full" />
+            <p className="text-note mt-4 font-mono text-[10px] tracking-widest uppercase">
+              {pinned ? 'featured' : 'latest'} · {featured.kind}
+            </p>
+            <h3 className="mt-1.5 text-xl font-medium tracking-tight sm:text-2xl">
+              {featured.title}
+            </h3>
+            <p className="text-muted-foreground mt-1.5 text-sm">
+              {[featured.venue, featured.year].filter(Boolean).join(' · ')}
+            </p>
+            {featured.excerpt ? (
+              <p className="text-muted-foreground mt-2 max-w-xl text-sm leading-6">
+                {featured.excerpt}
+              </p>
+            ) : null}
+          </article>
+        </CardLink>
+        {/* extra links sit beside the card anchor, not inside it — anchors cannot nest */}
+        {featured.links?.length ? (
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+            {featured.links.map((link) => (
+              <a
+                key={link.url}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-draw text-note font-mono text-xs"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        ) : null}
+      </div>
 
       <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {shown.map((row, index) => (
-          <li
-            key={row.title}
-            className={index >= VISIBLE_COUNT ? 'rise-in' : undefined}
-            style={
-              index >= VISIBLE_COUNT
-                ? { animationDelay: `${(index - VISIBLE_COUNT) * 0.06}s` }
-                : undefined
-            }
-          >
-            <article className="border-border group flex h-full flex-col overflow-hidden rounded-2xl border transition-colors duration-200 hover:border-[#5a5a5a]">
-              <Thumb src={row.image} className="aspect-[8/5] w-full rounded-none" />
-              <div className="flex grow flex-col p-4">
-                <h3 className="text-[15px] leading-snug font-medium tracking-tight">{row.title}</h3>
-                <p className="text-muted-foreground mt-1.5 text-xs">
-                  {row.venue} · {row.year}
-                </p>
-                <div className="mt-auto flex items-center justify-between pt-3">
-                  <span className="text-muted-foreground rounded-full border border-white/10 px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase">
-                    {row.kind}
-                  </span>
-                  <ArrowUpRight
-                    className="text-muted-foreground group-hover:text-note size-4 transition-colors duration-200"
-                    aria-hidden
-                  />
-                </div>
-              </div>
-            </article>
-          </li>
-        ))}
+        {shown.map((item, index) => {
+          const href = primaryHref(item);
+          return (
+            <li
+              key={item.id}
+              className={index >= VISIBLE_COUNT ? 'rise-in' : undefined}
+              style={
+                index >= VISIBLE_COUNT
+                  ? { animationDelay: `${(index - VISIBLE_COUNT) * 0.06}s` }
+                  : undefined
+              }
+            >
+              <CardLink
+                item={item}
+                className="border-border group flex h-full flex-col overflow-hidden rounded-2xl border transition-colors duration-200 hover:border-[#5a5a5a]"
+              >
+                <article className="flex h-full flex-col">
+                  <Thumb item={item} className="aspect-[8/5] w-full rounded-none" />
+                  <div className="flex grow flex-col p-4">
+                    <h3 className="text-[15px] leading-snug font-medium tracking-tight">
+                      {item.title}
+                    </h3>
+                    <p className="text-muted-foreground mt-1.5 text-xs">
+                      {[item.venue, item.year].filter(Boolean).join(' · ')}
+                    </p>
+                    {item.excerpt ? (
+                      <p className="text-muted-foreground mt-2 line-clamp-3 text-sm leading-6">
+                        {item.excerpt}
+                      </p>
+                    ) : null}
+                    <div className="mt-auto flex items-center justify-between pt-3">
+                      <span className="text-muted-foreground rounded-full border border-white/10 px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase">
+                        {item.kind}
+                      </span>
+                      {href ? (
+                        <ArrowUpRight
+                          className="text-muted-foreground group-hover:text-note size-4 transition-colors duration-200"
+                          aria-hidden
+                        />
+                      ) : null}
+                    </div>
+                  </div>
+                </article>
+              </CardLink>
+            </li>
+          );
+        })}
       </ul>
       {rest.length > VISIBLE_COUNT ? (
         <div className="mt-8 flex justify-center">

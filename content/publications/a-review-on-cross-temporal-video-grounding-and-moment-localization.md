@@ -13,6 +13,10 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
   "title": "A Review on Cross Temporal Video Grounding and Moment Localization",
   "venue": "Proceedings of the 2nd International Conference on Data Analytics and Intelligence Computing",
   "url": "https://orcid.org/0009-0008-1838-7713",
+  "excerpt": "A survey of cross-temporal video grounding — how the field learned to find the right seconds inside long videos, and where it still loses the thread.",
+  "image": "/publications/cross-temporal-review.svg",
+  "doi": null,
+  "links": [],
   "sortOrder": 2,
   "orcidId": null
 }

@@ -398,6 +398,7 @@ function RadarChart({
 
 export function DevelopmentActivity({ data }: { data: DevActivityData }) {
   const reduceMotion = useReducedMotion() ?? false;
+  const scrollerRef = useRef<HTMLDivElement>(null);
   // null is the default view: the rolling last-52-weeks grid ending at the latest
   // day; picking a pill switches to that calendar year (future months stay shown)
   const [activeYear, setActiveYear] = useState<number | null>(null);
@@ -428,6 +429,13 @@ export function DevelopmentActivity({ data }: { data: DevActivityData }) {
   // no year picked -> the rolling grid; a pill -> that year's full jan-dec grid
   const weeks = selected ? selected.weeks : data.weeks;
   const statTotal = selected ? selected.total : data.total;
+
+  useEffect(() => {
+    // the calendar opens on the freshest months: snap the scroller hard right so
+    // the leading edge of the graph is visible first, not the oldest activity
+    const el = scrollerRef.current;
+    if (el) el.scrollLeft = el.scrollWidth;
+  }, [weeks]);
 
   if (!weeks || weeks.length === 0) {
     // the pipeline always emits the rolling grid and at least the current year;
@@ -461,7 +469,9 @@ export function DevelopmentActivity({ data }: { data: DevActivityData }) {
         ))}
       </ul>
 
-      <div className="mt-8 grid gap-3 lg:grid-cols-[minmax(0,1fr)_21rem]">
+      {/* grid-cols-1 pins the mobile track to minmax(0,1fr) — without it the auto
+          track sizes to the w-max grid's max-content and the whole page pans sideways */}
+      <div className="mt-8 grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1fr)_21rem]">
         <div className="border-border flex flex-col justify-center rounded-2xl border p-4 sm:p-5">
           {/* the headline stat reads fully amber; only the delta stays grey */}
           <p className="text-note mb-3 font-mono text-xs">
@@ -474,7 +484,7 @@ export function DevelopmentActivity({ data }: { data: DevActivityData }) {
               </span>
             ) : null}
           </p>
-          <div className="overflow-x-auto">
+          <div ref={scrollerRef} className="overflow-x-auto">
             <ContributionGrid
               key={selected ? selected.year : 'rolling'}
               weeks={weeks}

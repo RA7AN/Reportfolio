@@ -303,6 +303,26 @@ html.nerd body {
   position: relative;
 }
 
+/* ---- wip intro gate ---- */
+html.intro-pending {
+  overflow: hidden;
+}
+
+/* hold the landing's entrance animations while the curtain is up, so the hero
+   rises the moment it lifts instead of finishing behind it */
+html.intro-pending .rise-in {
+  animation-play-state: paused;
+}
+
+/* the gate's own lines must not pause, so they get their own class */
+.intro-line {
+  animation: rise-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.intro-gate {
+  transition: opacity 0.35s ease;
+}
+
 .link-draw::after {
   content: '';
   position: absolute;
@@ -359,6 +379,7 @@ html.nerd body {
   }
 
   .rise-in,
+  .intro-line,
   .blink,
   .dot-ping,
   .pixel-blink,
@@ -366,6 +387,10 @@ html.nerd body {
   .marquee-track,
   html.crt-flash {
     animation: none !important;
+  }
+
+  .intro-gate {
+    transition: none;
   }
 
   .accordion-grid {
