@@ -5,15 +5,22 @@ import { ArrowUpRight, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type SnakePost = {
-  slug: string;
+  id: number;
   title: string;
   kind: string;
-  source?: string | null;
-  publishedAt?: string | null;
+  venue?: string | null;
+  year?: string | null;
   url?: string | null;
-  summary?: string | null;
-  readTime?: string | null;
+  doi?: string | null;
+  excerpt?: string | null;
+  image?: string | null;
 };
+
+// a card links out through its url, else its doi; some print-only pieces have neither
+function primaryHref(post: SnakePost) {
+  if (post.url) return post.url;
+  return post.doi ? `https://doi.org/${post.doi}` : undefined;
+}
 
 // the accent stroke finishes filling once the reading line reaches this viewport fraction
 const REVEAL_LINE = 0.72;
@@ -25,23 +32,22 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
   const fillPathRef = useRef<SVGPathElement | null>(null);
   const frameRef = useRef(0);
   const [lit, setLit] = useState<Set<number>>(() => new Set());
-  const [openSlug, setOpenSlug] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<number | null>(null);
   const [reduced, setReduced] = useState(false);
 
-  // boustrophedon placement: even rows read left to right, odd rows right to left
+  // boustrophedon placement: even rows read left to right, odd rows right to left;
+  // a trailing lone card still turns like the ox and lands on the right
   const cells = useMemo(() => {
-    const rows: { post: SnakePost; index: number }[][] = [];
-    for (let i = 0; i < posts.length; i += 2) {
-      const pair = [
-        { post: posts[i], index: i },
-        { post: posts[i + 1], index: i + 1 },
-      ].filter((cell) => Boolean(cell.post));
-      rows.push(rows.length % 2 === 0 ? pair : [...pair].reverse());
+    const slots: ({ post: SnakePost; index: number } | undefined)[] = [];
+    for (let row = 0; row * 2 < posts.length; row++) {
+      const a = posts[row * 2] ? { post: posts[row * 2], index: row * 2 } : undefined;
+      const b = posts[row * 2 + 1] ? { post: posts[row * 2 + 1], index: row * 2 + 1 } : undefined;
+      slots.push(...(row % 2 === 0 ? [a, b] : [b, a]));
     }
-    return rows.flat();
+    return slots;
   }, [posts]);
 
-  const open = openSlug ? (posts.find((post) => post.slug === openSlug) ?? null) : null;
+  const open = openId ? (posts.find((post) => post.id === openId) ?? null) : null;
 
   // the accent copy fills in with scroll, drawn along the path's own length
   const applyProgress = useCallback(() => {
@@ -167,7 +173,7 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpenSlug(null);
+      if (event.key === 'Escape') setOpenId(null);
     };
     document.addEventListener('keydown', onKey);
     const previous = document.body.style.overflow;
@@ -194,69 +200,102 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
           ref={gridRef}
           className="relative z-10 grid grid-cols-1 gap-x-6 gap-y-14 sm:grid-cols-2"
         >
-          {cells.map(({ post, index }) => (
-            <li key={post.slug} className="relative" data-snake-card={index}>
-              <button
-                type="button"
-                onClick={() => setOpenSlug(post.slug)}
-                className="group border-border bg-background relative z-10 flex h-full w-full flex-col rounded-2xl border p-5 text-left transition-colors duration-200 hover:border-[#5a5a5a]"
-              >
-                {/* the node the snake threads through */}
-                <span
-                  ref={(el) => {
-                    nodeRefs.current[index] = el;
-                  }}
-                  aria-hidden
-                  className={cn(
-                    'border-border bg-background absolute top-0 left-1/2 z-20 hidden size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors duration-300 sm:block',
-                    lit.has(index) || reduced ? 'border-note bg-note' : undefined,
-                    index === 0 && (lit.has(index) || reduced) && 'pixel-blink',
-                  )}
-                />
-                <span className="text-muted-foreground flex items-baseline justify-between font-mono text-[11px] tracking-widest">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <span>{post.publishedAt}</span>
-                </span>
-                <span className="mt-4 block text-lg font-medium tracking-tight">{post.title}</span>
-                {post.summary ? (
-                  <span className="text-muted-foreground mt-1.5 line-clamp-3 block text-sm leading-6">
-                    {post.summary}
-                  </span>
-                ) : null}
-                <span className="mt-auto flex items-center justify-between pt-4">
-                  <span className="text-muted-foreground rounded-full border border-white/10 px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase">
-                    {post.kind}
-                  </span>
-                  <ArrowUpRight
-                    className="text-muted-foreground group-hover:text-note size-4 transition-colors duration-200"
+          {cells.map((cell, slot) => {
+            if (!cell) {
+              // the empty left slot lets a short last row turn like the ox
+              return <li key={`gap-${slot}`} aria-hidden className="hidden sm:block" />;
+            }
+            const { post, index } = cell;
+            return (
+              <li key={post.id} className="relative" data-snake-card={index}>
+                <button
+                  type="button"
+                  onClick={() => setOpenId(post.id)}
+                  className="group border-border bg-background relative z-10 flex h-full w-full flex-col rounded-2xl border p-5 text-left transition-colors duration-200 hover:border-[#5a5a5a]"
+                >
+                  {/* the node the snake threads through */}
+                  <span
+                    ref={(el) => {
+                      nodeRefs.current[index] = el;
+                    }}
                     aria-hidden
+                    className={cn(
+                      'border-border bg-background absolute top-0 left-1/2 z-20 hidden size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors duration-300 sm:block',
+                      lit.has(index) || reduced ? 'border-note bg-note' : undefined,
+                      index === 0 && (lit.has(index) || reduced) && 'pixel-blink',
+                    )}
                   />
+                  <span className="text-muted-foreground flex items-baseline justify-between font-mono text-[11px] tracking-widest">
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <span>{post.year}</span>
+                  </span>
+                  <span className="mt-4 block text-lg font-medium tracking-tight">
+                    {post.title}
+                  </span>
+                  {post.venue ? (
+                    <span className="text-muted-foreground mt-1 block truncate text-xs">
+                      {post.venue}
+                    </span>
+                  ) : null}
+                  {post.excerpt ? (
+                    <span className="text-muted-foreground mt-1.5 line-clamp-3 block text-sm leading-6">
+                      {post.excerpt}
+                    </span>
+                  ) : null}
+                  <span className="mt-auto flex items-center justify-between pt-4">
+                    <span className="text-muted-foreground rounded-full border border-white/10 px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase">
+                      {post.kind}
+                    </span>
+                    <ArrowUpRight
+                      className="text-muted-foreground group-hover:text-note size-4 transition-colors duration-200"
+                      aria-hidden
+                    />
+                  </span>
+                </button>
+                {/* citation card peeking from behind the corner; stacks below on phones */}
+                <span className="border-border text-muted-foreground bg-background relative mt-3 block rounded-lg border border-dashed p-3 text-[11px] leading-4 shadow-lg sm:absolute sm:right-[-12px] sm:bottom-[-12px] sm:z-0 sm:mt-0 sm:max-w-[240px] sm:-rotate-2">
+                  <span className="text-muted-foreground block font-mono text-[9px] tracking-widest uppercase">
+                    cite as
+                  </span>
+                  <span className="text-foreground mt-1 block text-xs font-medium">{author}</span>
+                  <span className="mt-0.5 block">
+                    {author}. &quot;{post.title}.&quot; {post.venue ?? 'print'}, {post.year}.
+                  </span>
                 </span>
-              </button>
-              {/* citation card peeking from behind the corner; stacks below on phones */}
-              <span className="border-border text-muted-foreground bg-background relative mt-3 block rounded-lg border border-dashed p-3 text-[11px] leading-4 shadow-lg sm:absolute sm:right-[-12px] sm:bottom-[-12px] sm:z-0 sm:mt-0 sm:max-w-[240px] sm:-rotate-2">
-                <span className="text-muted-foreground block font-mono text-[9px] tracking-widest uppercase">
-                  cite as
-                </span>
-                <span className="text-foreground mt-1 block text-xs font-medium">{author}</span>
-                <span className="mt-0.5 block">
-                  {author}. &quot;{post.title}.&quot; {post.source ?? 'personal blog'},{' '}
-                  {post.publishedAt}.
-                </span>
-              </span>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       </div>
-      {open ? <PreviewModal post={open} onClose={() => setOpenSlug(null)} /> : null}
+      {open ? <PreviewModal post={open} onClose={() => setOpenId(null)} /> : null}
     </>
   );
 }
 
 // browser-chrome style preview: click through to the source, click away to dismiss
 function PreviewModal({ post, onClose }: { post: SnakePost; onClose: () => void }) {
-  const href = post.url ?? `/writing/${post.slug}`;
-  const external = Boolean(post.url);
+  const href = primaryHref(post);
+  const body = (
+    <>
+      {post.image ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={post.image} alt="" className="mb-5 aspect-[8/3] w-full rounded-lg object-cover" />
+      ) : null}
+      <p className="text-note font-mono text-[10px] tracking-widest uppercase">
+        {post.kind}
+        {post.year ? ` · ${post.year}` : ''}
+      </p>
+      <h2 className="mt-2 text-xl font-medium tracking-tight sm:text-2xl">{post.title}</h2>
+      {post.excerpt ? (
+        <p className="text-muted-foreground mt-3 text-sm leading-6">{post.excerpt}</p>
+      ) : null}
+      {href ? (
+        <span className="text-note mt-6 inline-flex items-center gap-1 font-mono text-xs">
+          open source <ArrowUpRight className="size-3.5" aria-hidden />
+        </span>
+      ) : null}
+    </>
+  );
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
@@ -279,7 +318,7 @@ function PreviewModal({ post, onClose }: { post: SnakePost; onClose: () => void 
             <span className="size-2.5 rounded-full bg-[#242424]" />
           </span>
           <span className="text-muted-foreground bg-muted min-w-0 flex-1 truncate rounded-md px-3 py-1.5 font-mono text-xs">
-            {external ? post.url : `ra7an.dev/writing/${post.slug}`}
+            {href ?? [post.venue, post.year].filter(Boolean).join(' · ')}
           </span>
           <button
             type="button"
@@ -290,24 +329,18 @@ function PreviewModal({ post, onClose }: { post: SnakePost; onClose: () => void 
             <X className="size-4" aria-hidden />
           </button>
         </div>
-        <a
-          href={href}
-          target={external ? '_blank' : undefined}
-          rel={external ? 'noopener noreferrer' : undefined}
-          className="block max-h-[70vh] overflow-y-auto p-6 sm:p-8"
-        >
-          <p className="text-note font-mono text-[10px] tracking-widest uppercase">
-            {post.kind}
-            {post.readTime ? ` · ${post.readTime}` : ''}
-          </p>
-          <h2 className="mt-2 text-xl font-medium tracking-tight sm:text-2xl">{post.title}</h2>
-          {post.summary ? (
-            <p className="text-muted-foreground mt-3 text-sm leading-6">{post.summary}</p>
-          ) : null}
-          <span className="text-note mt-6 inline-flex items-center gap-1 font-mono text-xs">
-            open source <ArrowUpRight className="size-3.5" aria-hidden />
-          </span>
-        </a>
+        {href ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block max-h-[70vh] overflow-y-auto p-6 sm:p-8"
+          >
+            {body}
+          </a>
+        ) : (
+          <div className="max-h-[70vh] overflow-y-auto p-6 sm:p-8">{body}</div>
+        )}
       </div>
     </div>
   );
