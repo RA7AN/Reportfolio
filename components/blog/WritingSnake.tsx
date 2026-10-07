@@ -202,8 +202,8 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
                 className="group border-border bg-background hover:bg-muted/60 relative z-10 flex w-full flex-col rounded-2xl border p-6 text-left transition-colors duration-200 hover:border-[#5a5a5a] sm:p-7"
               >
                 {post.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <span className="mb-5 block overflow-hidden rounded-lg">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={post.image}
                       alt=""
