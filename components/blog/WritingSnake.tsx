@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowUpRight, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -34,18 +34,6 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
   const [lit, setLit] = useState<Set<number>>(() => new Set());
   const [openId, setOpenId] = useState<number | null>(null);
   const [reduced, setReduced] = useState(false);
-
-  // boustrophedon placement: even rows read left to right, odd rows right to left;
-  // a trailing lone card still turns like the ox and lands on the right
-  const cells = useMemo(() => {
-    const slots: ({ post: SnakePost; index: number } | undefined)[] = [];
-    for (let row = 0; row * 2 < posts.length; row++) {
-      const a = posts[row * 2] ? { post: posts[row * 2], index: row * 2 } : undefined;
-      const b = posts[row * 2 + 1] ? { post: posts[row * 2 + 1], index: row * 2 + 1 } : undefined;
-      slots.push(...(row % 2 === 0 ? [a, b] : [b, a]));
-    }
-    return slots;
-  }, [posts]);
 
   const open = openId ? (posts.find((post) => post.id === openId) ?? null) : null;
 
@@ -196,75 +184,72 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
           <path ref={basePathRef} className="stroke-border" strokeWidth={2} />
           <path ref={fillPathRef} className="stroke-note" strokeWidth={2} strokeLinecap="round" />
         </svg>
-        <ul
-          ref={gridRef}
-          className="relative z-10 grid grid-cols-1 gap-x-6 gap-y-14 sm:grid-cols-2"
-        >
-          {cells.map((cell, slot) => {
-            if (!cell) {
-              // the empty left slot lets a short last row turn like the ox
-              return <li key={`gap-${slot}`} aria-hidden className="hidden sm:block" />;
-            }
-            const { post, index } = cell;
-            return (
-              <li key={post.id} className="relative" data-snake-card={index}>
-                <button
-                  type="button"
-                  onClick={() => setOpenId(post.id)}
-                  className="group border-border bg-background relative z-10 flex h-full w-full flex-col rounded-2xl border p-5 text-left transition-colors duration-200 hover:border-[#5a5a5a]"
-                >
-                  {/* the node the snake threads through */}
-                  <span
-                    ref={(el) => {
-                      nodeRefs.current[index] = el;
-                    }}
-                    aria-hidden
-                    className={cn(
-                      'border-border bg-background absolute top-0 left-1/2 z-20 hidden size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors duration-300 sm:block',
-                      lit.has(index) || reduced ? 'border-note bg-note' : undefined,
-                      index === 0 && (lit.has(index) || reduced) && 'pixel-blink',
-                    )}
-                  />
-                  <span className="text-muted-foreground flex items-baseline justify-between font-mono text-[11px] tracking-widest">
-                    <span>{String(index + 1).padStart(2, '0')}</span>
-                    <span>{post.year}</span>
-                  </span>
-                  <span className="mt-4 block text-lg font-medium tracking-tight">
-                    {post.title}
-                  </span>
-                  {post.venue ? (
-                    <span className="text-muted-foreground mt-1 block truncate text-xs">
-                      {post.venue}
-                    </span>
-                  ) : null}
-                  {post.excerpt ? (
-                    <span className="text-muted-foreground mt-1.5 line-clamp-3 block text-sm leading-6">
-                      {post.excerpt}
-                    </span>
-                  ) : null}
-                  <span className="mt-auto flex items-center justify-between pt-4">
-                    <span className="text-muted-foreground rounded-full border border-white/10 px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase">
-                      {post.kind}
-                    </span>
-                    <ArrowUpRight
-                      className="text-muted-foreground group-hover:text-note size-4 transition-colors duration-200"
-                      aria-hidden
-                    />
-                  </span>
-                </button>
-                {/* citation card peeking from behind the corner; stacks below on phones */}
-                <span className="border-border text-muted-foreground bg-background relative mt-3 block rounded-lg border border-dashed p-3 text-[11px] leading-4 shadow-lg sm:absolute sm:right-[-12px] sm:bottom-[-12px] sm:z-0 sm:mt-0 sm:max-w-[240px] sm:-rotate-2">
-                  <span className="text-muted-foreground block font-mono text-[9px] tracking-widest uppercase">
-                    cite as
-                  </span>
-                  <span className="text-foreground mt-1 block text-xs font-medium">{author}</span>
-                  <span className="mt-0.5 block">
-                    {author}. &quot;{post.title}.&quot; {post.venue ?? 'print'}, {post.year}.
-                  </span>
+        <ul ref={gridRef} className="relative z-10 grid grid-cols-1 gap-y-24 sm:gap-y-40">
+          {posts.map((post, index) => (
+            <li
+              key={post.id}
+              className={cn(
+                'relative w-full sm:w-[58%]',
+                // one card per row, alternating sides so the thread weaves like a plough
+                index % 2 === 0 ? 'sm:mr-auto' : 'sm:ml-auto',
+              )}
+              style={{ zIndex: posts.length - index }}
+              data-snake-card={index}
+            >
+              <button
+                type="button"
+                onClick={() => setOpenId(post.id)}
+                className="group border-border bg-background relative z-10 flex w-full flex-col rounded-2xl border p-6 text-left transition-colors duration-200 hover:border-[#5a5a5a] sm:p-7"
+              >
+                {/* the node the snake threads through */}
+                <span
+                  ref={(el) => {
+                    nodeRefs.current[index] = el;
+                  }}
+                  aria-hidden
+                  className={cn(
+                    'border-border bg-background absolute top-0 left-1/2 z-20 hidden size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors duration-300 sm:block',
+                    lit.has(index) || reduced ? 'border-note bg-note' : undefined,
+                    index === 0 && (lit.has(index) || reduced) && 'pixel-blink',
+                  )}
+                />
+                <span className="text-muted-foreground flex items-baseline justify-between font-mono text-[11px] tracking-widest">
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <span>{post.year}</span>
                 </span>
-              </li>
-            );
-          })}
+                <span className="mt-4 block text-xl font-medium tracking-tight">{post.title}</span>
+                {post.venue ? (
+                  <span className="text-muted-foreground mt-1 block truncate text-xs">
+                    {post.venue}
+                  </span>
+                ) : null}
+                {post.excerpt ? (
+                  <span className="text-muted-foreground mt-2 line-clamp-3 block text-[15px] leading-7">
+                    {post.excerpt}
+                  </span>
+                ) : null}
+                <span className="mt-auto flex items-center justify-between pt-5">
+                  <span className="text-muted-foreground rounded-full border border-white/10 px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase">
+                    {post.kind}
+                  </span>
+                  <ArrowUpRight
+                    className="text-muted-foreground group-hover:text-note size-4 transition-colors duration-200"
+                    aria-hidden
+                  />
+                </span>
+              </button>
+              {/* citation card peeking from behind the corner; stacks below on phones */}
+              <span className="border-border text-muted-foreground bg-background relative mt-3 block rounded-lg border border-dashed p-3 text-[11px] leading-4 shadow-lg sm:absolute sm:right-[-12px] sm:bottom-[-12px] sm:z-0 sm:mt-0 sm:max-w-[240px] sm:-rotate-2">
+                <span className="text-muted-foreground block font-mono text-[9px] tracking-widest uppercase">
+                  cite as
+                </span>
+                <span className="text-foreground mt-1 block text-xs font-medium">{author}</span>
+                <span className="mt-0.5 block">
+                  {author}. &quot;{post.title}.&quot; {post.venue ?? 'print'}, {post.year}.
+                </span>
+              </span>
+            </li>
+          ))}
         </ul>
       </div>
       {open ? <PreviewModal post={open} onClose={() => setOpenId(null)} /> : null}
