@@ -1,10 +1,21 @@
 ---
 type: "honors"
-count: 5
-lastUpdated: "2026-10-07T00:00:00.000Z"
+count: 6
+lastUpdated: "2026-10-07T12:00:00.000Z"
 ---
 
 [
+  {
+    "id": 6,
+    "title": "Guinness World Record",
+    "org": "Guinness World Records",
+    "dateLabel": "2026",
+    "highlights": [
+      "Part of a team recognized for setting a Guinness World Record."
+    ],
+    "image": "/achievements/Guinness.jpeg",
+    "sortOrder": 0
+  },
   {
     "id": 1,
     "title": "Deccan Dynamite — Q3 2025",
