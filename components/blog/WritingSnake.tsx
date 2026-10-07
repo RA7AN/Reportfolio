@@ -243,7 +243,7 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
               <span
                 className={cn(
                   'border-border text-muted-foreground bg-background relative mt-3 block rounded-lg border border-dashed p-3 text-[11px] leading-4 shadow-lg',
-                  'sm:absolute sm:top-1/2 sm:mt-0 sm:max-w-[240px] sm:-translate-y-1/2 sm:-rotate-2',
+                  'sm:absolute sm:top-1/2 sm:mt-0 sm:w-60 sm:-translate-y-1/2 sm:-rotate-2',
                   index % 2 === 0 ? 'sm:left-[calc(100%+1.5rem)]' : 'sm:right-[calc(100%+1.5rem)]',
                 )}
               >
