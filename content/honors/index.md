@@ -13,7 +13,7 @@ lastUpdated: "2026-10-07T00:00:00.000Z"
     "highlights": [
       "Awarded organization-wide recognition for exceptional research contributions, technical leadership, and positive client feedback on AI research and evaluation projects."
     ],
-    "image": null,
+    "image": "/achievements/deccan.jpeg",
     "sortOrder": 1
   },
   {
@@ -24,7 +24,7 @@ lastUpdated: "2026-10-07T00:00:00.000Z"
     "highlights": [
       "Awarded for leadership and financial management contributions."
     ],
-    "image": null,
+    "image": "/achievements/FInancial.jpeg",
     "sortOrder": 2
   },
   {

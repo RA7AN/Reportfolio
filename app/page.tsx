@@ -27,6 +27,7 @@ import { getDevActivity } from '@/lib/dev-activity';
 import {
   getCommunities,
   getExperiences,
+  getHonors,
   getProfile,
   getProjects,
   getPublications,
@@ -46,6 +47,7 @@ export default function HomePage() {
   const experiences = getExperiences();
   const projects = getProjects();
   const publications = getPublications();
+  const honors = getHonors();
   const talks = getTalks();
   const skills = getSkills();
   const devActivity = getDevActivity();
@@ -165,8 +167,8 @@ export default function HomePage() {
           {/* travel log/reels: hidden for now, may return later — uncomment together
               with the ReelsPlaceholder import at the top of this file */}
           {/* <ReelsPlaceholder /> */}
-          {/* achievements is a mockup — placement open for iteration */}
-          <AchievementsPreview />
+          {/* achievements is wired to the cms — placement open for iteration */}
+          <AchievementsPreview items={honors} />
           <BookingPlaceholder email={profile.email} />
         </HomeInner>
       </main>
