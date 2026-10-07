@@ -47,6 +47,9 @@ export const projectSchema = z.object({
   tools: z.array(z.string()),
   dateLabel: z.string(),
   highlights: z.array(z.string()),
+  // landing card one-liner: the problem row under the tagline; falls back to
+  // highlights[0] when left out
+  problem: nullableString,
   sortOrder: z.number().optional(),
   isResearch: nullableString,
   showOnLanding: z.enum(['yes', 'no']).optional(),

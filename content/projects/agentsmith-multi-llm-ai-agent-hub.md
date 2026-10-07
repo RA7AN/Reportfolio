@@ -2,7 +2,7 @@
 type: "project"
 slug: "agentsmith-multi-llm-ai-agent-hub"
 sortOrder: 5
-lastUpdated: "2026-02-12T17:33:53.008Z"
+lastUpdated: "2026-10-07T00:00:00.000Z"
 ---
 
 {
@@ -21,10 +21,11 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
   ],
   "dateLabel": "Jun 2025",
   "highlights": [
-    "Built production-ready AI agent system supporting multiple LLMs with unified orchestration.",
-    "Integrated 20+ APIs enabling complex multi-step automation workflows.",
+    "One hub orchestrating many LLMs into production-ready agents.",
+    "Unified orchestration across 20+ APIs, from tool calls to multi-step workflows.",
     "Implemented persistent memory and dynamic context management."
   ],
+  "problem": "Every model comes with its own tools, keys and quirks to babysit.",
   "sortOrder": 5,
   "isResearch": "no",
   "githubRepo": null
