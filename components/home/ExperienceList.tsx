@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
-import { ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { CompanyMark } from '@/components/home/CompanyMark';
 import { HandNote } from '@/components/layout/SiteIcons';
 import { cn } from '@/lib/utils';
@@ -286,7 +286,7 @@ export function ExperienceList({ items }: { items: Experience[] }) {
 
   return (
     <section
-      className="pt-20 sm:pt-24"
+      className="scroll-mt-20 py-20 sm:py-24"
       id="experience"
       data-nerd="experience: sliding pill + css grid-rows accordion + year-axis timeline"
     >
@@ -357,7 +357,7 @@ export function ExperienceList({ items }: { items: Experience[] }) {
               <li key={item.id} className="relative">
                 <button
                   type="button"
-                  className="hover:bg-muted/60 -mx-3 flex w-[calc(100%+1.5rem)] items-start gap-3.5 rounded-2xl px-3 py-3 text-left transition-colors duration-200"
+                  className="group hover:bg-muted/60 -mx-3 flex w-[calc(100%+1.5rem)] items-start gap-3.5 rounded-2xl px-3 py-3 text-left transition-colors duration-200"
                   onClick={() => setOpenId(open ? null : item.id)}
                   aria-expanded={open}
                 >
@@ -368,9 +368,16 @@ export function ExperienceList({ items }: { items: Experience[] }) {
                     </span>
                     <span className="block text-sm text-white/45 lowercase">{item.role}</span>
                   </span>
-                  <span className="mt-1 hidden shrink-0 items-center gap-1 sm:flex">
+                  <span className="mt-1 flex shrink-0 items-center gap-1">
                     <span className="text-[12px] text-white/35">{range(item)}</span>
-                    {open ? <ChevronUp className="size-3.5 text-white/35" aria-hidden /> : null}
+                    {open ? (
+                      <ChevronUp className="size-3.5 text-white/35" aria-hidden />
+                    ) : (
+                      <ChevronDown
+                        className="size-3.5 text-white/60 sm:opacity-0 sm:transition-opacity sm:duration-200 sm:group-hover:opacity-100"
+                        aria-hidden
+                      />
+                    )}
                   </span>
                 </button>
                 <div className="accordion-grid" data-open={open}>
@@ -385,10 +392,6 @@ export function ExperienceList({ items }: { items: Experience[] }) {
                           <span>{line}</span>
                         </p>
                       ))}
-                      <p className="mt-2 flex items-center gap-1 text-[12px] text-white/35 sm:hidden">
-                        {range(item)}
-                        {open ? <ChevronUp className="size-3.5" aria-hidden /> : null}
-                      </p>
                     </div>
                   </div>
                 </div>

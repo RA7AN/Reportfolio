@@ -47,6 +47,9 @@ export const projectSchema = z.object({
   tools: z.array(z.string()),
   dateLabel: z.string(),
   highlights: z.array(z.string()),
+  // landing card one-liner: the problem row under the tagline; falls back to
+  // highlights[0] when left out
+  problem: nullableString,
   sortOrder: z.number().optional(),
   isResearch: nullableString,
   showOnLanding: z.enum(['yes', 'no']).optional(),
@@ -61,6 +64,11 @@ export const publicationSchema = z.object({
   title: z.string(),
   venue: nullableString,
   url: nullableString,
+  // landing-card extras, scaffolded for manual curation in the content files
+  excerpt: nullableString,
+  image: nullableString,
+  doi: nullableString,
+  links: z.array(z.object({ label: z.string(), url: z.string() })).optional(),
   sortOrder: z.number().optional(),
   orcidId: nullableString,
 });
@@ -86,6 +94,8 @@ export const honorSchema = z.object({
   org: z.string(),
   dateLabel: z.string(),
   highlights: z.array(z.string()),
+  // award photo under /public/achievements; the dashed stand-in shows until one is set
+  image: nullableString,
   sortOrder: z.number().optional(),
 });
 

@@ -1,10 +1,12 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { cn } from '@/lib/utils';
 import type { Project } from '@/lib/content/schemas';
 
 function problemOf(project: Project) {
-  return project.highlights[0] ?? 'details on a call.';
+  // the cms problem row; falls back to the tagline when the field is left out
+  return project.problem ?? project.highlights[0] ?? 'details on a call.';
 }
 
 function roleOf(project: Project) {
@@ -17,24 +19,37 @@ function WorkCard({ project, index }: { project: Project; index: number }) {
   const nda = !href;
 
   return (
-    <article className="border-border hover:bg-muted/60 flex flex-col rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3a3a3a]">
-      <div className="text-muted-foreground flex items-start justify-between gap-3 text-[11px]">
-        <span>{String(index + 1).padStart(2, '0')}</span>
-        <span>{project.dateLabel}</span>
+    <article className="border-border hover:bg-muted/60 group flex h-full flex-col rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3a3a3a]">
+      <div className="text-muted-foreground flex items-baseline justify-between gap-3 font-mono text-[11px]">
+        {/* the index picks up the amber accent on card hover, like the reference cards */}
+        <span className="group-hover:text-note transition-colors">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        <span className="lowercase">{project.dateLabel}</span>
       </div>
-      <h3 className="mt-6 text-lg font-medium tracking-tight">{project.title}</h3>
-      <p className="text-note mt-1 text-sm">↳ {project.highlights[0]}</p>
-      <dl className="mt-6 space-y-3 text-sm leading-relaxed">
-        <div>
-          <dt className="text-muted-foreground text-xs tracking-widest uppercase">problem</dt>
-          <dd className="text-muted-foreground mt-1">{problemOf(project)}</dd>
+      <h3 className="mt-4 text-lg font-medium tracking-tight">{project.title}</h3>
+      <p className="mt-1.5 text-[15px] leading-6">
+        <span className="text-note mr-1.5" aria-hidden>
+          ↳
+        </span>
+        {project.highlights[0]}
+      </p>
+      {/* bordered one-liner rows keep every card the same height */}
+      <dl className="border-border/70 mt-6 border-t">
+        <div className="border-border/70 grid grid-cols-[64px_1fr] gap-3 border-b py-3">
+          <dt className="text-muted-foreground pt-0.5 font-mono text-[10px] tracking-widest uppercase">
+            problem
+          </dt>
+          <dd className="text-muted-foreground text-sm leading-6">{problemOf(project)}</dd>
         </div>
-        <div>
-          <dt className="text-muted-foreground text-xs tracking-widest uppercase">role</dt>
-          <dd className="text-muted-foreground mt-1">{roleOf(project)}</dd>
+        <div className="border-border/70 grid grid-cols-[64px_1fr] gap-3 border-b py-3">
+          <dt className="text-muted-foreground pt-0.5 font-mono text-[10px] tracking-widest uppercase">
+            role
+          </dt>
+          <dd className="text-muted-foreground text-sm leading-6">{roleOf(project)}</dd>
         </div>
       </dl>
-      <div className="text-muted-foreground mt-auto flex items-end justify-between gap-3 pt-6 text-[11px]">
+      <div className="text-muted-foreground mt-auto flex items-end justify-between gap-3 pt-5 text-[11px]">
         <p>{tags.join(' · ').toLowerCase()}</p>
         {nda ? (
           <span className="border-border rounded-full border px-2 py-0.5">nda</span>
@@ -60,7 +75,7 @@ export function WorkGrid({ projects }: { projects: Project[] }) {
 
   return (
     <section
-      className="pt-20 sm:pt-24"
+      className="scroll-mt-20 py-20 sm:py-24"
       id="work"
       data-nerd="selected work: git cms cards, hover lift 2px"
     >
@@ -76,7 +91,7 @@ export function WorkGrid({ projects }: { projects: Project[] }) {
         {shown.map((project, index) => (
           <div
             key={project.id}
-            className={index >= 4 ? 'rise-in' : undefined}
+            className={cn('h-full', index >= 4 && 'rise-in')}
             style={index >= 4 ? { animationDelay: `${(index - 4) * 0.06}s` } : undefined}
           >
             <WorkCard project={project} index={index} />

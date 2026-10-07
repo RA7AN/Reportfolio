@@ -62,7 +62,7 @@ export function StackGrid({ skills }: { skills: Skill[] }) {
 
   return (
     <section
-      className="pt-20 sm:pt-24"
+      className="scroll-mt-20 py-20 sm:py-24"
       id="stack"
       data-nerd="stack: circular simple-icons, shared hover tooltip"
     >

@@ -13,5 +13,6 @@ lastUpdated: "2026-02-12T17:33:53.011Z"
   "highlights": [
     "Awarded for leadership and financial management contributions."
   ],
+  "image": "/achievements/FInancial.jpeg",
   "sortOrder": 2
 }

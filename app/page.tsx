@@ -9,28 +9,30 @@ import { Filmstrip } from '@/components/home/Filmstrip';
 import { Globe } from '@/components/home/Globe';
 import { HomeInner } from '@/components/home/HomeInner';
 import { HeroMuseLoop } from '@/components/home/HeroMuseLoop';
+import { IntroGate } from '@/components/layout/IntroGate';
 import { LetterTitle, RiseIn } from '@/components/home/RiseIn';
 import { LocalClock } from '@/components/home/LocalClock';
 import { PostsPlaceholder } from '@/components/home/PostsPlaceholder';
 import { PublicationsPreview } from '@/components/home/PublicationsPreview';
-import { ReelsPlaceholder } from '@/components/home/ReelsPlaceholder';
+// travel log/reels: hidden for now, may return later — uncomment this import
+// together with the <ReelsPlaceholder /> block near the footer
+// import { ReelsPlaceholder } from '@/components/home/ReelsPlaceholder';
 import { SiteFooter } from '@/components/home/SiteFooter';
 import { StackGrid } from '@/components/home/StackGrid';
 import { StackMarks } from '@/components/home/StackMarks';
 import { WorkGrid } from '@/components/home/WorkGrid';
-import { WritingPreview } from '@/components/home/WritingPreview';
 import { ScribbleArrow } from '@/components/layout/SiteIcons';
 import { PageShell } from '@/components/layout/PageShell';
 import { getDevActivity } from '@/lib/dev-activity';
 import {
   getCommunities,
   getExperiences,
+  getHonors,
   getProfile,
   getProjects,
   getPublications,
   getSkills,
   getTalks,
-  getWritingList,
 } from '@/lib/content';
 
 export const metadata: Metadata = {
@@ -45,15 +47,18 @@ export default function HomePage() {
   const experiences = getExperiences();
   const projects = getProjects();
   const publications = getPublications();
+  const honors = getHonors();
   const talks = getTalks();
   const skills = getSkills();
-  const writing = getWritingList().slice(0, 3);
   const devActivity = getDevActivity();
   const city = profile.location ?? 'Jeddah';
   const timeZone = 'Asia/Riyadh';
 
   return (
     <PageShell>
+      {/* wip curtain: lifts into the hero's staggered rise-in, which stays paused
+          (html.intro-pending) until the gate is dismissed */}
+      <IntroGate />
       <main>
         <HomeInner className="pt-10 pb-16 sm:pt-36 sm:pb-24">
           <section data-nerd="hero: css stagger 40ms, rise-in 0.5s cubic">
@@ -149,8 +154,7 @@ export default function HomePage() {
           <WorkGrid projects={projects} />
           <Communities items={communities} />
           <StackGrid skills={skills} />
-          {/* publications is a mockup — placement open for iteration */}
-          <PublicationsPreview />
+          <PublicationsPreview items={publications} />
           {/* development activity: real merged data from the ingestion pipeline */}
           {devActivity ? <DevelopmentActivity data={devActivity} /> : null}
         </HomeInner>
@@ -160,10 +164,11 @@ export default function HomePage() {
         <HomeInner>
           <Globe />
           <PostsPlaceholder />
-          <WritingPreview items={writing} />
-          <ReelsPlaceholder />
-          {/* achievements is a mockup — placement open for iteration */}
-          <AchievementsPreview />
+          {/* travel log/reels: hidden for now, may return later — uncomment together
+              with the ReelsPlaceholder import at the top of this file */}
+          {/* <ReelsPlaceholder /> */}
+          {/* achievements is wired to the cms — placement open for iteration */}
+          <AchievementsPreview items={honors} />
           <BookingPlaceholder email={profile.email} />
         </HomeInner>
       </main>

@@ -13,5 +13,6 @@ lastUpdated: "2026-02-12T17:33:53.011Z"
   "highlights": [
     "Secured second place at regional-level academic quiz competition conducted on National Education Day, demonstrating excellence in general knowledge and academic aptitude."
   ],
+  "image": null,
   "sortOrder": 5
 }

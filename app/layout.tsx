@@ -1,9 +1,16 @@
 import type { Metadata, Viewport } from 'next';
 import { Caveat, Geist, Geist_Mono } from 'next/font/google';
+import Script from 'next/script';
 import { SiteUiProvider } from '@/components/layout/SiteUi';
 import { SmoothScroll } from '@/components/layout/SmoothScroll';
 import { env } from '@/lib/env';
 import './globals.css';
+
+// pauses the landing's hero animations behind the wip curtain before first paint
+// on every full page load (html.intro-pending). runs once per document load; the
+// IntroGate component re-arms the pause itself on client-side navigations.
+const INTRO_GATE_BOOTSTRAP =
+  "try{if(location.pathname==='/'){document.documentElement.classList.add('intro-pending')}}catch(e){}";
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -63,6 +70,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         suppressHydrationWarning
       >
         <SiteUiProvider>
+          <Script
+            id="intro-gate-bootstrap"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{ __html: INTRO_GATE_BOOTSTRAP }}
+          />
           <SmoothScroll>{children}</SmoothScroll>
         </SiteUiProvider>
       </body>

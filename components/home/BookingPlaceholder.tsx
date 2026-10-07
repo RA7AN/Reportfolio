@@ -3,7 +3,7 @@ const days = Array.from({ length: 31 }, (_, i) => i + 1);
 export function BookingPlaceholder({ email }: { email: string }) {
   return (
     <section
-      className="pt-20 pb-16 sm:pt-24"
+      className="scroll-mt-20 py-20 sm:py-24"
       id="work-with-me"
       data-nerd="call: fake calendar, mail until cal.com"
     >

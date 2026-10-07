@@ -1,7 +1,7 @@
 ---
 type: "projects"
 count: 7
-lastUpdated: "2026-09-28T00:00:00.000Z"
+lastUpdated: "2026-10-07T00:00:00.000Z"
 ---
 
 [
@@ -21,17 +21,18 @@ lastUpdated: "2026-09-28T00:00:00.000Z"
     ],
     "dateLabel": "Apr 2026 - Present",
     "highlights": [
-      "Most companies want AI agents as a product they subscribe to, not a one-off project — but agent builds rarely survive the jump to multi-tenant, billable production.",
-      "AI Engineer on the platform: businesses onboard a company profile, then subscribe to individual agents (Business Dashboard, Signature Generator, Offer Letter Generator) on a per-agent monthly plan.",
+      "AI agents as a subscription product: multi-tenant, billable, alive in production.",
+      "AI Engineer on the platform: company onboarding, per-agent subscription plans, billing through Stripe.",
       "Multi-tenant B2B SaaS on Next.js 16 and Postgres with Drizzle, Redis and BullMQ background jobs, envelope-encrypted secrets, Better Auth for email/password and Google OAuth, and Stripe subscription items per agent."
     ],
+    "problem": "Companies want agents they can subscribe to, not one-off builds that never survive the jump to production.",
     "sortOrder": 1,
     "isResearch": "no",
     "githubRepo": null
   },
   {
     "id": 7,
-    "title": "SafeSight: AI Copilot for Construction Safety Inspections",
+    "title": "SafeSight: Safety Inspection Copilot",
     "url": "https://github.com/RA7AN/Safesightv1",
     "tools": [
       "React",
@@ -45,10 +46,11 @@ lastUpdated: "2026-09-28T00:00:00.000Z"
     ],
     "dateLabel": "Jul 2026",
     "highlights": [
-      "Construction safety is still inspected by hand: site photographs get captured but rarely analysed, hazard calls lean on individual experience, and compliance references are searched manually across regulations.",
-      "Designed and shipped the inspection pipeline end to end for the Kanz AI Training Hackathon 2026 — Vision, Hazard Detection, Compliance Grounding, and Report Generation as cooperating agents.",
+      "Construction safety inspections, read by AI instead of memory.",
+      "Designed and shipped the inspection pipeline end to end for the Kanz AI hackathon 2026.",
       "Grounded findings in OSHA, NEBOSH and company SOPs with pgvector retrieval, behind a provider-agnostic layer (Gemini, OpenRouter, Mistral, Ollama) so deployments can trade cost against privacy, with human review and PDF export at the end."
     ],
+    "problem": "Site photos get captured but rarely analysed, and hazard calls lean on individual experience.",
     "sortOrder": 2,
     "isResearch": "no",
     "githubRepo": null
@@ -69,10 +71,11 @@ lastUpdated: "2026-09-28T00:00:00.000Z"
     ],
     "dateLabel": "Feb 2026",
     "highlights": [
-      "Architected a full-stack KYC automation platform integrating OCR-based document extraction, risk scoring, NLP-based entity recognition, and automated decision workflows.",
-      "Built modular microservices including OCR processing (Python + PaddleOCR), backend API (Node.js), and database-driven configuration system (PostgreSQL) enabling dynamic risk thresholds and scoring weights.",
+      "KYC decisions from document upload to approve, review or reject, automated.",
+      "Architected the platform: OCR extraction, weighted risk scoring and decision services.",
       "Designed weighted risk scoring engine combining identity matching, document completeness, financial strength, and document quality signals to generate automated approval, review, or rejection decisions."
     ],
+    "problem": "Manual KYC review is slow, inconsistent and hard to audit at scale.",
     "sortOrder": 3,
     "isResearch": "no",
     "githubRepo": null
@@ -114,17 +117,18 @@ lastUpdated: "2026-09-28T00:00:00.000Z"
     ],
     "dateLabel": "Jun 2025",
     "highlights": [
-      "Built production-ready AI agent system supporting multiple LLMs with unified orchestration.",
-      "Integrated 20+ APIs enabling complex multi-step automation workflows.",
+      "One hub orchestrating many LLMs into production-ready agents.",
+      "Unified orchestration across 20+ APIs, from tool calls to multi-step workflows.",
       "Implemented persistent memory and dynamic context management."
     ],
+    "problem": "Every model comes with its own tools, keys and quirks to babysit.",
     "sortOrder": 5,
     "isResearch": "no",
     "githubRepo": null
   },
   {
     "id": 4,
-    "title": "MMVTG: Multi-Modal Video Temporal Grounding",
+    "title": "MMVTG: Video Temporal Grounding",
     "url": "https://github.com/RA7AN/MMVTG_UI.git",
     "tools": [
       "PyTorch",
@@ -134,10 +138,11 @@ lastUpdated: "2026-09-28T00:00:00.000Z"
     ],
     "dateLabel": "Sept 2024 - Mar 2025",
     "highlights": [
-      "Developed model retrieving precise video segments from natural language queries.",
-      "Achieved R1@0.5 score of 60.5 and mAP of 61.55, surpassing prior SOTA.",
+      "Retrieve the exact video segment a natural language query describes.",
+      "Built the retrieval model: R1@0.5 of 60.5 and mAP of 61.55, past prior SOTA, published in IEEE.",
       "Paper accepted for publication in IEEE."
     ],
+    "problem": "Finding one moment in hours of footage by hand does not scale.",
     "sortOrder": 6,
     "isResearch": "no",
     "githubRepo": null

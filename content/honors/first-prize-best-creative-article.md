@@ -13,5 +13,6 @@ lastUpdated: "2026-02-12T17:33:53.011Z"
   "highlights": [
     "Awarded first place for excellence in journalistic writing, creativity, and narrative quality in a competitive literary event, Write Angle'22."
   ],
+  "image": null,
   "sortOrder": 4
 }
