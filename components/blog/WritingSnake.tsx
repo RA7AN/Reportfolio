@@ -238,8 +238,15 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
                   />
                 </span>
               </button>
-              {/* citation card sitting fully clear below the corner; stacks on phones too */}
-              <span className="border-border text-muted-foreground bg-background relative mt-3 block rounded-lg border border-dashed p-3 text-[11px] leading-4 shadow-lg sm:absolute sm:top-[calc(100%+14px)] sm:right-3 sm:mt-0 sm:max-w-[240px] sm:-rotate-2">
+              {/* citation card beside its card: right of left-aligned cards, left of
+                right-aligned ones, vertically centered; stacks below on phones */}
+              <span
+                className={cn(
+                  'border-border text-muted-foreground bg-background relative mt-3 block rounded-lg border border-dashed p-3 text-[11px] leading-4 shadow-lg',
+                  'sm:absolute sm:top-1/2 sm:mt-0 sm:max-w-[240px] sm:-translate-y-1/2 sm:-rotate-2',
+                  index % 2 === 0 ? 'sm:left-[calc(100%+1.5rem)]' : 'sm:right-[calc(100%+1.5rem)]',
+                )}
+              >
                 <span className="text-muted-foreground block font-mono text-[9px] tracking-widest uppercase">
                   cite as
                 </span>
