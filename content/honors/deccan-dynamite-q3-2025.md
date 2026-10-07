@@ -13,5 +13,6 @@ lastUpdated: "2026-02-12T17:33:53.010Z"
   "highlights": [
     "Awarded organization-wide recognition for exceptional research contributions, technical leadership, and positive client feedback on AI research and evaluation projects."
   ],
+  "image": null,
   "sortOrder": 1
 }

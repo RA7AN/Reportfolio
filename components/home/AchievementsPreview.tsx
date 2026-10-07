@@ -1,37 +1,15 @@
+import { getHonors } from '@/lib/content';
 import { cn } from '@/lib/utils';
 
-// placeholder rows — swap for getHonors() once the section design settles
-const awards = [
-  {
-    title: 'Deccan Dynamite — Q3 2025',
-    org: 'Deccan AI',
-    dateLabel: 'May 2025',
-    note: 'org-wide recognition for research contributions and client feedback',
-    // the freshest win borrows the timeline's amber treatment
-    featured: true,
-  },
-  {
-    title: 'Toastmaster of the Quarter',
-    org: 'Toastmasters · CBIT',
-    dateLabel: 'Q1 2024',
-    note: 'best speaker run of the quarter',
-    featured: false,
-  },
-  {
-    title: 'First Prize — Best Creative Article',
-    org: 'International Indian School',
-    dateLabel: '2023',
-    note: 'creative writing contest',
-    featured: false,
-  },
-];
-
 export function AchievementsPreview() {
+  const items = getHonors();
+  if (items.length === 0) return null;
+
   return (
     <section
       className="scroll-mt-20 py-20 sm:py-24"
       id="achievements"
-      data-nerd="achievements: mock rows, amber tile marks the freshest win"
+      data-nerd="achievements: real cms data, amber tile marks the freshest win"
     >
       <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         achievements
@@ -41,21 +19,28 @@ export function AchievementsPreview() {
         awards, honors, and a couple of quarters won
       </p>
       <ul className="mt-8 grid gap-3 sm:grid-cols-3">
-        {awards.map((award) => (
+        {items.map((award, index) => (
           <li
-            key={award.title}
+            key={award.id}
             className={cn(
               'flex h-full flex-col rounded-2xl p-4 transition-colors duration-200',
-              award.featured
-                ? 'bg-[#3a3118] shadow-[inset_0_0_0_1px_rgba(232,185,35,0.28)]'
+              index === 0
+                ? // the freshest win borrows the timeline's amber treatment
+                  'bg-[#3a3118] shadow-[inset_0_0_0_1px_rgba(232,185,35,0.28)]'
                 : 'border-border hover:bg-muted/60 border hover:border-[#5a5a5a]',
             )}
           >
-            {/* dashed stand-in; becomes the award photo when wired to content */}
+            {/* the award photo from the cms; the dashed tile stands in until one is set */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/achievements/placeholder.svg" alt="" className="size-12 rounded-lg" />
+            <img
+              src={award.image ?? '/achievements/placeholder.svg'}
+              alt=""
+              className="size-12 rounded-lg object-cover"
+            />
             <p className="mt-3.5 text-[15px] font-medium tracking-tight">{award.title}</p>
-            <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed">{award.note}</p>
+            <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed">
+              {award.highlights[0]}
+            </p>
             <p className="text-muted-foreground mt-auto pt-3 text-xs">
               {award.org} · {award.dateLabel}
             </p>

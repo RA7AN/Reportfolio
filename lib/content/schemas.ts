@@ -94,6 +94,8 @@ export const honorSchema = z.object({
   org: z.string(),
   dateLabel: z.string(),
   highlights: z.array(z.string()),
+  // award photo under /public/achievements; the dashed stand-in shows until one is set
+  image: nullableString,
   sortOrder: z.number().optional(),
 });
 

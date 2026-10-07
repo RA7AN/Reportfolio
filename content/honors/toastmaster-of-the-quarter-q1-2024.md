@@ -13,5 +13,6 @@ lastUpdated: "2026-02-12T17:33:53.011Z"
   "highlights": [
     "Recognized for outstanding leadership, mentorship, and service contributions at club, area, and division levels, supporting multiple Toastmasters chapters and regional events."
   ],
+  "image": null,
   "sortOrder": 3
 }

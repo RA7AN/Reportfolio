@@ -1,7 +1,7 @@
 ---
 type: "honors"
 count: 5
-lastUpdated: "2026-02-12T17:33:53.010Z"
+lastUpdated: "2026-10-07T00:00:00.000Z"
 ---
 
 [
@@ -13,6 +13,7 @@ lastUpdated: "2026-02-12T17:33:53.010Z"
     "highlights": [
       "Awarded organization-wide recognition for exceptional research contributions, technical leadership, and positive client feedback on AI research and evaluation projects."
     ],
+    "image": null,
     "sortOrder": 1
   },
   {
@@ -23,6 +24,7 @@ lastUpdated: "2026-02-12T17:33:53.010Z"
     "highlights": [
       "Awarded for leadership and financial management contributions."
     ],
+    "image": null,
     "sortOrder": 2
   },
   {
@@ -33,6 +35,7 @@ lastUpdated: "2026-02-12T17:33:53.010Z"
     "highlights": [
       "Recognized for outstanding leadership, mentorship, and service contributions at club, area, and division levels, supporting multiple Toastmasters chapters and regional events."
     ],
+    "image": null,
     "sortOrder": 3
   },
   {
@@ -43,6 +46,7 @@ lastUpdated: "2026-02-12T17:33:53.010Z"
     "highlights": [
       "Awarded first place for excellence in journalistic writing, creativity, and narrative quality in a competitive literary event, Write Angle'22."
     ],
+    "image": null,
     "sortOrder": 4
   },
   {
@@ -53,6 +57,7 @@ lastUpdated: "2026-02-12T17:33:53.010Z"
     "highlights": [
       "Secured second place at regional-level academic quiz competition conducted on National Education Day, demonstrating excellence in general knowledge and academic aptitude."
     ],
+    "image": null,
     "sortOrder": 5
   }
 ]
