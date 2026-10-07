@@ -8,14 +8,6 @@ import { cn } from '@/lib/utils';
 // how many grid cards show before the button reveals the rest
 const VISIBLE_COUNT = 3;
 
-// a pinned entry wins the top slot; with nothing pinned the most recent year does
-function pickFeatured(items: Publication[]) {
-  const pinned = items.find((item) => item.featured);
-  if (pinned) return { item: pinned, pinned: true };
-  const newest = [...items].sort((a, b) => Number(b.year) - Number(a.year))[0];
-  return { item: newest, pinned: false };
-}
-
 // the card's primary link: the article if we have it, else its doi
 function primaryHref(item: Publication) {
   if (item.url) return item.url;
@@ -91,15 +83,16 @@ export function PublicationsPreview({ items }: { items: Publication[] }) {
   const [expanded, setExpanded] = useState(false);
   if (items.length === 0) return null;
 
-  const { item: featured, pinned } = pickFeatured(items);
-  const rest = items.filter((item) => item !== featured);
+  // the top card is simply the first card of the cms order — the metadata sort rules
+  const featured = items[0];
+  const rest = items.slice(1);
   const shown = expanded ? rest : rest.slice(0, VISIBLE_COUNT);
 
   return (
     <section
       className="scroll-mt-20 py-20 sm:py-24"
       id="publications"
-      data-nerd="publications: real cms data, featured card + grid, tinted thumbs with pixel clusters"
+      data-nerd="publications: real cms data, lead card + grid, tinted thumbs with pixel clusters"
     >
       {/* eyebrow reads WRITING — this row superseded the old writing preview */}
       <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
@@ -119,7 +112,7 @@ export function PublicationsPreview({ items }: { items: Publication[] }) {
             />
             <Thumb item={featured} className="aspect-[3/2] w-56 max-w-full" />
             <p className="text-note mt-4 font-mono text-[10px] tracking-widest uppercase">
-              {pinned ? 'featured' : 'latest'} · {featured.kind}
+              {featured.kind}
             </p>
             <h3 className="mt-1.5 text-xl font-medium tracking-tight sm:text-2xl">
               {featured.title}

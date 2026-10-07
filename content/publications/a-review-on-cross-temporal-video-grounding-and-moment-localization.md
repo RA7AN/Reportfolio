@@ -1,12 +1,12 @@
 ---
 type: "publication"
 slug: "a-review-on-cross-temporal-video-grounding-and-moment-localization"
-sortOrder: 2
-lastUpdated: "2026-02-12T17:33:53.008Z"
+sortOrder: 3
+lastUpdated: "2026-10-07T00:00:00.000Z"
 ---
 
 {
-  "id": 2,
+  "id": 3,
   "kind": "Conference",
   "code": "C.1",
   "year": "2025",
@@ -17,6 +17,6 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
   "image": "/publications/cross-temporal-review.svg",
   "doi": null,
   "links": [],
-  "sortOrder": 2,
+  "sortOrder": 3,
   "orcidId": null
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
-import { ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { CompanyMark } from '@/components/home/CompanyMark';
 import { HandNote } from '@/components/layout/SiteIcons';
 import { cn } from '@/lib/utils';
@@ -357,7 +357,7 @@ export function ExperienceList({ items }: { items: Experience[] }) {
               <li key={item.id} className="relative">
                 <button
                   type="button"
-                  className="hover:bg-muted/60 -mx-3 flex w-[calc(100%+1.5rem)] items-start gap-3.5 rounded-2xl px-3 py-3 text-left transition-colors duration-200"
+                  className="group hover:bg-muted/60 -mx-3 flex w-[calc(100%+1.5rem)] items-start gap-3.5 rounded-2xl px-3 py-3 text-left transition-colors duration-200"
                   onClick={() => setOpenId(open ? null : item.id)}
                   aria-expanded={open}
                 >
@@ -370,7 +370,14 @@ export function ExperienceList({ items }: { items: Experience[] }) {
                   </span>
                   <span className="mt-1 hidden shrink-0 items-center gap-1 sm:flex">
                     <span className="text-[12px] text-white/35">{range(item)}</span>
-                    {open ? <ChevronUp className="size-3.5 text-white/35" aria-hidden /> : null}
+                    {open ? (
+                      <ChevronUp className="size-3.5 text-white/35" aria-hidden />
+                    ) : (
+                      <ChevronDown
+                        className="size-3.5 text-white/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                        aria-hidden
+                      />
+                    )}
                   </span>
                 </button>
                 <div className="accordion-grid" data-open={open}>
@@ -387,7 +394,11 @@ export function ExperienceList({ items }: { items: Experience[] }) {
                       ))}
                       <p className="mt-2 flex items-center gap-1 text-[12px] text-white/35 sm:hidden">
                         {range(item)}
-                        {open ? <ChevronUp className="size-3.5" aria-hidden /> : null}
+                        {open ? (
+                          <ChevronUp className="size-3.5" aria-hidden />
+                        ) : (
+                          <ChevronDown className="size-3.5" aria-hidden />
+                        )}
                       </p>
                     </div>
                   </div>

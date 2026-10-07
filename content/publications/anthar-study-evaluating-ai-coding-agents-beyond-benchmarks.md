@@ -1,12 +1,12 @@
 ---
 type: "publication"
 slug: "anthar-study-evaluating-ai-coding-agents-beyond-benchmarks"
-sortOrder: 1
-lastUpdated: "2026-02-12T17:33:53.008Z"
+sortOrder: 2
+lastUpdated: "2026-10-07T00:00:00.000Z"
 ---
 
 {
-  "id": 1,
+  "id": 2,
   "kind": "Blog",
   "code": "B.1",
   "year": "2025",
@@ -17,7 +17,6 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
   "image": "/publications/anthar-study.svg",
   "doi": null,
   "links": [],
-  "featured": true,
-  "sortOrder": 1,
+  "sortOrder": 2,
   "orcidId": null
 }

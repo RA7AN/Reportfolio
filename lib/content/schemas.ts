@@ -69,8 +69,6 @@ export const publicationSchema = z.object({
   image: nullableString,
   doi: nullableString,
   links: z.array(z.object({ label: z.string(), url: z.string() })).optional(),
-  // pins an entry to the featured slot; with nothing pinned the newest year leads
-  featured: z.boolean().optional(),
   sortOrder: z.number().optional(),
   orcidId: nullableString,
 });

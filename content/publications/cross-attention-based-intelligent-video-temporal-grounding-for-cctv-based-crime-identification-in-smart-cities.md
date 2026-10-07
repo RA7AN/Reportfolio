@@ -1,12 +1,12 @@
 ---
 type: "publication"
 slug: "cross-attention-based-intelligent-video-temporal-grounding-for-cctv-based-crime-identification-in-smart-cities"
-sortOrder: 3
-lastUpdated: "2026-02-12T17:33:53.008Z"
+sortOrder: 1
+lastUpdated: "2026-10-07T00:00:00.000Z"
 ---
 
 {
-  "id": 3,
+  "id": 1,
   "kind": "Journal",
   "code": "J.1",
   "year": "2025",
@@ -17,6 +17,6 @@ lastUpdated: "2026-02-12T17:33:53.008Z"
   "image": "/publications/cctv-crime-identification.svg",
   "doi": null,
   "links": [],
-  "sortOrder": 3,
+  "sortOrder": 1,
   "orcidId": null
 }

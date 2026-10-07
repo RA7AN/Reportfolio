@@ -25,15 +25,15 @@ export function Filmstrip() {
           {[...shots, ...shots].map((shot, index) => (
             <figure
               key={`${shot.label}-${index}`}
-              className="w-36 shrink-0 rotate-[-2deg] bg-[#f4f1ea] p-2 shadow-lg even:rotate-[2deg]"
+              className="w-44 shrink-0 rotate-[-2deg] rounded-sm bg-white p-2 pb-1 shadow-md transition-transform duration-300 ease-out even:rotate-[2deg] hover:z-10 hover:scale-105 hover:rotate-0! hover:shadow-xl"
             >
               <div
-                className="h-28 w-full"
+                className="aspect-[4/3] w-full rounded-[2px]"
                 style={{
                   background: `linear-gradient(160deg, ${shot.palette[0]}, ${shot.palette[1]} 55%, ${shot.palette[2]})`,
                 }}
               />
-              <figcaption className="font-hand mt-2 text-center text-[13px] text-[#3a3a3a]">
+              <figcaption className="font-hand py-1.5 text-center text-lg leading-5 text-neutral-600">
                 {shot.label}
               </figcaption>
             </figure>
