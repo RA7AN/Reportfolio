@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { HomeInner } from '@/components/home/HomeInner';
 import { PageShell } from '@/components/layout/PageShell';
-import { getWritingList } from '@/lib/content';
+import { WritingSnake } from '@/components/blog/WritingSnake';
+import { getProfile, getWritingList } from '@/lib/content';
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   const posts = getWritingList();
+  const { fullName } = getProfile();
 
   return (
     <PageShell>
@@ -22,19 +23,10 @@ export default function BlogPage() {
           <h1 className="text-2xl font-medium tracking-tight sm:text-3xl">
             notes on design and making
           </h1>
-          <ul className="divide-border border-border mt-10 divide-y border-y">
-            {posts.map((item) => (
-              <li key={item.slug}>
-                <Link
-                  href={item.url || `/writing/${item.slug}`}
-                  className="hover:text-note flex items-baseline justify-between gap-6 py-4 text-[15px]"
-                >
-                  <span>{item.title}</span>
-                  <span className="text-muted-foreground text-[12px]">{item.publishedAt}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <p className="text-muted-foreground mt-2 max-w-xl text-sm leading-6 sm:text-base">
+            essays and notes, threaded newest first. the amber line is your reading order.
+          </p>
+          <WritingSnake posts={posts} author={fullName} />
         </HomeInner>
       </main>
     </PageShell>
