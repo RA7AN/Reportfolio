@@ -368,13 +368,13 @@ export function ExperienceList({ items }: { items: Experience[] }) {
                     </span>
                     <span className="block text-sm text-white/45 lowercase">{item.role}</span>
                   </span>
-                  <span className="mt-1 hidden shrink-0 items-center gap-1 sm:flex">
+                  <span className="mt-1 flex shrink-0 items-center gap-1">
                     <span className="text-[12px] text-white/35">{range(item)}</span>
                     {open ? (
                       <ChevronUp className="size-3.5 text-white/35" aria-hidden />
                     ) : (
                       <ChevronDown
-                        className="size-3.5 text-white/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                        className="size-3.5 text-white/60 sm:opacity-0 sm:transition-opacity sm:duration-200 sm:group-hover:opacity-100"
                         aria-hidden
                       />
                     )}
@@ -392,14 +392,6 @@ export function ExperienceList({ items }: { items: Experience[] }) {
                           <span>{line}</span>
                         </p>
                       ))}
-                      <p className="mt-2 flex items-center gap-1 text-[12px] text-white/35 sm:hidden">
-                        {range(item)}
-                        {open ? (
-                          <ChevronUp className="size-3.5" aria-hidden />
-                        ) : (
-                          <ChevronDown className="size-3.5" aria-hidden />
-                        )}
-                      </p>
                     </div>
                   </div>
                 </div>
