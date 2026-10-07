@@ -60,7 +60,7 @@ export function WorkGrid({ projects }: { projects: Project[] }) {
 
   return (
     <section
-      className="pt-20 sm:pt-24"
+      className="scroll-mt-20 py-20 sm:py-24"
       id="work"
       data-nerd="selected work: git cms cards, hover lift 2px"
     >

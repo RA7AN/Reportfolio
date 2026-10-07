@@ -11,7 +11,7 @@ const shots = [
 
 export function Filmstrip() {
   return (
-    <section className="pt-20 sm:pt-24" data-nerd="polaroids: css marquee, gradient placeholders">
+    <section className="py-20 sm:py-24" data-nerd="polaroids: css marquee, gradient placeholders">
       <div className="mx-auto w-full max-w-5xl px-5 sm:px-8">
         <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
           off screen

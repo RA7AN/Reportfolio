@@ -445,7 +445,7 @@ export function DevelopmentActivity({ data }: { data: DevActivityData }) {
 
   return (
     <section
-      className="pt-20 sm:pt-24"
+      className="scroll-mt-20 py-20 sm:py-24"
       id="dev-activity"
       data-nerd="development activity: merged accounts, rolling last-year grid or any calendar year, radar draws once"
     >

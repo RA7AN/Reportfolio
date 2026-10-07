@@ -21,7 +21,7 @@ export function Communities({ items }: { items: Community[] }) {
 
   return (
     <section
-      className="pt-20 sm:pt-24"
+      className="scroll-mt-20 py-20 sm:py-24"
       id="communities"
       data-nerd="communities: git cms rows, per-row rise on view, one contribution grid per row that charges on view, initials fallback for logos"
     >

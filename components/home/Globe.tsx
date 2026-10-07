@@ -194,7 +194,7 @@ export function Globe() {
 
   return (
     <section
-      className="pt-20 sm:pt-24"
+      className="scroll-mt-20 py-20 sm:py-24"
       id="globe"
       data-nerd="globe: cobe webgl, ipwho.is + open-meteo"
     >

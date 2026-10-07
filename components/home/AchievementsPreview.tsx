@@ -29,7 +29,7 @@ const awards = [
 export function AchievementsPreview() {
   return (
     <section
-      className="pt-20 sm:pt-24"
+      className="scroll-mt-20 py-20 sm:py-24"
       id="achievements"
       data-nerd="achievements: mock rows, amber tile marks the freshest win"
     >

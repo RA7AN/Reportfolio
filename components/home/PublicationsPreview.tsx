@@ -97,7 +97,7 @@ export function PublicationsPreview({ items }: { items: Publication[] }) {
 
   return (
     <section
-      className="pt-20 sm:pt-24"
+      className="scroll-mt-20 py-20 sm:py-24"
       id="publications"
       data-nerd="publications: real cms data, featured card + grid, tinted thumbs with pixel clusters"
     >
