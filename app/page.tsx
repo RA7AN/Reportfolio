@@ -14,12 +14,13 @@ import { LetterTitle, RiseIn } from '@/components/home/RiseIn';
 import { LocalClock } from '@/components/home/LocalClock';
 import { PostsPlaceholder } from '@/components/home/PostsPlaceholder';
 import { PublicationsPreview } from '@/components/home/PublicationsPreview';
-import { ReelsPlaceholder } from '@/components/home/ReelsPlaceholder';
+// travel log/reels: hidden for now, may return later — uncomment this import
+// together with the <ReelsPlaceholder /> block near the footer
+// import { ReelsPlaceholder } from '@/components/home/ReelsPlaceholder';
 import { SiteFooter } from '@/components/home/SiteFooter';
 import { StackGrid } from '@/components/home/StackGrid';
 import { StackMarks } from '@/components/home/StackMarks';
 import { WorkGrid } from '@/components/home/WorkGrid';
-import { WritingPreview } from '@/components/home/WritingPreview';
 import { ScribbleArrow } from '@/components/layout/SiteIcons';
 import { PageShell } from '@/components/layout/PageShell';
 import { getDevActivity } from '@/lib/dev-activity';
@@ -31,7 +32,6 @@ import {
   getPublications,
   getSkills,
   getTalks,
-  getWritingList,
 } from '@/lib/content';
 
 export const metadata: Metadata = {
@@ -48,7 +48,6 @@ export default function HomePage() {
   const publications = getPublications();
   const talks = getTalks();
   const skills = getSkills();
-  const writing = getWritingList().slice(0, 3);
   const devActivity = getDevActivity();
   const city = profile.location ?? 'Jeddah';
   const timeZone = 'Asia/Riyadh';
@@ -163,8 +162,9 @@ export default function HomePage() {
         <HomeInner>
           <Globe />
           <PostsPlaceholder />
-          <WritingPreview items={writing} />
-          <ReelsPlaceholder />
+          {/* travel log/reels: hidden for now, may return later — uncomment together
+              with the ReelsPlaceholder import at the top of this file */}
+          {/* <ReelsPlaceholder /> */}
           {/* achievements is a mockup — placement open for iteration */}
           <AchievementsPreview />
           <BookingPlaceholder email={profile.email} />

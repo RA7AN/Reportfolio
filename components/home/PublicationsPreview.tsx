@@ -101,8 +101,9 @@ export function PublicationsPreview({ items }: { items: Publication[] }) {
       id="publications"
       data-nerd="publications: real cms data, featured card + grid, tinted thumbs with pixel clusters"
     >
+      {/* eyebrow reads WRITING — this row superseded the old writing preview */}
       <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
-        publications
+        writing
       </p>
       <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">things I have published</h2>
       <p className="text-muted-foreground mt-2 max-w-xl text-sm leading-6 sm:text-base">
