@@ -389,8 +389,10 @@ html.intro-pending .rise-in {
     animation: none !important;
   }
 
+  /* the curtain is skipped entirely for reduced motion; IntroGate also drops
+     its timer and never pauses the hero under the same media query */
   .intro-gate {
-    transition: none;
+    display: none;
   }
 
   .accordion-grid {

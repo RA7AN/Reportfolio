@@ -107,10 +107,13 @@ export function IntroGate() {
     // the pre-paint script in layout.tsx already set intro-pending on full loads;
     // adding it here (before paint) covers client-side navigations to the landing
     // page too, so the hero never animates behind the curtain. the cleanup lifts
-    // the pause if the visitor navigates away mid-boot.
+    // the pause if the visitor navigates away mid-boot. reduced-motion visitors
+    // get no curtain at all: the css hides it, the hero never pauses, and the
+    // auto-dismiss fires on the next tick instead of holding the page 3.6s.
     const root = document.documentElement;
-    root.classList.add('intro-pending');
-    const auto = window.setTimeout(dismiss, BOOT_MS);
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduced) root.classList.add('intro-pending');
+    const auto = window.setTimeout(dismiss, reduced ? 0 : BOOT_MS);
     return () => {
       window.clearTimeout(auto);
       root.classList.remove('intro-pending');
