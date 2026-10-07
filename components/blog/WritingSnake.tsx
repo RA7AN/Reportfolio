@@ -49,10 +49,9 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
       return;
     }
     const rect = grid.getBoundingClientRect();
-    const progress = Math.min(
-      1,
-      Math.max(0, (window.innerHeight * REVEAL_LINE - rect.top) / rect.height),
-    );
+    // the fill completes as the last node reaches the reading line
+    const span = Number(fill.dataset.span ?? 0) || rect.height;
+    const progress = Math.min(1, Math.max(0, (window.innerHeight * REVEAL_LINE - rect.top) / span));
     fill.style.strokeDashoffset = `${length * (1 - progress)}`;
   }, [reduced]);
 
@@ -92,6 +91,7 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
     }
     base.setAttribute('d', d);
     fill.setAttribute('d', d);
+    fill.dataset.span = `${points[points.length - 1].y}`;
     const length = fill.getTotalLength();
     fill.dataset.length = `${length}`;
     fill.style.strokeDasharray = `${length}`;
@@ -199,8 +199,18 @@ export function WritingSnake({ posts, author }: { posts: SnakePost[]; author: st
               <button
                 type="button"
                 onClick={() => setOpenId(post.id)}
-                className="group border-border bg-background relative z-10 flex w-full flex-col rounded-2xl border p-6 text-left transition-colors duration-200 hover:border-[#5a5a5a] sm:p-7"
+                className="group border-border bg-background hover:bg-muted/60 relative z-10 flex w-full flex-col rounded-2xl border p-6 text-left transition-colors duration-200 hover:border-[#5a5a5a] sm:p-7"
               >
+                {post.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <span className="mb-5 block overflow-hidden rounded-lg">
+                    <img
+                      src={post.image}
+                      alt=""
+                      className="aspect-[8/3] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </span>
+                ) : null}
                 {/* the node the snake threads through */}
                 <span
                   ref={(el) => {

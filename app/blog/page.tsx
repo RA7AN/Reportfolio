@@ -21,7 +21,7 @@ export default function BlogPage() {
             blog
           </p>
           <h1 className="text-2xl font-medium tracking-tight sm:text-3xl">
-            notes on design and making
+            things I have published
           </h1>
           <p className="text-muted-foreground mt-2 max-w-xl text-sm leading-6 sm:text-base">
             papers, case studies, and essays. the amber line is your reading order.
