@@ -406,3 +406,31 @@ html.intro-pending .rise-in {
     transition: color 120ms ease;
   }
 }
+
+/* react-tweet cards in the posts section: fill the masonry column instead of
+   the library's own 550px cap and 1.5rem vertical margins */
+#posts .react-tweet-theme {
+  margin: 0;
+  max-width: none;
+  transition: background-color 0.2s ease;
+}
+
+/* the anonymous stand-in header on an X card sits on exactly react-tweet's own
+   card background (light/dark follow the grid's data-theme), so it reads as
+   the card itself rather than a strip laid over it */
+#posts [data-theme='dark'] .x-anon-mask {
+  background-color: rgb(21, 32, 43);
+  transition: background-color 0.2s ease;
+}
+/* hovering an anonymous card lifts the whole card a shade; the mask
+   follows to the same hex so the header stays invisible against it
+   (white has no lighter step, so the light theme stays put) */
+#posts [data-theme='dark'] .group:hover .react-tweet-theme {
+  background-color: rgb(33, 46, 59);
+}
+#posts [data-theme='dark'] .group:hover .x-anon-mask {
+  background-color: rgb(33, 46, 59);
+}
+#posts [data-theme='light'] .x-anon-mask {
+  background-color: #fff;
+}

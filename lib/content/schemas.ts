@@ -184,6 +184,38 @@ export const readItemSchema = z.object({
   category: z.string(),
 });
 
+// "on the timeline / posts worth keeping" landing section (content/posts/index.md).
+// One object per post; `sortOrder` is the display order (unique), `anonymous`
+// overlays the embed to mask the author's identity (avatar, name, handle) and
+// block clicks through to the post.
+export const timelinePostSchema = z.object({
+  sortOrder: z.number(),
+  url: z.string(),
+  anonymous: z.boolean(),
+});
+
+export const timelinePostsSchema = z.array(timelinePostSchema).superRefine((posts, ctx) => {
+  const seen = new Set<number>();
+  for (const post of posts) {
+    if (seen.has(post.sortOrder)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `duplicate sortOrder ${post.sortOrder}`,
+      });
+    }
+    seen.add(post.sortOrder);
+  }
+});
+
+export type TimelinePost = {
+  platform: 'x' | 'linkedin';
+  url: string;
+  anonymous: boolean;
+  sortOrder: number;
+};
+
+export type TimelinePostInput = z.infer<typeof timelinePostSchema>;
+
 export type Profile = z.infer<typeof profileSchema>;
 export type Experience = z.infer<typeof experienceSchema>;
 export type Education = z.infer<typeof educationSchema>;

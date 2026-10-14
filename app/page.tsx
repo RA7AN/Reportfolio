@@ -12,7 +12,7 @@ import { HeroMuseLoop } from '@/components/home/HeroMuseLoop';
 import { IntroGate } from '@/components/layout/IntroGate';
 import { LetterTitle, RiseIn } from '@/components/home/RiseIn';
 import { LocalClock } from '@/components/home/LocalClock';
-import { PostsPlaceholder } from '@/components/home/PostsPlaceholder';
+import { TimelinePosts } from '@/components/home/TimelinePosts';
 import { PublicationsPreview } from '@/components/home/PublicationsPreview';
 // travel log/reels: hidden for now, may return later — uncomment this import
 // together with the <ReelsPlaceholder /> block near the footer
@@ -33,6 +33,7 @@ import {
   getPublications,
   getSkills,
   getTalks,
+  getTimelinePosts,
 } from '@/lib/content';
 
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ export default function HomePage() {
   const talks = getTalks();
   const skills = getSkills();
   const devActivity = getDevActivity();
+  const timelinePosts = getTimelinePosts();
   const city = profile.location ?? 'Jeddah';
   const timeZone = 'Asia/Riyadh';
 
@@ -163,7 +165,7 @@ export default function HomePage() {
 
         <HomeInner>
           <Globe />
-          <PostsPlaceholder />
+          {timelinePosts.length > 0 ? <TimelinePosts posts={timelinePosts} /> : null}
           {/* travel log/reels: hidden for now, may return later — uncomment together
               with the ReelsPlaceholder import at the top of this file */}
           {/* <ReelsPlaceholder /> */}

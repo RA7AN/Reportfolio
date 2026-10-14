@@ -19,6 +19,7 @@ import {
   readItemSchema,
   skillSchema,
   talkSchema,
+  timelinePostsSchema,
   writingFrontmatterSchema,
   type Certificate,
   type Community,
@@ -34,6 +35,8 @@ import {
   type ReadItem,
   type Skill,
   type Talk,
+  type TimelinePost,
+  type TimelinePostInput,
   type WritingListItem,
 } from './schemas';
 
@@ -222,6 +225,51 @@ export function getReads(): ReadItem[] {
     throw new Error(`Invalid reads: ${parsed.error.issues.map((i) => i.message).join('; ')}`);
   }
   return parsed.data;
+}
+
+// accepts sloppy pastes: missing protocol is fine, but anything that is not an
+// x.com or linkedin.com URL fails the build with a pointer at the bad line
+function toTimelinePost({ sortOrder, url: rawUrl, anonymous }: TimelinePostInput): TimelinePost {
+  const url = /^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${rawUrl}`;
+  let host = '';
+  try {
+    host = new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    throw new Error(`posts/index.md: "${rawUrl}" is not a valid URL`);
+  }
+  if (host === 'x.com' || host === 'twitter.com') {
+    if (!/\.com\/[^/]+\/status(?:es)?\/\d+/.test(url)) {
+      throw new Error(
+        `posts/index.md: "${rawUrl}" is not an X post URL — expected https://x.com/<user>/status/<id>`,
+      );
+    }
+    return { platform: 'x', url, anonymous, sortOrder };
+  }
+  if (host === 'linkedin.com' || host.endsWith('.linkedin.com')) {
+    return { platform: 'linkedin', url, anonymous, sortOrder };
+  }
+  if (host === 'lnkd.in') {
+    throw new Error(
+      `posts/index.md: "${rawUrl}" is a LinkedIn shortlink and cannot be embedded — open it and paste the full post URL instead (⋯ → Copy link to post)`,
+    );
+  }
+  throw new Error(`posts/index.md: "${rawUrl}" is not an x.com or linkedin.com URL`);
+}
+
+export function getTimelinePosts(): TimelinePost[] {
+  const filePath = join(CONTENT_DIR, 'posts', 'index.md');
+  if (!existsSync(filePath)) return [];
+  const raw = readFileSync(filePath, 'utf-8');
+  const { content } = matter(raw);
+  const parsed = timelinePostsSchema.safeParse(parseJsonBody(content, filePath));
+  if (!parsed.success) {
+    throw new Error(
+      `Invalid posts/index.md: ${parsed.error.issues.map((i) => i.message).join('; ')}`,
+    );
+  }
+  return parsed.data
+    .map(toTimelinePost)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 export function getPortfolio() {
