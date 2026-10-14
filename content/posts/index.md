@@ -24,15 +24,18 @@
 #   false shows the normal, fully-linked embed.
 #
 # Notes:
-# - Posts must be public or the embed renders blank.
+# - Posts must be public. LinkedIn embeds render blank and an X card falls
+#   back to an "open on x.com" link card when the post cannot be loaded.
 # - LinkedIn posts render collapsed (clipped with a "...more" button), the way
 #   they appear in the LinkedIn feed.
 # - Keep the body valid JSON: double quotes around keys and URLs, no trailing
 #   commas. A malformed file fails the build with a file-specific error.
-# - The first four posts show before "load more" reveals the rest.
+# - The grid folds at a fixed height: the first row or so shows, the
+#   overshoot fades into the page background, and "load more" unfolds the
+#   rest ("fold them back" collapses it again).
 # - Set the array to [] to hide the section entirely.
 type: "timeline"
-count: 6
+count: 8
 lastUpdated: "2026-10-14T00:00:00.000Z"
 ---
 
@@ -40,7 +43,7 @@ lastUpdated: "2026-10-14T00:00:00.000Z"
   {
     "sortOrder": 1,
     "url": "https://x.com/trometheus7/status/2086573540908654876",
-    "anonymous": false
+    "anonymous": true
   },
   {
     "sortOrder": 2,
@@ -55,7 +58,7 @@ lastUpdated: "2026-10-14T00:00:00.000Z"
   {
     "sortOrder": 4,
     "url": "https://x.com/trometheus7/status/2101403312641699895",
-    "anonymous": false
+    "anonymous": true
   },
   {
     "sortOrder": 5,
@@ -65,6 +68,16 @@ lastUpdated: "2026-10-14T00:00:00.000Z"
   {
     "sortOrder": 6,
     "url": "https://www.linkedin.com/posts/abdul-jawwad-2ba58b23b_guinnessworldrecords-kanz-ai-ugcPost-7491230550997934081-MbvJ/",
+    "anonymous": false
+  },
+  {
+    "sortOrder": 7,
+    "url": "https://www.linkedin.com/posts/abdul-jawwad-2ba58b23b_the-wrapped-trap-how-big-tech-has-gamified-ugcPost-7410517161435299841-5F7p/",
+    "anonymous": false
+  },
+  {
+    "sortOrder": 8,
+    "url": "https://www.linkedin.com/posts/abdul-jawwad-2ba58b23b_agenticai-modelcontextprotocol-langchain-ugcPost-7390221913928798208-1vAJ/",
     "anonymous": false
   }
 ]

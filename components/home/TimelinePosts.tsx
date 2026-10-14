@@ -1,37 +1,43 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import 'react-tweet/theme.css';
+import { useEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
+import { Tweet } from 'react-tweet';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { User } from 'lucide-react';
 import { useSiteUi } from '@/components/layout/SiteUi';
 import type { TimelinePost } from '@/lib/content/schemas';
 
-// X embed theme tokens, so the stand-in header matches the card beneath it —
-// the real header sits fully covered under this overlay
+// react-tweet theme tokens, so the stand-in header matches the card beneath
+// it — the real header sits fully covered under this overlay
 type MaskTheme = {
-  bg: string;
   text: string;
   muted: string;
   avatarBg: string;
+  // X cards take the stand-in header's background from the data-theme-scoped
+  // .x-anon-mask class in globals.css (exactly react-tweet's own card
+  // background); only the always-white LinkedIn embed needs one here
+  bg?: string;
+  // X-only: "Follow" accent and the brand-glyph color
   accent?: string;
   logo?: string;
 };
 
 const X_MASK_THEME: Record<'dark' | 'light', MaskTheme> = {
   dark: {
-    bg: '#15202b',
-    text: '#e7e9ea',
-    muted: '#71767b',
-    accent: '#1d9bf0',
+    text: '#f7f9f9',
+    muted: '#8b98a5',
     avatarBg: '#2f3b47',
-    logo: '#e7e9ea',
+    accent: '#6bc9fb',
+    logo: '#f7f9f9',
   },
   light: {
-    bg: '#ffffff',
     text: '#0f1419',
     muted: '#536471',
-    accent: '#1d9bf0',
     avatarBg: '#e7e9ea',
-    logo: '#536471',
+    accent: '#1d9bf0',
+    logo: '#0f1419',
   },
 };
 
@@ -43,41 +49,49 @@ const LINKEDIN_MASK_THEME: MaskTheme = {
   avatarBg: '#e8e8e8',
 };
 
-// Replaces the embed header with an anonymous look-alike (avatar, name,
+// Replaces the card header with an anonymous look-alike (avatar, name,
 // handle) and swallows every click so a masked card cannot navigate to the
-// post or profile. The embeds render in cross-origin iframes we cannot style
-// or intercept from inside, so the stand-in header and the click guard live
-// on our side of the glass.
+// post or profile. X cards render as real DOM (react-tweet), LinkedIn cards
+// as cross-origin iframes; the stand-in header and the click guard live on
+// our side of the glass in both cases.
 function AnonymousMask({ platform, light }: { platform: 'x' | 'linkedin'; light: boolean }) {
-  const theme =
-    platform === 'x' ? (light ? X_MASK_THEME.light : X_MASK_THEME.dark) : LINKEDIN_MASK_THEME;
-  const heightClass = platform === 'x' ? 'h-[68px]' : 'h-20';
-  const avatarSize = platform === 'x' ? 'h-10 w-10' : 'h-12 w-12';
-  const iconSize = platform === 'x' ? 'h-5 w-5' : 'h-6 w-6';
+  const isX = platform === 'x';
+  const theme = isX ? (light ? X_MASK_THEME.light : X_MASK_THEME.dark) : LINKEDIN_MASK_THEME;
 
   return (
     <>
+      {/* On X the stand-in covers exactly the real header's content box — 1px
+          card border + 16px side padding + 12px top padding in from the card
+          edge, 48px tall — so the card's own border, corners, and padding
+          band stay untouched and no clipping is needed. LinkedIn's embed
+          header is flush to the iframe's top edge inside its clipped
+          wrapper. */}
       <div
         aria-hidden
-        className={`absolute inset-x-0 top-0 z-10 ${heightClass}`}
+        className={`absolute z-10 ${
+          isX ? 'x-anon-mask top-[13px] right-[17px] left-[17px] h-12' : 'inset-x-0 top-0 h-20'
+        }`}
         style={{
-          backgroundColor: theme.bg,
+          backgroundColor: isX ? undefined : theme.bg,
           fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
         }}
       >
-        <div className="flex items-start gap-3 px-4 pt-3">
+        <div className={`flex ${isX ? 'h-full items-center' : 'items-start gap-3 px-4 pt-3'}`}>
           <span
-            className={`flex ${avatarSize} items-center justify-center rounded-full`}
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
             style={{ backgroundColor: theme.avatarBg }}
           >
-            <User className={iconSize} style={{ color: theme.muted }} strokeWidth={1.8} />
+            <User className="h-6 w-6" style={{ color: theme.muted }} strokeWidth={1.8} />
           </span>
-          <span className="flex flex-col" style={{ lineHeight: 1.3 }}>
+          <span
+            className={`flex flex-col ${isX ? 'ml-2 justify-center' : ''}`}
+            style={{ lineHeight: 1.3 }}
+          >
             <span className="text-[15px] font-bold" style={{ color: theme.text }}>
               Anonymous
             </span>
             <span className="text-[13px]" style={{ color: theme.muted }}>
-              {platform === 'x' ? (
+              {isX ? (
                 <>
                   @johndoe · <span style={{ color: theme.accent }}>Follow</span>
                 </>
@@ -86,15 +100,18 @@ function AnonymousMask({ platform, light }: { platform: 'x' | 'linkedin'; light:
               )}
             </span>
           </span>
+          {isX ? (
+            /* react-tweet's own brand icon: the X glyph, 23.75px, currentColor */
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden
+              className="ml-auto h-[23.75px] w-[23.75px]"
+              style={{ color: theme.logo, fill: 'currentColor' }}
+            >
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          ) : null}
         </div>
-        {platform === 'x' ? (
-          <span
-            className="absolute top-3 right-4 text-lg leading-none"
-            style={{ color: theme.logo }}
-          >
-            𝕏
-          </span>
-        ) : null}
       </div>
       <div
         aria-hidden
@@ -108,29 +125,21 @@ function AnonymousMask({ platform, light }: { platform: 'x' | 'linkedin'; light:
   );
 }
 
-// X's embed document is a white page with a rounded dark card floating inside
-// it, so a crescent of that white body can peek through near the card's
-// corner arc no matter where we clip — the document's arc and our clip arc
-// are never perfectly concentric, and the white sits inside the card's own
-// corner radius. XCornerCovers paints each corner (everything our 12px clip
-// arc leaves visible) in the card's own background color: invisible against
-// the card, but it covers any white underneath.
-const X_CORNER_SIZE = 'h-3 w-3';
-
-function XCornerCovers({ color }: { color: string }) {
-  const base = `pointer-events-none absolute z-10 ${X_CORNER_SIZE}`;
+// Static fallback for an X post: shown while the tweet loads, and again if it
+// cannot be fetched — the same link-card role the reference site uses
+function XLinkCard({ id, note }: { id: string; note: string }) {
   return (
-    <>
-      <div aria-hidden className={`${base} top-0 left-0`} style={{ backgroundColor: color }} />
-      <div aria-hidden className={`${base} top-0 right-0`} style={{ backgroundColor: color }} />
-      <div aria-hidden className={`${base} bottom-0 left-0`} style={{ backgroundColor: color }} />
-      <div aria-hidden className={`${base} right-0 bottom-0`} style={{ backgroundColor: color }} />
-    </>
+    <a
+      href={`https://x.com/i/status/${id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="border-border text-muted-foreground hover:text-foreground bg-muted/60 flex min-h-28 flex-col justify-between rounded-2xl border p-5 text-sm transition-colors duration-200 hover:border-[#5a5a5a]"
+    >
+      <span>{note}</span>
+      <span className="text-muted-foreground/70 mt-3 font-mono text-[11px]">open on x.com ↗</span>
+    </a>
   );
 }
-
-// height used until the embed document reports its natural height
-const DEFAULT_X_HEIGHT = 350;
 
 // LinkedIn's official embed is an iframe served from /embed/feed/update/.
 // Derive it from a normal post URL's urn:li id — copy-link URLs use
@@ -165,114 +174,167 @@ function xTweetId(url: string): string {
   return match ? match[1] : '';
 }
 
-function xTweetEmbedUrl(tweetId: string, light: boolean): string {
-  const theme = light ? 'light' : 'dark';
-  return `https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=${theme}&dnt=true&lang=en`;
+// One timeline card, keyed by its post url.
+function TimelineCard({ post, light }: { post: TimelinePost; light: boolean }) {
+  if (post.platform === 'x') {
+    const tweetId = xTweetId(post.url);
+    // `group` gates the hover shade lift to anonymous cards
+    return (
+      <div className={post.anonymous ? 'group relative' : 'relative'}>
+        <Tweet
+          id={tweetId}
+          apiUrl={`/api/tweet/${tweetId}`}
+          fallback={<XLinkCard id={tweetId} note="loading tweet..." />}
+          components={{
+            TweetNotFound: () => (
+              <XLinkCard id={tweetId} note="this one would not load, but it is a good one." />
+            ),
+          }}
+        />
+        {post.anonymous ? <AnonymousMask platform="x" light={light} /> : null}
+      </div>
+    );
+  }
+  return (
+    <div className="border-border bg-muted/60 relative overflow-hidden rounded-2xl border">
+      <iframe
+        src={linkedinEmbedUrl(post.url)}
+        title="LinkedIn post"
+        height={540}
+        loading="lazy"
+        className="block w-full bg-white"
+      />
+      {post.anonymous ? <AnonymousMask platform="linkedin" light={light} /> : null}
+    </div>
+  );
 }
 
-// The embed document postMessages its natural size to the parent as
-// { "twttr.embed": { method: "twttr.private.resize", params: [{ height,
-// data: { tweet_id } }] } } — the same JSON-RPC channel widgets.js uses —
-// so the iframe can size itself to the tweet instead of a fixed guess.
-type TwttrResizeParams = { width?: number; height?: number; data?: { tweet_id?: string } };
-type TwttrEmbedMessage = {
-  method?: string;
-  params?: TwttrResizeParams[];
-  // legacy flat format some builds send: { method: "height", id, height }
-  id?: string;
-  height?: number;
-};
-type TwttrHeightMessage = ({ 'twttr.embed'?: TwttrEmbedMessage } & TwttrEmbedMessage) | undefined;
+/** Wall-clock reveal queue: cards that enter the viewport in the same
+ * burst (right after the fold opens) cascade one after another this many
+ * seconds apart in sortOrder, while a card reached by scrolling on its own
+ * starts fading in immediately — a fixed per-index delay instead makes
+ * later sortOrders keep you waiting as you scroll. */
+const REVEAL_GAP = 0.3;
+let revealCursor = -1;
 
-export function TimelinePosts({ posts }: { posts: TimelinePost[] }) {
-  const [visible, setVisible] = useState(4);
-  const { light } = useSiteUi();
-  const [xHeights, setXHeights] = useState<Record<string, number>>({});
+/** the reference site's Reveal: cards rise 12px and fade in the first time
+ * they scroll into view (8% past the bottom edge). Cards hidden by the fold
+ * stay transparent until it opens and they scroll into view. */
+function Reveal({ children }: { children: ReactNode }) {
+  const reduceMotion = useReducedMotion() ?? false;
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '0px 0px -8% 0px' });
+  const [revealed, setRevealed] = useState(false);
+  const [delay, setDelay] = useState(0);
+  const startedRef = useRef(false);
 
   useEffect(() => {
-    function onMessage(event: MessageEvent) {
-      if (event.origin !== 'https://platform.twitter.com') return;
-      const raw = event.data as TwttrHeightMessage;
-      const msg = raw?.['twttr.embed'] ?? raw;
-      if (msg?.method === 'twttr.private.resize') {
-        const param = msg.params?.[0];
-        const tweetId = param?.data?.tweet_id;
-        const height = param?.height;
-        if (typeof tweetId === 'string' && typeof height === 'number') {
-          setXHeights((prev) => ({ ...prev, [tweetId]: height }));
-        }
-        return;
-      }
-      // legacy flat format: { method: "height", id, height }
-      if (msg?.method !== 'height') return;
-      if (typeof msg.id !== 'string' || typeof msg.height !== 'number') return;
-      const tweetId = msg.id.replace(/^twitter-widget-\d+$/, '');
-      const height = msg.height;
-      setXHeights((prev) => ({ ...prev, [tweetId]: height }));
-    }
-    window.addEventListener('message', onMessage);
-    return () => window.removeEventListener('message', onMessage);
-  }, []);
+    if (!inView || startedRef.current || reduceMotion) return;
+    startedRef.current = true;
+    const now = performance.now() / 1000;
+    revealCursor = Math.max(revealCursor + REVEAL_GAP, now);
+    setDelay(revealCursor - now);
+    setRevealed(true);
+  }, [inView, reduceMotion]);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+      animate={revealed ? { opacity: 1, y: 0 } : undefined}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: reduceMotion ? 0 : delay }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export function TimelinePosts({ posts }: { posts: TimelinePost[] }) {
+  const [expanded, setExpanded] = useState(false);
+  const reduceMotion = useReducedMotion() ?? false;
+  const { light } = useSiteUi();
 
   if (posts.length === 0) return null;
+
+  // Fill the two columns row by row — 1 beside 2, 3 below 1 — so the grid
+  // reads in sortOrder. CSS multicol packs tightly too, but fills column
+  // first, which puts 3 beside 1. Each column stacks its cards
+  // independently, so uneven card heights still pack without dead space.
+  const leftColumn = posts.filter((_, i) => i % 2 === 0);
+  const rightColumn = posts.filter((_, i) => i % 2 === 1);
 
   return (
     <section
       className="scroll-mt-20 py-20 sm:py-24"
       id="posts"
-      data-nerd="posts: live x + linkedin embeds, first 4 then load more"
+      data-nerd="posts: react-tweet + linkedin iframes"
     >
       <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
         on the timeline
       </p>
       <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">posts worth keeping</h2>
 
-      {/* masonry via CSS multicol: cards pack tightly regardless of embed height */}
-      <div className="mt-8 columns-1 gap-4 sm:columns-2">
-        {posts.slice(0, visible).map((post) => {
-          const tweetId = post.platform === 'x' ? xTweetId(post.url) : '';
-          return (
-            <div
-              key={post.url}
-              className="relative mb-4 break-inside-avoid overflow-hidden rounded-xl"
-            >
-              {post.platform === 'x' ? (
-                <iframe
-                  src={xTweetEmbedUrl(tweetId, light)}
-                  title="X post"
-                  loading="lazy"
-                  height={xHeights[tweetId] ?? DEFAULT_X_HEIGHT}
-                  className={`block w-full ${light ? 'bg-white' : 'bg-[#15202b]'}`}
-                />
-              ) : (
-                <iframe
-                  src={linkedinEmbedUrl(post.url)}
-                  title="LinkedIn post"
-                  height={540}
-                  loading="lazy"
-                  className="block w-full bg-white"
-                />
-              )}
-              {post.platform === 'x' ? (
-                <XCornerCovers color={light ? '#ffffff' : '#15202b'} />
-              ) : null}
-              {post.anonymous ? <AnonymousMask platform={post.platform} light={light} /> : null}
-            </div>
-          );
-        })}
-      </div>
-
-      {visible < posts.length ? (
-        <div className="mt-6 flex justify-center">
-          <button
-            type="button"
-            className="border-border rounded-full border px-4 py-1.5 text-[13px]"
-            onClick={() => setVisible(posts.length)}
-          >
-            load more
-          </button>
+      {/* the reference site's fold: cap the grid at a fixed height and fade
+          the overshoot into the page background instead of counting rows;
+          the button unfolds it and folds it back. data-theme drives
+          react-tweet's dark/light palette */}
+      <motion.div
+        initial={false}
+        animate={{ height: expanded ? 'auto' : 680 }}
+        transition={reduceMotion ? { duration: 0 } : { duration: 0.55, ease: 'easeInOut' }}
+        className="relative mt-8 overflow-hidden"
+      >
+        <div className="flex flex-col gap-4 sm:hidden" data-theme={light ? 'light' : 'dark'}>
+          {posts.map((post) => (
+            <Reveal key={post.url}>
+              <TimelineCard post={post} light={light} />
+            </Reveal>
+          ))}
         </div>
-      ) : null}
+
+        {/* two columns from sm up: evens down the left, odds down the right,
+            which lands as 1 beside 2, 3 below 1, … in sortOrder */}
+        <div className="hidden gap-4 sm:flex" data-theme={light ? 'light' : 'dark'}>
+          <div className="flex flex-1 flex-col gap-4">
+            {leftColumn.map((post) => (
+              <Reveal key={post.url}>
+                <TimelineCard post={post} light={light} />
+              </Reveal>
+            ))}
+          </div>
+          <div className="flex flex-1 flex-col gap-4">
+            {rightColumn.map((post) => (
+              <Reveal key={post.url}>
+                <TimelineCard post={post} light={light} />
+              </Reveal>
+            ))}
+          </div>
+        </div>
+
+        {!expanded ? (
+          <>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-24 [mask-image:linear-gradient(to_top,black,transparent)] backdrop-blur-[2px]"
+            />
+            <div
+              aria-hidden
+              className="from-background via-background/60 pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t to-transparent"
+            />
+          </>
+        ) : null}
+      </motion.div>
+
+      <div className="mt-6 flex justify-center">
+        <button
+          type="button"
+          aria-expanded={expanded}
+          className="border-border bg-background rounded-full border px-4 py-1.5 text-[13px]"
+          onClick={() => setExpanded((v) => !v)}
+        >
+          {expanded ? 'fold them back' : 'load more'}
+        </button>
+      </div>
     </section>
   );
 }
