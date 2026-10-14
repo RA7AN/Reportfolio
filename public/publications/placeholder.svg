@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Publication figure placeholder">
+  <rect width="600" height="600" fill="#2a2a28"/>
+  <g stroke="#3f3f3a" stroke-width="1">
+    <path d="M0 150h600M0 300h600M0 450h600M150 0v600M300 0v600M450 0v600"/>
+  </g>
+  <rect x="60" y="60" width="480" height="480" rx="16" fill="#1a1a18" stroke="#8a8880" stroke-dasharray="8 10"/>
+  <text x="300" y="288" text-anchor="middle" fill="#edebe6" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28">figure placeholder</text>
+  <text x="300" y="324" text-anchor="middle" fill="#a1a099" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">replace public/publications/&lt;id&gt;.svg</text>
+</svg>

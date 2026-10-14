@@ -96,14 +96,14 @@ export default function HomePage() {
             >
               {/* the visual line hides its looping suffix, so the sr-only span carries the full sentence */}
               <span aria-hidden="true">
-                Full-stack Engineer, aspiring researcher and dreamer. I design reliable,{' '}
+                ai-native swe, aspiring researcher and dreamer. I design reliable,{' '}
                 {/* force the split after "reliable," so the two lines stay even on wide screens */}
                 <br className="hidden lg:block" />
-                useful AI agents by day, and on AGI I spend the night <HeroMuseLoop />
+                useful ai agents by day, and on agi I spend the night <HeroMuseLoop />
               </span>
               <span className="sr-only">
-                Full-stack Engineer, aspiring researcher and dreamer. I design reliable, useful AI
-                agents by day, and on AGI I spend the night thinking.
+                ai-native swe, aspiring researcher and dreamer. I design reliable, useful ai agents
+                by day, and on agi I spend the night thinking.
               </span>
             </RiseIn>
             <RiseIn delay={0.6} className="mt-4">
@@ -118,7 +118,7 @@ export default function HomePage() {
               </a>
               <a
                 href={`mailto:${profile.email}`}
-                className="link-draw text-muted-foreground py-2 text-sm"
+                className="link-draw text-muted-foreground hover:text-foreground py-2 text-sm transition-colors"
               >
                 {profile.email}
               </a>

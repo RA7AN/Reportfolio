@@ -472,7 +472,7 @@ export function DevelopmentActivity({ data }: { data: DevActivityData }) {
       {/* grid-cols-1 pins the mobile track to minmax(0,1fr) — without it the auto
           track sizes to the w-max grid's max-content and the whole page pans sideways */}
       <div className="mt-8 grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1fr)_21rem]">
-        <div className="border-border flex flex-col justify-center rounded-2xl border p-4 sm:p-5">
+        <div className="border-border hover:bg-muted/60 flex flex-col justify-center rounded-2xl border p-4 transition-colors duration-200 sm:p-5">
           {/* the headline stat reads fully amber; only the delta stays grey */}
           <p className="text-note mb-3 font-mono text-xs">
             <span className="tabular-nums">{statTotal.toLocaleString('en-US')}</span> contributions
@@ -524,7 +524,7 @@ export function DevelopmentActivity({ data }: { data: DevActivityData }) {
             </div>
           </div>
         </div>
-        <div className="border-border flex items-center justify-center rounded-2xl border p-5">
+        <div className="border-border hover:bg-muted/60 flex items-center justify-center rounded-2xl border p-5 transition-colors duration-200">
           <RadarChart types={data.types} reduceMotion={reduceMotion} />
         </div>
       </div>
