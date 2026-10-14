@@ -9,5 +9,8 @@ dist
 *.env
 tsconfig.tsbuildinfo
 
+# Local Qoder repository knowledge base (generated; not part of the site)
+.qoder/
+
 # Local Freebuff chat exports (never part of the site)
 freebuff-chat-*.md
