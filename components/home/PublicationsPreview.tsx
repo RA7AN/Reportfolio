@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import Link from 'next/link';
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import type { Publication } from '@/lib/content/schemas';
 import { cn } from '@/lib/utils';
 
-// how many grid cards show before the button reveals the rest
+// how many grid cards show here; the rest live on the writing page
 const VISIBLE_COUNT = 3;
 
 // the card's primary link: the article if we have it, else its doi
@@ -80,13 +81,43 @@ function CardLink({
 }
 
 export function PublicationsPreview({ items }: { items: Publication[] }) {
-  const [expanded, setExpanded] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [clipHeight, setClipHeight] = useState<number>();
+  const hasMore = items.length - 1 > VISIBLE_COUNT;
+
+  // clip the grid just above the button: the last visible row loses its
+  // bottom ~12% so the fade completes into the page background instead of
+  // running to the card edges. measured rather than fixed heights — card
+  // height follows column width and excerpt length at every breakpoint
+  useLayoutEffect(() => {
+    const wrap = wrapRef.current;
+    const list = wrap?.querySelector('ul');
+    if (!wrap || !list || !hasMore) {
+      setClipHeight(undefined);
+      return;
+    }
+    const measure = () => {
+      const rows = Array.from(list.children) as HTMLElement[];
+      const last = rows[rows.length - 1];
+      if (!last) return;
+      setClipHeight(Math.min(list.offsetHeight, last.offsetTop + last.offsetHeight * 0.88));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(list);
+    window.addEventListener('resize', measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [hasMore]);
+
   if (items.length === 0) return null;
 
   // the top card is simply the first card of the cms order — the metadata sort rules
   const featured = items[0];
   const rest = items.slice(1);
-  const shown = expanded ? rest : rest.slice(0, VISIBLE_COUNT);
+  const shown = rest.slice(0, VISIBLE_COUNT);
 
   return (
     <section
@@ -103,7 +134,7 @@ export function PublicationsPreview({ items }: { items: Publication[] }) {
         papers, a case study, and one poem that snuck in
       </p>
 
-      <div className="border-border group relative mt-8 rounded-2xl border p-5 transition-colors duration-200 hover:border-[#5a5a5a]">
+      <div className="border-border group hover:bg-muted/60 relative mt-8 rounded-2xl border p-5 transition-colors duration-200 hover:border-[#5a5a5a]">
         <CardLink item={featured} className="group relative block">
           <article>
             <ArrowUpRight
@@ -145,64 +176,78 @@ export function PublicationsPreview({ items }: { items: Publication[] }) {
         ) : null}
       </div>
 
-      <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {shown.map((item, index) => {
-          const href = primaryHref(item);
-          return (
-            <li
-              key={item.id}
-              className={index >= VISIBLE_COUNT ? 'rise-in' : undefined}
-              style={
-                index >= VISIBLE_COUNT
-                  ? { animationDelay: `${(index - VISIBLE_COUNT) * 0.06}s` }
-                  : undefined
-              }
-            >
-              <CardLink
-                item={item}
-                className="border-border group flex h-full flex-col overflow-hidden rounded-2xl border transition-colors duration-200 hover:border-[#5a5a5a]"
-              >
-                <article className="flex h-full flex-col">
-                  <Thumb item={item} className="aspect-[8/5] w-full rounded-none" />
-                  <div className="flex grow flex-col p-4">
-                    <h3 className="text-[15px] leading-snug font-medium tracking-tight">
-                      {item.title}
-                    </h3>
-                    <p className="text-muted-foreground mt-1.5 text-xs">
-                      {[item.venue, item.year].filter(Boolean).join(' · ')}
-                    </p>
-                    {item.excerpt ? (
-                      <p className="text-muted-foreground mt-2 line-clamp-3 text-sm leading-6">
-                        {item.excerpt}
+      {/* the fade that sells "more below": the same two layers as the posts
+          fold, dissolving the grid's bottom edge into the page background
+          ahead of the button */}
+      <div
+        ref={wrapRef}
+        className="relative overflow-hidden"
+        style={clipHeight ? { height: clipHeight } : undefined}
+      >
+        <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {shown.map((item) => {
+            const href = primaryHref(item);
+            return (
+              <li key={item.id}>
+                <CardLink
+                  item={item}
+                  className="border-border group hover:bg-muted/60 flex h-full flex-col overflow-hidden rounded-2xl border transition-colors duration-200 hover:border-[#5a5a5a]"
+                >
+                  <article className="flex h-full flex-col">
+                    <Thumb item={item} className="aspect-[8/5] w-full rounded-none" />
+                    <div className="flex grow flex-col p-4">
+                      <h3 className="text-[15px] leading-snug font-medium tracking-tight">
+                        {item.title}
+                      </h3>
+                      <p className="text-muted-foreground mt-1.5 text-xs">
+                        {[item.venue, item.year].filter(Boolean).join(' · ')}
                       </p>
-                    ) : null}
-                    <div className="mt-auto flex items-center justify-between pt-3">
-                      <span className="text-muted-foreground rounded-full border border-white/10 px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase">
-                        {item.kind}
-                      </span>
-                      {href ? (
-                        <ArrowUpRight
-                          className="text-muted-foreground group-hover:text-note size-4 transition-colors duration-200"
-                          aria-hidden
-                        />
+                      {item.excerpt ? (
+                        <p className="text-muted-foreground mt-2 line-clamp-3 text-sm leading-6">
+                          {item.excerpt}
+                        </p>
                       ) : null}
+                      <div className="mt-auto flex items-center justify-between pt-3">
+                        <span className="text-muted-foreground rounded-full border border-white/10 px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase">
+                          {item.kind}
+                        </span>
+                        {href ? (
+                          <ArrowUpRight
+                            className="text-muted-foreground group-hover:text-note size-4 transition-colors duration-200"
+                            aria-hidden
+                          />
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
-                </article>
-              </CardLink>
-            </li>
-          );
-        })}
-      </ul>
-      {rest.length > VISIBLE_COUNT ? (
+                  </article>
+                </CardLink>
+              </li>
+            );
+          })}
+        </ul>
+        {hasMore ? (
+          <>
+            {/* tall enough that the last visible row reads at ~38% of its
+                height before dissolving — the posts fold fades lower */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-64 [mask-image:linear-gradient(to_top,black,transparent)] backdrop-blur-[2px]"
+            />
+            <div
+              aria-hidden
+              className="from-background via-background/60 pointer-events-none absolute inset-x-0 bottom-0 h-100 bg-gradient-to-t to-transparent"
+            />
+          </>
+        ) : null}
+      </div>
+      {hasMore ? (
         <div className="mt-8 flex justify-center">
-          <button
-            type="button"
+          <Link
+            href="/blog"
             className="border-border bg-background text-muted-foreground hover:text-foreground rounded-full border px-5 py-2 text-[13px] transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
-            onClick={() => setExpanded((value) => !value)}
           >
-            {expanded ? 'show less' : 'more written things'}
-          </button>
+            more written things
+          </Link>
         </div>
       ) : null}
     </section>

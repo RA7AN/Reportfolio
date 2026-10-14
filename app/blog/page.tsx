@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { HomeInner } from '@/components/home/HomeInner';
 import { PageShell } from '@/components/layout/PageShell';
+import { ScrollReset } from '@/components/blog/ScrollReset';
 import { WritingSnake } from '@/components/blog/WritingSnake';
 import { getProfile, getPublications } from '@/lib/content';
 
 export const metadata: Metadata = {
-  title: 'Blog',
+  title: 'Writing',
   description: 'Notes on design, research, and making.',
 };
 
@@ -15,10 +16,11 @@ export default function BlogPage() {
 
   return (
     <PageShell>
+      <ScrollReset />
       <main className="pb-24">
         <HomeInner className="pt-16">
           <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
-            blog
+            writing
           </p>
           <h1 className="text-2xl font-medium tracking-tight sm:text-3xl">
             things I have published
