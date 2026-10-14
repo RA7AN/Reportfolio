@@ -59,7 +59,7 @@ All rows are placeholders. For each real venture, provide:
 
 ## Posts / social embeds
 
-- [ ] 4–8 **post URLs** (X and/or LinkedIn) that should appear under “posts worth keeping”.
+- [ ] 4–8 **post URLs** (X and/or LinkedIn) → add to the `"posts"` JSON list in `content/posts/index.md`; they appear under "posts worth keeping". Add `"anonymous": true` to an entry to mask identity and block clicks on that post.
 - [ ] Or remove the section.
 
 ## Writing (`content/writing/`)

@@ -15,6 +15,7 @@ import {
   getReads,
   getSkills,
   getTalks,
+  getTimelinePosts,
   getWriting,
 } from './index';
 
@@ -55,6 +56,19 @@ describe('content collections', () => {
   it('parses musings and reads', () => {
     expect(getMusings().length).toBeGreaterThan(0);
     expect(getReads().length).toBeGreaterThan(0);
+  });
+
+  it('parses timeline posts with detected platforms', () => {
+    const posts = getTimelinePosts();
+    expect(posts.length).toBeGreaterThan(0);
+    for (const post of posts) {
+      expect(['x', 'linkedin']).toContain(post.platform);
+      expect(post.url).toMatch(/^https:/);
+      expect(typeof post.anonymous).toBe('boolean');
+      expect(typeof post.sortOrder).toBe('number');
+    }
+    const orders = posts.map((post) => post.sortOrder);
+    expect([...orders].sort((a, b) => a - b)).toEqual(orders);
   });
 
   it('aggregates portfolio', () => {
