@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { HandNote } from '@/components/layout/SiteIcons';
 
 const JEDDAH: [number, number] = [21.5433, 39.1728];
@@ -8,12 +9,37 @@ const JEDDAH: [number, number] = [21.5433, 39.1728];
 // the places strung across this map, jeddah first so it keeps the amber pin.
 // "lift" floats a name higher above its pin: madinah and doha land close enough
 // on the globe that their pills would stack on top of each other otherwise.
-const CITIES: { name: string; at: [number, number]; lift: number }[] = [
-  { name: 'jeddah', at: JEDDAH, lift: 0 },
-  { name: 'madinah', at: [24.4686, 39.6142], lift: 18 },
-  { name: 'doha', at: [25.2854, 51.531], lift: 36 },
-  { name: 'hyderabad', at: [17.385, 78.4867], lift: 0 },
+// "fill" paints the marker's own circle and its pulse — j = the accent, the rest
+// a colour each so a pill is recognisably tied to the pin under it. "pin" stays
+// the plain white drop for every city but jeddah, who carries the accent.
+type City = { name: string; at: [number, number]; lift: number; fill: string; pin: string };
+
+const CITIES: City[] = [
+  { name: 'jeddah', at: JEDDAH, lift: 0, fill: '#e8b923', pin: '#e8b923' },
+  {
+    name: 'madinah',
+    at: [24.4686, 39.6142],
+    lift: 18,
+    fill: 'linear-gradient(140deg, #6ee7d7, #2596ab)',
+    pin: '#edebe6',
+  },
+  {
+    name: 'doha',
+    at: [25.2854, 51.531],
+    lift: 36,
+    fill: 'linear-gradient(140deg, #8ab4ff, #3f5fd6)',
+    pin: '#edebe6',
+  },
+  {
+    name: 'hyderabad',
+    at: [17.385, 78.4867],
+    lift: 0,
+    fill: 'linear-gradient(140deg, #ff9db8, #d1447f)',
+    pin: '#edebe6',
+  },
 ];
+
+// the visitor keeps the reference's violet dot
 
 // cobe draws the sphere at ~84% of the canvas half-width (its scale option is
 // 1.05 here), so anchoring a pin with the full [-1, 1] projection leaves it
@@ -21,13 +47,7 @@ const CITIES: { name: string; at: [number, number]; lift: number }[] = [
 // silhouette 177px against a 210px canvas half-width.
 const GLOBE_RADIUS = 0.84;
 
-type Tone = 'amber' | 'white' | 'violet';
-
-const PIN_COLOR: Record<Tone, string> = {
-  amber: '#e8b923',
-  white: '#edebe6',
-  violet: '#7c6cf5',
-};
+const VISITOR_FILL = '#7c6cf5';
 
 type Visitor = { lat: number; lon: number; city: string };
 
@@ -71,16 +91,17 @@ function Marker({
   label,
   lat,
   lon,
-  tone,
+  fill,
+  pin,
   lift = 0,
 }: {
   label: string;
   lat: number;
   lon: number;
-  tone: Tone;
+  fill: string;
+  pin: string;
   lift?: number;
 }) {
-  const color = PIN_COLOR[tone];
   return (
     <span
       data-pin
@@ -94,22 +115,22 @@ function Marker({
         className="text-foreground mb-1 flex max-w-36 items-center gap-1.5 rounded-full border border-white/10 bg-[#131313]/92 py-1 pr-1 pl-1 whitespace-nowrap"
         style={{ opacity: 0, marginBottom: lift + 5 }}
       >
-        <span className="size-4 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+        <span className="size-4 shrink-0 rounded-full" style={{ background: fill }} />
         <span className="min-w-0 truncate font-mono text-[11px] leading-4">{label}</span>
-        <span className="grid size-4 shrink-0 place-items-center rounded-full bg-white/10 text-[9px] leading-none text-white/60">
-          ?
+        <span className="text-foreground/70 grid size-4 shrink-0 place-items-center rounded-full bg-white/10">
+          <ArrowRight className="size-3" aria-hidden />
         </span>
       </span>
       <span className="relative flex flex-col items-center">
         <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
           <span
             className="dot-ping block size-2.5 rounded-full opacity-50"
-            style={{ backgroundColor: color }}
+            style={{ background: fill }}
           />
         </span>
         <svg viewBox="0 0 16 22" className="h-4 w-3" aria-hidden>
           <path
-            fill={color}
+            fill={pin}
             d="M8 0C3.58 0 0 3.58 0 8c0 5.5 8 14 8 14s8-8.5 8-14c0-4.42-3.58-8-8-8Z"
           />
           <circle cx="8" cy="8" r="3" fill="#0a0a0a" />
@@ -340,7 +361,8 @@ export function Globe() {
                 label={city.name}
                 lat={city.at[0]}
                 lon={city.at[1]}
-                tone={city.name === 'jeddah' ? 'amber' : 'white'}
+                fill={city.fill}
+                pin={city.pin}
                 lift={city.lift}
               />
             ))}
@@ -350,7 +372,8 @@ export function Globe() {
                 label={visitor.city}
                 lat={visitor.lat}
                 lon={visitor.lon}
-                tone="violet"
+                fill={VISITOR_FILL}
+                pin={VISITOR_FILL}
               />
             ) : null}
           </div>
