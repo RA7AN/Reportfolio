@@ -28,7 +28,7 @@ export default function ProjectsPage() {
             title: project.title,
             description: project.highlights[0] ?? project.dateLabel,
             image: `/projects/${project.id}.svg`,
-            imageAlt: `${project.title} screenshot placeholder`,
+            imageAlt: `${project.title} illustration`,
             background: index % 2 === 0 ? '#111111' : '#161616',
             foreground: '#edebe6',
             href: project.url ?? undefined,

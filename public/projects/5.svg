@@ -1,10 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Project screenshot placeholder">
-  <rect width="1200" height="900" fill="#2a2a28"/>
-  <g stroke="#3f3f3a" stroke-width="1">
-    <path d="M0 150h1200M0 300h1200M0 450h1200M0 600h1200M0 750h1200"/>
-    <path d="M150 0v900M300 0v900M450 0v900M600 0v900M750 0v900M900 0v900M1050 0v900"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-label="Offline assistant reachable over SMS illustration">
+  <rect width="1000" height="1000" fill="#101010"/>
+
+  <g fill="#1a1a1a">
+    <rect x="60" y="80" width="16" height="16"/>
+    <rect x="924" y="120" width="16" height="16"/>
+    <rect x="72" y="900" width="16" height="16"/>
+    <rect x="912" y="880" width="16" height="16"/>
   </g>
-  <rect x="96" y="96" width="1008" height="708" rx="20" fill="#1a1a18" stroke="#8a8880" stroke-dasharray="8 10"/>
-  <text x="600" y="420" text-anchor="middle" fill="#edebe6" font-family="ui-sans-serif, system-ui, sans-serif" font-size="32">screenshot placeholder</text>
-  <text x="600" y="472" text-anchor="middle" fill="#a1a099" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20">replace public/projects/&lt;id&gt;.svg</text>
+
+  <!-- nothing upstream -->
+  <g fill="#1a1a1a">
+    <rect x="290" y="200" width="220" height="70" rx="35"/>
+    <circle cx="352" cy="200" r="46"/>
+    <circle cx="434" cy="182" r="56"/>
+    <circle cx="496" cy="202" r="40"/>
+  </g>
+  <path d="M256 296L586 150" stroke="#e8b923" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- model running locally -->
+  <rect x="230" y="320" width="200" height="300" rx="24" fill="#161616" stroke="#2a2a2a" stroke-width="4"/>
+  <g fill="#2a2a2a">
+    <rect x="264" y="364" width="132" height="14" rx="7"/>
+    <rect x="264" y="400" width="132" height="14" rx="7"/>
+    <rect x="264" y="436" width="132" height="14" rx="7"/>
+  </g>
+  <rect x="264" y="472" width="96" height="14" rx="7" fill="#3a3118"/>
+  <rect x="264" y="508" width="132" height="72" rx="12" fill="#1a1a1a"/>
+  <circle cx="292" cy="544" r="12" fill="#e8b923"/>
+  <circle cx="330" cy="544" r="12" fill="#2a2a2a"/>
+  <circle cx="368" cy="544" r="12" fill="#2a2a2a"/>
+
+  <!-- handset at the other end -->
+  <rect x="570" y="320" width="200" height="300" rx="28" fill="#161616" stroke="#2a2a2a" stroke-width="4"/>
+  <rect x="594" y="350" width="152" height="240" rx="14" fill="#101010"/>
+  <g>
+    <rect x="612" y="376" width="100" height="42" rx="14" fill="#2a2a2a"/>
+    <rect x="634" y="432" width="100" height="42" rx="14" fill="#3a3118"/>
+    <rect x="612" y="488" width="100" height="42" rx="14" fill="#2a2a2a"/>
+  </g>
+
+  <!-- the reply going out over SMS -->
+  <g stroke="#e8b923" stroke-width="6" fill="none">
+    <path d="M440 476q60-34 120 0" opacity="0.9"/>
+    <path d="M440 528q68-42 136 0" opacity="0.5"/>
+  </g>
+
+  <!-- what it is for -->
+  <rect x="370" y="820" width="260" height="14" rx="7" fill="#1a1a1a"/>
+  <rect x="494" y="690" width="14" height="130" rx="7" fill="#3a3118"/>
+  <path d="M501 742q-70-24-94-88 72 8 94 88z" fill="#e8b923"/>
+  <path d="M501 796q74-26 96-92-74 8-96 92z" fill="#3a3118"/>
+  <rect x="486" y="656" width="30" height="38" rx="14" fill="#e8b923"/>
 </svg>
