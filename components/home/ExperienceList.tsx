@@ -217,7 +217,11 @@ function ExperienceTimeline({ items, education }: { items: Experience[]; educati
               aria-hidden
               className="pointer-events-none absolute top-4 bottom-7 z-10 border-l border-dashed border-[#f4f1ea]"
               style={{ left: model.graduationX }}
-            />
+            >
+              <span className="font-hand absolute -top-1 left-2 text-sm text-[#f4f1ea]">
+                class of &apos;25
+              </span>
+            </div>
           ) : null}
 
           <div
