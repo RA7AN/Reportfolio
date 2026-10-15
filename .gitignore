@@ -12,8 +12,9 @@ tsconfig.tsbuildinfo
 # Local Qoder repository knowledge base (generated; not part of the site)
 .qoder/
 
-# Local Freebuff chat exports (never part of the site)
+# Local Freebuff chat exports and tool state (never part of the site)
 freebuff-chat-*.md
+.freebuff/
 
 # Local logo scratch folders (pastes and exports, local only)
 blackwhitelogo/
