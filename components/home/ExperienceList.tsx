@@ -218,7 +218,9 @@ function ExperienceTimeline({ items, education }: { items: Experience[]; educati
               className="pointer-events-none absolute top-4 bottom-7 z-10 border-l border-dashed border-[#f4f1ea]"
               style={{ left: model.graduationX }}
             >
-              <span className="font-hand absolute -top-1 left-2 text-sm text-[#f4f1ea]">
+              {/* the label is out of flow inside a zero-width line, so it needs
+                  nowrap or every word falls onto its own line */}
+              <span className="font-hand absolute -top-1 left-2 text-sm whitespace-nowrap text-[#f4f1ea]">
                 class of &apos;25
               </span>
             </div>
