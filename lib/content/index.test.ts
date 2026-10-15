@@ -7,6 +7,7 @@ import {
   getFeatured,
   getHonors,
   getLeadership,
+  getLinks,
   getMusings,
   getPortfolio,
   getProfile,
@@ -18,6 +19,7 @@ import {
   getTimelinePosts,
   getWriting,
 } from './index';
+import { socialIconNames } from './schemas';
 
 describe('content collections', () => {
   it('parses profile', () => {
@@ -69,6 +71,22 @@ describe('content collections', () => {
     }
     const orders = posts.map((post) => post.sortOrder);
     expect([...orders].sort((a, b) => a - b)).toEqual(orders);
+  });
+
+  it('parses links, keeping cards and socials apart', () => {
+    const links = getLinks();
+    expect(links.cards.length).toBeGreaterThan(0);
+    expect(links.socials.length).toBeGreaterThan(0);
+    for (const card of links.cards) {
+      expect(card.title).toBeTruthy();
+      expect(card.subtitle).toBeTruthy();
+      expect(card.href).toBeTruthy();
+    }
+    for (const social of links.socials) {
+      expect(socialIconNames).toContain(social.icon);
+      expect(social.label).toBeTruthy();
+      expect(social.href).toBeTruthy();
+    }
   });
 
   it('aggregates portfolio', () => {

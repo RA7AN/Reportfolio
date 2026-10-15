@@ -155,6 +155,41 @@ export const featuredSchema = z.object({
   featuredEssays: z.array(z.string()).default([]),
 });
 
+// links page (content/links/index.md). The two kinds of link stay apart in the
+// content file: `cards` render as the stacked list, `socials` as the icon row
+// underneath. Both keep the order they are written in.
+export const socialIconNames = [
+  'github',
+  'linkedin',
+  'twitter',
+  'orcid',
+  'mail',
+  'rss',
+  'instagram',
+  'youtube',
+  'facebook',
+] as const;
+
+export const linkCardSchema = z.object({
+  title: z.string(),
+  subtitle: z.string(),
+  href: z.string(),
+});
+
+export const socialLinkSchema = z.object({
+  // must be one of socialIconNames; the icon component maps every name, so a
+  // new value here without a matching icon is a type error
+  icon: z.enum(socialIconNames),
+  label: z.string(),
+  href: z.string(),
+});
+
+export const linksSchema = z.object({
+  intro: nullableString,
+  cards: z.array(linkCardSchema).default([]),
+  socials: z.array(socialLinkSchema).default([]),
+});
+
 export const musingEntrySchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -229,6 +264,10 @@ export type Community = z.infer<typeof communitySchema>;
 export type WritingFrontmatter = z.infer<typeof writingFrontmatterSchema>;
 export type Certificate = z.infer<typeof certificateSchema>;
 export type Featured = z.infer<typeof featuredSchema>;
+export type SocialIconName = (typeof socialIconNames)[number];
+export type LinkCard = z.infer<typeof linkCardSchema>;
+export type SocialLink = z.infer<typeof socialLinkSchema>;
+export type Links = z.infer<typeof linksSchema>;
 export type MusingNotebook = z.infer<typeof musingNotebookSchema>;
 export type ReadItem = z.infer<typeof readItemSchema>;
 
