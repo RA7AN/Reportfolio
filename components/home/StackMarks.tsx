@@ -239,8 +239,12 @@ export function StackIconRow({
   );
 }
 
+/* the hero row hides the generic language marks; the full stack grid still
+   renders every MARKS entry */
+const HERO_MARKS = MARKS.filter((item) => !/python|typescript/i.test(item.label));
+
 export function StackMarks({ className }: { className?: string }) {
-  return <StackIconRow items={MARKS} className={className} />;
+  return <StackIconRow items={HERO_MARKS} className={className} />;
 }
 
 export function StackMarksPlain({

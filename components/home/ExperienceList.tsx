@@ -303,7 +303,8 @@ export function ExperienceList({ items }: { items: Experience[] }) {
           </span>
           <div
             role="tablist"
-            className="border-border relative flex rounded-full border bg-[#111] p-1 text-[13px]"
+            aria-label="timeline view"
+            className="border-border bg-card relative flex rounded-full border p-1 text-sm"
           >
             <span
               aria-hidden
@@ -349,7 +350,7 @@ export function ExperienceList({ items }: { items: Experience[] }) {
 
       {mode === 'list' ? (
         <ul className="relative mt-8">
-          <span aria-hidden className="absolute top-5 bottom-8 left-[22px] w-px bg-white/12" />
+          <span aria-hidden className="absolute top-5 bottom-8 left-[33px] w-px bg-white/12" />
           {items.map((item) => {
             const open = openId === item.id;
             const current = isCurrent(item);
@@ -357,19 +358,26 @@ export function ExperienceList({ items }: { items: Experience[] }) {
               <li key={item.id} className="relative">
                 <button
                   type="button"
-                  className="group hover:bg-muted/60 -mx-3 flex w-[calc(100%+1.5rem)] items-start gap-3.5 rounded-2xl px-3 py-3 text-left transition-colors duration-200"
+                  className="group hover:bg-muted/60 flex w-full items-center gap-4 rounded-xl px-3 py-2.5 text-left transition-colors duration-200"
                   onClick={() => setOpenId(open ? null : item.id)}
                   aria-expanded={open}
                 >
-                  <CompanyMark company={item.company} current={current} className="mt-0.5 size-9" />
+                  <CompanyMark
+                    company={item.company}
+                    current={current}
+                    className="size-11"
+                    tileClassName="border-border bg-card rounded-lg border"
+                  />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-medium tracking-tight lowercase">
+                    <span className="block text-base font-medium tracking-tight lowercase">
                       {item.company}
                     </span>
                     <span className="block text-sm text-white/45 lowercase">{item.role}</span>
                   </span>
-                  <span className="mt-1 flex shrink-0 items-center gap-1">
-                    <span className="text-[12px] text-white/35">{range(item)}</span>
+                  <span className="flex shrink-0 items-center gap-1">
+                    <span className="text-muted-foreground/70 hidden font-mono text-[11px] sm:block">
+                      {range(item)}
+                    </span>
                     {open ? (
                       <ChevronUp className="size-3.5 text-white/35" aria-hidden />
                     ) : (
@@ -382,7 +390,7 @@ export function ExperienceList({ items }: { items: Experience[] }) {
                 </button>
                 <div className="accordion-grid" data-open={open}>
                   <div>
-                    <div className="pb-5 pl-[3.15rem]">
+                    <div className="pb-5 pl-[4.5rem]">
                       {item.highlights.map((line) => (
                         <p
                           key={line}

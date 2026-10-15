@@ -18,6 +18,7 @@ export function CompanyMark({
   size = 36,
   className,
   imgClassName,
+  tileClassName,
   current = false,
 }: {
   company: string;
@@ -25,13 +26,19 @@ export function CompanyMark({
   size?: number;
   className?: string;
   imgClassName?: string;
+  tileClassName?: string;
   current?: boolean;
 }) {
   const src = srcOverride ?? companyLogoSrc(company);
 
   return (
     <span className={cn('relative z-10 shrink-0', className)}>
-      <span className="bg-muted flex size-full items-center justify-center overflow-hidden rounded-[10px] font-medium">
+      <span
+        className={cn(
+          'bg-muted flex size-full items-center justify-center overflow-hidden rounded-[10px] font-medium',
+          tileClassName,
+        )}
+      >
         {src ? (
           <Image
             src={src}
@@ -49,7 +56,7 @@ export function CompanyMark({
       {current ? (
         <span
           aria-hidden
-          className="ring-background absolute -top-0.5 -right-0.5 size-2.5 rounded-full bg-[#3dba6a] ring-2"
+          className="border-background absolute -top-0.5 -right-0.5 size-2 rounded-full border-2 bg-emerald-500"
         />
       ) : null}
     </span>
