@@ -56,7 +56,7 @@ export default function LinksPage() {
               {/* the amber mark stands in for a photo until there is one */}
               <span className="border-border bg-card flex size-16 items-center justify-center rounded-full border">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/aj-mark.svg" alt="" width={360} height={360} className="size-10" />
+                <img src="/aj-mark.png" alt="" width={720} height={720} className="size-10" />
               </span>
               <h1 className="mt-5 text-2xl font-medium tracking-tight">{profile.fullName}</h1>
               {links.intro ? (
