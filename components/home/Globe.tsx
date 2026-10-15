@@ -41,6 +41,14 @@ export function Globe() {
   const [visitor, setVisitor] = useState<Visitor | null>(null);
   const [temp, setTemp] = useState<number | null>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  // read inside the globe effect so the visitor arriving never tears down and
+  // rebuilds the WebGL globe; a second cobe instance on the same canvas shares
+  // one context with the first and leaves its buffers unbound
+  const visitorRef = useRef<Visitor | null>(null);
+
+  useEffect(() => {
+    visitorRef.current = visitor;
+  }, [visitor]);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,30 +84,42 @@ export function Globe() {
 
     let globe: { update: (state: object) => void; destroy: () => void } | null = null;
     let raf = 0;
+    let disposed = false;
     let phi = 2.35;
     const theta = 0.28;
     let dragging = false;
     let lastX = 0;
     let width = 0;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const markers = [
+    const buildMarkers = () => [
       {
         id: 'jeddah',
         location: JEDDAH,
         size: 0.06,
         color: [0.91, 0.48, 0.18] as [number, number, number],
       },
-      ...(visitor
+      ...(visitorRef.current
         ? [
             {
               id: 'you',
-              location: [visitor.lat, visitor.lon] as [number, number],
+              location: [visitorRef.current.lat, visitorRef.current.lon] as [number, number],
               size: 0.07,
               color: [0.45, 0.32, 0.95] as [number, number, number],
             },
           ]
         : []),
     ];
+    // keep the array identity stable while the visitor is unchanged so cobe is
+    // not handed a fresh marker list on every frame
+    let markersFor: Visitor | null = null;
+    let markers = buildMarkers();
+    const currentMarkers = () => {
+      if (markersFor !== visitorRef.current) {
+        markersFor = visitorRef.current;
+        markers = buildMarkers();
+      }
+      return markers;
+    };
 
     let visible = true;
     const tick = () => {
@@ -108,7 +128,7 @@ export function Globe() {
         return;
       }
       if (!dragging && !reduce) phi += 0.003;
-      globe?.update({ phi, theta, markers });
+      globe?.update({ phi, theta, markers: currentMarkers() });
       if (width > 0 && overlayRef.current) {
         const aspect = 1;
         const nodes = overlayRef.current.querySelectorAll<HTMLElement>('[data-pin]');
@@ -126,6 +146,12 @@ export function Globe() {
 
     const start = async () => {
       const { default: createGlobe } = await import('cobe');
+      // the visitor lookup can land while cobe is still being imported, which
+      // re-runs this effect and disposes the pass that started the import. bail
+      // out here so a stale pass never builds a second globe on the same canvas:
+      // two cobe instances share one WebGL context and fight over its buffers,
+      // which is what raises "drawArrays: no buffer is bound to enabled attribute".
+      if (disposed) return;
       width = wrap.clientWidth;
       globe = createGlobe(canvas, {
         devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
@@ -141,10 +167,12 @@ export function Globe() {
         baseColor: [1, 1, 1],
         markerColor: [0.91, 0.48, 0.18],
         glowColor: [0.12, 0.12, 0.12],
-        markers,
+        markers: currentMarkers(),
         scale: 1.05,
       });
-      tick();
+      // the intersection observer may already be driving the loop; only kick it
+      // off here if nothing is running yet, so we never end up with two chains.
+      if (!raf) raf = window.requestAnimationFrame(tick);
     };
 
     void start();
@@ -182,6 +210,7 @@ export function Globe() {
     observer.observe(wrap);
 
     return () => {
+      disposed = true;
       observer.disconnect();
       window.cancelAnimationFrame(raf);
       canvas.removeEventListener('pointerdown', onDown);
@@ -190,7 +219,7 @@ export function Globe() {
       window.removeEventListener('resize', onResize);
       globe?.destroy();
     };
-  }, [visitor]);
+  }, []);
 
   return (
     <section
