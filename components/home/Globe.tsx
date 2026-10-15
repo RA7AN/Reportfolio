@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { HandNote } from '@/components/layout/SiteIcons';
-import { cn } from '@/lib/utils';
 
 const JEDDAH: [number, number] = [21.5433, 39.1728];
 
@@ -15,6 +14,12 @@ const CITIES: { name: string; at: [number, number]; lift: number }[] = [
   { name: 'doha', at: [25.2854, 51.531], lift: 36 },
   { name: 'hyderabad', at: [17.385, 78.4867], lift: 0 },
 ];
+
+// cobe draws the sphere at ~84% of the canvas half-width (its scale option is
+// 1.05 here), so anchoring a pin with the full [-1, 1] projection leaves it
+// floating well outside the globe at the limb. Measured off a rendered frame:
+// silhouette 177px against a 210px canvas half-width.
+const GLOBE_RADIUS = 0.84;
 
 type Tone = 'amber' | 'white' | 'violet';
 
@@ -86,19 +91,14 @@ function Marker({
     >
       <span
         data-pill
-        className={cn(
-          'mb-1 max-w-32 truncate rounded-full px-2 py-0.5 font-mono text-[10px] leading-4 whitespace-nowrap',
-          tone === 'violet'
-            ? 'text-white'
-            : 'text-foreground border border-white/12 bg-[#111111]/90',
-        )}
-        style={{
-          backgroundColor: tone === 'violet' ? color : undefined,
-          opacity: 0,
-          marginBottom: lift + 5,
-        }}
+        className="text-foreground mb-1 flex max-w-36 items-center gap-1.5 rounded-full border border-white/10 bg-[#131313]/92 py-1 pr-1 pl-1 whitespace-nowrap"
+        style={{ opacity: 0, marginBottom: lift + 5 }}
       >
-        {label}
+        <span className="size-4 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+        <span className="min-w-0 truncate font-mono text-[11px] leading-4">{label}</span>
+        <span className="grid size-4 shrink-0 place-items-center rounded-full bg-white/10 text-[9px] leading-none text-white/60">
+          ?
+        </span>
       </span>
       <span className="relative flex flex-col items-center">
         <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
@@ -192,8 +192,9 @@ export function Globe() {
         // fade in off the edge, and the name only lands once the city is fronting up
         const approach = smoothstep(p.z, -0.22, 0.08);
         const named = smoothstep(p.z, 0.06, 0.42);
-        node.style.left = `${p.x * 100}%`;
-        node.style.top = `${p.y * 100}%`;
+        // pull the anchor in to the drawn sphere so an edge pin sits on the globe
+        node.style.left = `${(0.5 + (p.x - 0.5) * GLOBE_RADIUS) * 100}%`;
+        node.style.top = `${(0.5 + (p.y - 0.5) * GLOBE_RADIUS) * 100}%`;
         node.style.opacity = `${approach}`;
         node.style.transform = `translate(-50%, -100%) scale(${(0.84 + 0.16 * approach).toFixed(3)})`;
         // depth sort so a pin in front covers the one behind it in a cluster
