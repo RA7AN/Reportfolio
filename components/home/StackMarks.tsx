@@ -132,7 +132,7 @@ function MagneticStackIcon({
   });
   const grow = useTransform(
     [pointerX, centerX],
-    ([px, cx]: number[]) => 1 + 0.5 * Math.max(0, 1 - Math.abs(cx - px) / FIELD_RADIUS),
+    ([px, cx]: number[]) => 1 + 0.8 * Math.max(0, 1 - Math.abs(cx - px) / FIELD_RADIUS),
   );
   const x = useSpring(pull, MAGNET_SPRING);
   const scale = useSpring(grow, MAGNET_SPRING);
