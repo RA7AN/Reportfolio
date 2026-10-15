@@ -7,16 +7,13 @@ import { cn } from '@/lib/utils';
 const JEDDAH: [number, number] = [21.5433, 39.1728];
 
 // the places strung across this map, jeddah first so it keeps the amber pin.
-// "lift" floats a name higher above its pin: dammam/doha and hyderabad/chennai
-// land a few pixels apart on the globe, so their pills would stack on top of
-// each other otherwise.
+// "lift" floats a name higher above its pin: madinah and doha land close enough
+// on the globe that their pills would stack on top of each other otherwise.
 const CITIES: { name: string; at: [number, number]; lift: number }[] = [
   { name: 'jeddah', at: JEDDAH, lift: 0 },
   { name: 'madinah', at: [24.4686, 39.6142], lift: 18 },
-  { name: 'dammam', at: [26.4207, 50.0888], lift: 36 },
-  { name: 'doha', at: [25.2854, 51.531], lift: 54 },
+  { name: 'doha', at: [25.2854, 51.531], lift: 36 },
   { name: 'hyderabad', at: [17.385, 78.4867], lift: 0 },
-  { name: 'chennai', at: [13.0827, 80.2707], lift: 18 },
 ];
 
 type Tone = 'amber' | 'white' | 'violet';
@@ -128,14 +125,6 @@ export function Globe() {
   const [visitor, setVisitor] = useState<Visitor | null>(null);
   const [temp, setTemp] = useState<number | null>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  // read inside the globe effect so the visitor arriving never tears down and
-  // rebuilds the WebGL globe; a second cobe instance on the same canvas shares
-  // one context with the first and leaves its buffers unbound
-  const visitorRef = useRef<Visitor | null>(null);
-
-  useEffect(() => {
-    visitorRef.current = visitor;
-  }, [visitor]);
 
   useEffect(() => {
     let cancelled = false;
@@ -178,39 +167,8 @@ export function Globe() {
     let lastX = 0;
     let width = 0;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const buildMarkers = () => [
-      ...CITIES.map((city) => ({
-        id: city.name,
-        location: city.at,
-        size: city.name === 'jeddah' ? 0.05 : 0.035,
-        color: (city.name === 'jeddah' ? [0.91, 0.72, 0.14] : [0.93, 0.92, 0.9]) as [
-          number,
-          number,
-          number,
-        ],
-      })),
-      ...(visitorRef.current
-        ? [
-            {
-              id: 'you',
-              location: [visitorRef.current.lat, visitorRef.current.lon] as [number, number],
-              size: 0.07,
-              color: [0.45, 0.32, 0.95] as [number, number, number],
-            },
-          ]
-        : []),
-    ];
-    // keep the array identity stable while the visitor is unchanged so cobe is
-    // not handed a fresh marker list on every frame
-    let markersFor: Visitor | null = null;
-    let markers = buildMarkers();
-    const currentMarkers = () => {
-      if (markersFor !== visitorRef.current) {
-        markersFor = visitorRef.current;
-        markers = buildMarkers();
-      }
-      return markers;
-    };
+
+    // every city is a dom pin drop, so cobe only draws the globe itself
 
     // the pill inside a pin is looked up once per node instead of every frame
     const pills = new WeakMap<HTMLElement, HTMLElement | null>();
@@ -257,7 +215,7 @@ export function Globe() {
         return;
       }
       if (!dragging && !reduce) phi += 0.003;
-      globe?.update({ phi, theta, markers: currentMarkers() });
+      globe?.update({ phi, theta });
       if (width > 0) paint();
       raf = window.requestAnimationFrame(tick);
     };
@@ -283,9 +241,10 @@ export function Globe() {
         mapBrightness: 4.2,
         mapBaseBrightness: 0.04,
         baseColor: [1, 1, 1],
+        // every city is a dom pin drop, so cobe paints no circular markers of its
+        // own — its options type still wants a default colour set
         markerColor: [0.91, 0.72, 0.14],
         glowColor: [0.12, 0.12, 0.12],
-        markers: currentMarkers(),
         scale: 1.05,
       });
       // the intersection observer may already be driving the loop; only kick it
