@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { CompanyMark } from '@/components/home/CompanyMark';
 import { HandNote } from '@/components/layout/SiteIcons';
 import { cn } from '@/lib/utils';
-import type { Experience } from '@/lib/content/schemas';
+import type { Education, Experience } from '@/lib/content/schemas';
 
 const MONTHS: Record<string, number> = {
   jan: 0,
@@ -33,6 +33,16 @@ function parseStamp(label: string, fallback: Date) {
 
 function range(item: Experience) {
   return `${item.startDate} to ${item.endDate}`.toLowerCase();
+}
+
+// the most recent end date across the education records is when school let out
+function graduationDate(items: Education[]) {
+  let latest: Date | null = null;
+  for (const item of items) {
+    const end = parseStamp(item.endDate, new Date());
+    if (!latest || end > latest) latest = end;
+  }
+  return latest;
 }
 
 function NoteAsterisk() {
@@ -70,10 +80,11 @@ function assignLanes(spans: { start: number; end: number }[]) {
   return { lanes, count: Math.max(ends.length, 1) };
 }
 
-function ExperienceTimeline({ items }: { items: Experience[] }) {
+function ExperienceTimeline({ items, education }: { items: Experience[]; education: Education[] }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; left: number } | null>(null);
   const now = useMemo(() => new Date(), []);
+  const graduation = useMemo(() => graduationDate(education), [education]);
 
   const model = useMemo(() => {
     const GAP = 8;
@@ -142,9 +153,12 @@ function ExperienceTimeline({ items }: { items: Experience[] }) {
     // the now line rides the latest role's right edge rather than floating past it
     const nowX = active ? active.left + active.width : xOf(now);
     const width = Math.max(axisWidth, packedRight + 64, nowX + 48);
+    // a second reference mark on the axis: where school ended, deliberately
+    // unlabelled so it reads as a plain cut across the track
+    const graduationX = graduation ? xOf(graduation) : null;
 
-    return { years, width, nowX, placed, lanes, laneCount: count, recordedYears };
-  }, [items, now]);
+    return { years, width, nowX, graduationX, placed, lanes, laneCount: count, recordedYears };
+  }, [items, now, graduation]);
 
   useEffect(() => {
     const el = scrollerRef.current;
@@ -197,6 +211,14 @@ function ExperienceTimeline({ items }: { items: Experience[] }) {
               </div>
             );
           })}
+
+          {model.graduationX != null && model.graduationX <= model.width ? (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute top-4 bottom-7 z-10 border-l border-dashed border-[#f4f1ea]"
+              style={{ left: model.graduationX }}
+            />
+          ) : null}
 
           <div
             className="pointer-events-none absolute top-4 bottom-7 z-20 border-l border-dashed border-[#c4a35a]"
@@ -258,7 +280,13 @@ function ExperienceTimeline({ items }: { items: Experience[] }) {
   );
 }
 
-export function ExperienceList({ items }: { items: Experience[] }) {
+export function ExperienceList({
+  items,
+  education = [],
+}: {
+  items: Experience[];
+  education?: Education[];
+}) {
   const [mode, setMode] = useState<'list' | 'timeline'>('list');
   const [openId, setOpenId] = useState<number | null>(items[0]?.id ?? null);
   const listRef = useRef<HTMLButtonElement>(null);
@@ -408,7 +436,7 @@ export function ExperienceList({ items }: { items: Experience[] }) {
           })}
         </ul>
       ) : (
-        <ExperienceTimeline items={items} />
+        <ExperienceTimeline items={items} education={education} />
       )}
     </section>
   );

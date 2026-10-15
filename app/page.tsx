@@ -26,6 +26,7 @@ import { PageShell } from '@/components/layout/PageShell';
 import { getDevActivity } from '@/lib/dev-activity';
 import {
   getCommunities,
+  getEducation,
   getExperiences,
   getHonors,
   getProfile,
@@ -46,6 +47,7 @@ export default function HomePage() {
   const profile = getProfile();
   const communities = getCommunities();
   const experiences = getExperiences();
+  const education = getEducation();
   const projects = getProjects();
   const publications = getPublications();
   const honors = getHonors();
@@ -152,7 +154,7 @@ export default function HomePage() {
         </HomeInner>
 
         <HomeInner>
-          <ExperienceList items={experiences} />
+          <ExperienceList items={experiences} education={education} />
           <WorkGrid projects={projects} />
           <Communities items={communities} />
           <StackGrid skills={skills} />
