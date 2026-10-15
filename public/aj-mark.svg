@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="360" height="360" viewBox="0 0 360 360" role="img" aria-label="aj">
-  <rect width="360" height="360" fill="#0a0a0a" />
+  <!-- no tile behind the mark: it sits on the muted circle on the links page -->
   <mask id="aj-amber-crop">
     <rect x="45" y="72" width="270" height="216" fill="#ffffff" />
   </mask>

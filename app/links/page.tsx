@@ -54,14 +54,10 @@ export default function LinksPage() {
           <div className="mx-auto w-full max-w-md">
             <div className="flex flex-col items-center text-center">
               {/* the amber mark stands in for a photo until there is one */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/aj-mark.svg"
-                alt=""
-                width={360}
-                height={360}
-                className="border-border size-16 rounded-full border"
-              />
+              <span className="border-border bg-card flex size-16 items-center justify-center rounded-full border">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/aj-mark.svg" alt="" width={360} height={360} className="size-10" />
+              </span>
               <h1 className="mt-5 text-2xl font-medium tracking-tight">{profile.fullName}</h1>
               {links.intro ? (
                 <p className="text-muted-foreground mt-2 max-w-xs text-sm leading-6 text-balance">
