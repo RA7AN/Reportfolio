@@ -72,7 +72,7 @@ All rows are placeholders. For each real venture, provide:
 ## Reels / beats / cassette
 
 - [ ] Instagram (or other) **reel URLs** + titles, or remove “moving pictures”.
-- [ ] Decide **`/beats`**: keep as a music page, redirect, or delete from nav.
+- [x] Decided: **`/beats` is now `/community`**. The nav item was renamed, the old path redirects there, and the page is an under-construction placeholder until the section has a home page.
 - [ ] Footer cassette: a real audio file, a link, or remove the player.
 
 ## Booking

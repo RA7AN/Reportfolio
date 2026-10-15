@@ -26,7 +26,7 @@ export function Communities({ items }: { items: Community[] }) {
       data-nerd="communities: git cms rows, per-row rise on view, one contribution grid per row that charges on view, initials fallback for logos"
     >
       <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
-        leadership
+        community
       </p>
       <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">the rooms i learned in</h2>
       <p className="text-muted-foreground mt-2 max-w-xl text-sm leading-6 sm:text-base">

@@ -10,7 +10,7 @@ const nav = [
   { label: 'projects', href: '/projects' },
   { label: 'writing', href: '/blog' },
   { label: 'links', href: '/links' },
-  { label: 'beats', href: '/beats' },
+  { label: 'community', href: '/community' },
 ];
 
 function ThemeToggle({ light, onToggle }: { light: boolean; onToggle: () => void }) {

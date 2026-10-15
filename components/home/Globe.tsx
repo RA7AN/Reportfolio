@@ -2,8 +2,21 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { HandNote } from '@/components/layout/SiteIcons';
+import { cn } from '@/lib/utils';
 
 const JEDDAH: [number, number] = [21.5433, 39.1728];
+
+// the places strung across this map, jeddah first so it keeps the biggest dot.
+// "lift" nudges a label up a row: dammam/doha and hyderabad/chennai land a few
+// pixels apart on the globe, so they would print over each other otherwise.
+const CITIES: { name: string; at: [number, number]; lift: number }[] = [
+  { name: 'jeddah', at: JEDDAH, lift: 0 },
+  { name: 'madinah', at: [24.4686, 39.6142], lift: 15 },
+  { name: 'dammam', at: [26.4207, 50.0888], lift: 30 },
+  { name: 'doha', at: [25.2854, 51.531], lift: 45 },
+  { name: 'hyderabad', at: [17.385, 78.4867], lift: 0 },
+  { name: 'chennai', at: [13.0827, 80.2707], lift: 15 },
+];
 
 type Visitor = { lat: number; lon: number; city: string };
 
@@ -92,12 +105,12 @@ export function Globe() {
     let width = 0;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const buildMarkers = () => [
-      {
-        id: 'jeddah',
-        location: JEDDAH,
-        size: 0.06,
+      ...CITIES.map((city) => ({
+        id: city.name,
+        location: city.at,
+        size: city.name === 'jeddah' ? 0.06 : 0.045,
         color: [0.91, 0.48, 0.18] as [number, number, number],
-      },
+      })),
       ...(visitorRef.current
         ? [
             {
@@ -232,7 +245,7 @@ export function Globe() {
           <p className="text-muted-foreground mb-2 font-mono text-xs tracking-widest uppercase">
             right now
           </p>
-          <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">two dots on a globe</h2>
+          <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">dots on a globe</h2>
           <p className="text-muted-foreground mt-4 max-w-sm text-lg leading-7">
             you are somewhere on this globe, that much I know.
           </p>
@@ -253,19 +266,30 @@ export function Globe() {
           <canvas
             ref={canvasRef}
             className="aspect-square h-full w-full cursor-grab touch-none active:cursor-grabbing"
-            aria-label="a globe marking where you and I are right now"
+            aria-label="a globe with dots for jeddah, madinah, dammam, doha, hyderabad, chennai, and where you are right now"
           />
           <div ref={overlayRef} className="pointer-events-none absolute inset-0" aria-hidden>
-            <span
-              data-pin
-              data-lat={JEDDAH[0]}
-              data-lon={JEDDAH[1]}
-              className="text-foreground absolute flex -translate-x-1/2 -translate-y-full items-center gap-1.5 text-[11px]"
-              style={{ zIndex: 20 }}
-            >
-              <span className="inline-block size-3.5 rounded-full bg-[#e07a2f] shadow-[0_0_0_3px_rgba(10,10,10,0.55)]" />
-              jeddah
-            </span>
+            {CITIES.map((city, index) => (
+              <span
+                key={city.name}
+                data-pin
+                data-lat={city.at[0]}
+                data-lon={city.at[1]}
+                className={cn(
+                  'text-foreground absolute flex -translate-x-1/2 -translate-y-full items-center gap-1.5',
+                  city.name === 'jeddah' ? 'text-[11px]' : 'text-[10px]',
+                )}
+                style={{ zIndex: 20 - index, marginTop: -city.lift }}
+              >
+                <span
+                  className={cn(
+                    'inline-block rounded-full bg-[#e07a2f] shadow-[0_0_0_3px_rgba(10,10,10,0.55)]',
+                    city.name === 'jeddah' ? 'size-3.5' : 'size-1.5',
+                  )}
+                />
+                {city.name}
+              </span>
+            ))}
             {visitor ? (
               <span
                 data-pin

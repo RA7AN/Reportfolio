@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-label="A striped barricade and two traffic cones beside a warning sign">
+  <rect width="900" height="460" fill="#101010"/>
+
+  <g fill="#1a1a1a">
+    <rect x="84" y="360" width="16" height="16"/>
+    <rect x="140" y="84" width="16" height="16"/>
+    <rect x="470" y="44" width="16" height="16"/>
+    <rect x="668" y="72" width="16" height="16"/>
+    <rect x="840" y="118" width="16" height="16"/>
+  </g>
+
+  <rect x="60" y="400" width="780" height="12" rx="6" fill="#1a1a1a"/>
+
+  <!-- barricade: legs first so the board sits on top of them -->
+  <rect x="180" y="288" width="20" height="112" fill="#2a2a2a"/>
+  <rect x="660" y="288" width="20" height="112" fill="#2a2a2a"/>
+  <rect x="130" y="148" width="600" height="140" rx="18" fill="#161616" stroke="#2a2a2a" stroke-width="4"/>
+  <clipPath id="board">
+    <rect x="148" y="166" width="564" height="104" rx="10"/>
+  </clipPath>
+  <g clip-path="url(#board)" fill="#e8b923">
+    <path d="M175 166 L217 166 L147 270 L105 270 Z"/>
+    <path d="M255 166 L297 166 L227 270 L185 270 Z"/>
+    <path d="M335 166 L377 166 L307 270 L265 270 Z"/>
+    <path d="M415 166 L457 166 L387 270 L345 270 Z"/>
+    <path d="M495 166 L537 166 L467 270 L425 270 Z"/>
+    <path d="M575 166 L617 166 L547 270 L505 270 Z"/>
+    <path d="M655 166 L697 166 L627 270 L585 270 Z"/>
+  </g>
+
+  <!-- cones standing in front -->
+  <path d="M300 270 L338 400 L262 400 Z" fill="#e8b923"/>
+  <rect x="278" y="346" width="44" height="18" fill="#101010"/>
+  <rect x="254" y="394" width="92" height="14" rx="6" fill="#2a2a2a"/>
+  <path d="M600 270 L638 400 L562 400 Z" fill="#e8b923"/>
+  <rect x="578" y="346" width="44" height="18" fill="#101010"/>
+  <rect x="554" y="394" width="92" height="14" rx="6" fill="#2a2a2a"/>
+
+  <!-- warning sign -->
+  <rect x="814" y="258" width="12" height="142" fill="#2a2a2a"/>
+  <path d="M820 138 L882 200 L820 262 L758 200 Z" fill="#e8b923"/>
+  <rect x="814" y="168" width="12" height="44" fill="#101010"/>
+  <rect x="814" y="222" width="12" height="12" fill="#101010"/>
+</svg>

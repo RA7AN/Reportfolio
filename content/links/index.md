@@ -38,7 +38,7 @@ lastUpdated: "2026-10-16T00:00:00.000Z"
     { "title": "projects", "subtitle": "things i've built and shipped", "href": "/projects" },
     { "title": "writing", "subtitle": "essays and notes", "href": "/blog" },
     { "title": "resume", "subtitle": "the one-page version", "href": "/resume" },
-    { "title": "beats", "subtitle": "what i make away from the keyboard", "href": "/beats" },
+    { "title": "community", "subtitle": "the rooms i learned in", "href": "/community" },
     { "title": "work with me", "subtitle": "schedule a call", "href": "https://cal.com/placeholder" },
     {
       "title": "newsletter",
