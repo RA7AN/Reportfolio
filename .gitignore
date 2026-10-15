@@ -14,3 +14,7 @@ tsconfig.tsbuildinfo
 
 # Local Freebuff chat exports (never part of the site)
 freebuff-chat-*.md
+
+# Local logo scratch folders (pastes and exports, local only)
+blackwhitelogo/
+blackamberlogo/
