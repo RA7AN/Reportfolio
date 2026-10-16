@@ -32,7 +32,7 @@ lastUpdated: "2026-10-16T00:00:00.000Z"
 ---
 
 {
-  "intro": "engineer, researcher, and builder of small useful things",
+  "intro": "engineer, researcher, and dreamer",
   "cards": [
     { "title": "portfolio", "subtitle": "the full story", "href": "/" },
     { "title": "projects", "subtitle": "things i've built and shipped", "href": "/projects" },
