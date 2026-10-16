@@ -51,7 +51,9 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
-    apple: [{ url: '/apple-icon.svg', type: 'image/svg+xml' }],
+    // the apple icon file convention only takes jpg/jpeg/png, so this one is a
+    // raster of the same white mark rather than the svg
+    apple: [{ url: '/apple-icon.png', type: 'image/png', sizes: '180x180' }],
   },
 };
 

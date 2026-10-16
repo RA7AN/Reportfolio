@@ -90,6 +90,12 @@ export function StackIcon({
 const FIELD_RADIUS = 90;
 const MAX_PULL = 14;
 const MAGNET_SPRING = { stiffness: 320, damping: 22, mass: 0.5 };
+/* The shared pointer value parks on this while the pointer is away from the row,
+   and a coin parks on it until it has measured its own center. Those two parks
+   must not read as each other: on mount they are both UNMEASURED, i.e. zero
+   apart, so every coin would open at full growth and sit inflated until the
+   pointer moved. */
+const UNMEASURED = 1e6;
 
 function MagneticStackIcon({
   item,
@@ -101,7 +107,7 @@ function MagneticStackIcon({
   size?: 'sm' | 'md';
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const centerX = useMotionValue(1e6);
+  const centerX = useMotionValue(UNMEASURED);
 
   useEffect(() => {
     const measure = () => {
@@ -117,7 +123,7 @@ function MagneticStackIcon({
     // row leave resets pointerX to the sentinel — re-measure then, in case
     // the row reflowed (wrap, resize) while the pointer was away
     const unsub = pointerX.on('change', (v) => {
-      if (v === 1e6) measure();
+      if (v === UNMEASURED) measure();
     });
     return () => {
       observer.disconnect();
@@ -126,13 +132,17 @@ function MagneticStackIcon({
     };
   }, [centerX, pointerX]);
 
+  // how much of the field this coin is inside, 0 until both sides have a reading
+  const closeness = ([px, cx]: number[]) =>
+    px === UNMEASURED || cx === UNMEASURED ? 0 : Math.max(0, 1 - Math.abs(cx - px) / FIELD_RADIUS);
   const pull = useTransform([pointerX, centerX], ([px, cx]: number[]) => {
+    // pull toward the pointer, so the sign is the opposite of the distance
     const d = cx - px;
-    return Math.sign(d) * Math.max(0, 1 - Math.abs(d) / FIELD_RADIUS) * MAX_PULL;
+    return Math.sign(d) * closeness([px, cx]) * MAX_PULL;
   });
   const grow = useTransform(
     [pointerX, centerX],
-    ([px, cx]: number[]) => 1 + 0.5 * Math.max(0, 1 - Math.abs(cx - px) / FIELD_RADIUS),
+    ([px, cx]: number[]) => 1 + 0.8 * closeness([px, cx]),
   );
   const x = useSpring(pull, MAGNET_SPRING);
   const scale = useSpring(grow, MAGNET_SPRING);
@@ -181,7 +191,7 @@ export function StackIconRow({
   size?: 'sm' | 'md';
   showMore?: boolean;
 }) {
-  const pointerX = useMotionValue(1e6);
+  const pointerX = useMotionValue(UNMEASURED);
   const reduceMotion = useReducedMotion() ?? false;
   const [enabled, setEnabled] = useState(false);
 
@@ -203,7 +213,7 @@ export function StackIconRow({
         aria-label={`tools I use: ${items.map((item) => item.label).join(', ')}`}
         className="flex max-w-full flex-wrap items-center gap-2.5 overflow-visible pt-1.5 pb-3"
         onPointerMove={enabled ? (e) => pointerX.set(e.clientX) : undefined}
-        onPointerLeave={enabled ? () => pointerX.set(1e6) : undefined}
+        onPointerLeave={enabled ? () => pointerX.set(UNMEASURED) : undefined}
       >
         {items.map((item) =>
           enabled ? (
@@ -239,8 +249,12 @@ export function StackIconRow({
   );
 }
 
+/* the hero row hides the generic language marks; the full stack grid still
+   renders every MARKS entry */
+const HERO_MARKS = MARKS.filter((item) => !/python|typescript/i.test(item.label));
+
 export function StackMarks({ className }: { className?: string }) {
-  return <StackIconRow items={MARKS} className={className} />;
+  return <StackIconRow items={HERO_MARKS} className={className} />;
 }
 
 export function StackMarksPlain({

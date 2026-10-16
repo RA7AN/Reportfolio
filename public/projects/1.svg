@@ -1,10 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Project screenshot placeholder">
-  <rect width="1200" height="900" fill="#2a2a28"/>
-  <g stroke="#3f3f3a" stroke-width="1">
-    <path d="M0 150h1200M0 300h1200M0 450h1200M0 600h1200M0 750h1200"/>
-    <path d="M150 0v900M300 0v900M450 0v900M600 0v900M750 0v900M900 0v900M1050 0v900"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-label="KYC automation illustration">
+  <rect width="1000" height="1000" fill="#101010"/>
+
+  <!-- ambient texture; the card crops the outer edges, so nothing here matters -->
+  <g fill="#1a1a1a">
+    <rect x="60" y="80" width="16" height="16"/>
+    <rect x="924" y="120" width="16" height="16"/>
+    <rect x="72" y="900" width="16" height="16"/>
+    <rect x="912" y="880" width="16" height="16"/>
+    <rect x="500" y="52" width="16" height="16"/>
+    <rect x="500" y="932" width="16" height="16"/>
   </g>
-  <rect x="96" y="96" width="1008" height="708" rx="20" fill="#1a1a18" stroke="#8a8880" stroke-dasharray="8 10"/>
-  <text x="600" y="420" text-anchor="middle" fill="#edebe6" font-family="ui-sans-serif, system-ui, sans-serif" font-size="32">screenshot placeholder</text>
-  <text x="600" y="472" text-anchor="middle" fill="#a1a099" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20">replace public/projects/&lt;id&gt;.svg</text>
+
+  <!-- identity document being read -->
+  <rect x="200" y="110" width="420" height="450" rx="20" fill="#161616" stroke="#2a2a2a" stroke-width="4"/>
+  <rect x="248" y="166" width="128" height="156" rx="8" fill="#2a2a2a"/>
+  <circle cx="312" cy="222" r="32" fill="#3a3118"/>
+  <rect x="272" y="266" width="80" height="36" rx="8" fill="#3a3118"/>
+  <rect x="410" y="172" width="170" height="20" rx="4" fill="#2a2a2a"/>
+  <rect x="410" y="212" width="126" height="20" rx="4" fill="#2a2a2a"/>
+  <rect x="410" y="252" width="150" height="20" rx="4" fill="#2a2a2a"/>
+  <rect x="248" y="360" width="332" height="20" rx="4" fill="#2a2a2a"/>
+  <rect x="248" y="400" width="264" height="20" rx="4" fill="#2a2a2a"/>
+  <rect x="248" y="440" width="300" height="20" rx="4" fill="#2a2a2a"/>
+  <rect x="248" y="480" width="180" height="20" rx="4" fill="#2a2a2a"/>
+
+  <!-- OCR pass -->
+  <rect x="200" y="316" width="420" height="58" fill="#e8b923" opacity="0.14"/>
+  <rect x="200" y="342" width="420" height="6" fill="#e8b923"/>
+
+  <!-- spans out to the extracted fields -->
+  <g stroke="#2a2a2a" stroke-width="4">
+    <path d="M620 190h66M620 300h66M620 404h66"/>
+  </g>
+  <g fill="#e8b923">
+    <rect x="686" y="180" width="20" height="20"/>
+    <rect x="686" y="290" width="20" height="20"/>
+    <rect x="686" y="394" width="20" height="20"/>
+  </g>
+  <g fill="#3a3118">
+    <rect x="726" y="180" width="164" height="20" rx="4"/>
+    <rect x="726" y="290" width="128" height="20" rx="4"/>
+    <rect x="726" y="394" width="148" height="20" rx="4"/>
+  </g>
+
+  <!-- weighted risk score -->
+  <rect x="200" y="640" width="690" height="22" rx="11" fill="#1a1a1a"/>
+  <rect x="200" y="640" width="452" height="22" rx="11" fill="#e8b923"/>
+  <g fill="#2a2a2a">
+    <rect x="700" y="688" width="14" height="14"/>
+    <rect x="744" y="688" width="14" height="14"/>
+    <rect x="788" y="688" width="14" height="14"/>
+  </g>
+  <rect x="200" y="688" width="140" height="14" rx="7" fill="#2a2a2a"/>
+
+  <!-- approve / review / reject -->
+  <rect x="210" y="778" width="200" height="70" rx="35" fill="#e8b923"/>
+  <rect x="440" y="778" width="200" height="70" rx="35" fill="#161616" stroke="#2a2a2a" stroke-width="4"/>
+  <rect x="670" y="778" width="200" height="70" rx="35" fill="#161616" stroke="#2a2a2a" stroke-width="4"/>
+  <rect x="278" y="808" width="64" height="10" rx="5" fill="#101010"/>
+  <g fill="#2a2a2a">
+    <rect x="508" y="808" width="64" height="10" rx="5"/>
+    <rect x="738" y="808" width="64" height="10" rx="5"/>
+  </g>
 </svg>

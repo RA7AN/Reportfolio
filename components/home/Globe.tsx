@@ -1,9 +1,53 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { HandNote } from '@/components/layout/SiteIcons';
 
 const JEDDAH: [number, number] = [21.5433, 39.1728];
+
+// the places strung across this map, jeddah first so it keeps the amber pin.
+// "lift" floats a name higher above its pin: madinah and doha land close enough
+// on the globe that their pills would stack on top of each other otherwise.
+// "fill" paints the marker's own circle and its pulse — j = the accent, the rest
+// a colour each so a pill is recognisably tied to the pin under it. "pin" stays
+// the plain white drop for every city but jeddah, who carries the accent.
+type City = { name: string; at: [number, number]; lift: number; fill: string; pin: string };
+
+const CITIES: City[] = [
+  { name: 'jeddah', at: JEDDAH, lift: 0, fill: '#e8b923', pin: '#e8b923' },
+  {
+    name: 'madinah',
+    at: [24.4686, 39.6142],
+    lift: 18,
+    fill: 'linear-gradient(140deg, #6ee7d7, #2596ab)',
+    pin: '#edebe6',
+  },
+  {
+    name: 'doha',
+    at: [25.2854, 51.531],
+    lift: 36,
+    fill: 'linear-gradient(140deg, #8ab4ff, #3f5fd6)',
+    pin: '#edebe6',
+  },
+  {
+    name: 'hyderabad',
+    at: [17.385, 78.4867],
+    lift: 0,
+    fill: 'linear-gradient(140deg, #ff9db8, #d1447f)',
+    pin: '#edebe6',
+  },
+];
+
+// the visitor keeps the reference's violet dot
+
+// cobe draws the sphere at ~84% of the canvas half-width (its scale option is
+// 1.05 here), so anchoring a pin with the full [-1, 1] projection leaves it
+// floating well outside the globe at the limb. Measured off a rendered frame:
+// silhouette 177px against a 210px canvas half-width.
+const GLOBE_RADIUS = 0.84;
+
+const VISITOR_FILL = '#7c6cf5';
 
 type Visitor = { lat: number; lon: number; city: string };
 
@@ -19,7 +63,7 @@ function project(
   phi: number,
   theta: number,
   aspect: number,
-): { x: number; y: number; visible: boolean } {
+): { x: number; y: number; z: number } {
   const cosT = Math.cos(theta);
   const cosP = Math.cos(phi);
   const sinT = Math.sin(theta);
@@ -27,12 +71,73 @@ function project(
   const x = cosP * xyz[0] + sinP * xyz[2];
   const y = sinP * sinT * xyz[0] + cosT * xyz[1] - cosP * sinT * xyz[2];
   const z = -sinP * cosT * xyz[0] + sinT * xyz[1] + cosP * cosT * xyz[2];
-  const visible = z >= 0 || x * x + y * y >= 0.64;
   return {
     x: (x / aspect + 1) / 2,
     y: (-y + 1) / 2,
-    visible,
+    z,
   };
+}
+
+// 0 at edge0, 1 at edge1, eased — used to fade a marker in as it comes round
+function smoothstep(value: number, edge0: number, edge1: number) {
+  const t = Math.min(Math.max((value - edge0) / (edge1 - edge0), 0), 1);
+  return t * t * (3 - 2 * t);
+}
+
+// a pin planted on the globe: the drop tip sits exactly on the city, the pulse
+// radiates from that tip, and the name rides above it. The loop drives the
+// container's position/opacity/scale and the pill's opacity, nothing else here.
+function Marker({
+  label,
+  lat,
+  lon,
+  fill,
+  pin,
+  lift = 0,
+}: {
+  label: string;
+  lat: number;
+  lon: number;
+  fill: string;
+  pin: string;
+  lift?: number;
+}) {
+  return (
+    <span
+      data-pin
+      data-lat={lat}
+      data-lon={lon}
+      className="absolute flex flex-col items-center"
+      style={{ opacity: 0 }}
+    >
+      <span
+        data-pill
+        className="text-foreground mb-1 flex max-w-36 items-center gap-1.5 rounded-full border border-white/10 bg-[#131313]/92 py-1 pr-1 pl-1 whitespace-nowrap"
+        style={{ opacity: 0, marginBottom: lift + 5 }}
+      >
+        <span className="size-4 shrink-0 rounded-full" style={{ background: fill }} />
+        <span className="min-w-0 truncate font-mono text-[11px] leading-4">{label}</span>
+        <span className="text-foreground/70 grid size-4 shrink-0 place-items-center rounded-full bg-white/10">
+          <ArrowRight className="size-3" aria-hidden />
+        </span>
+      </span>
+      <span className="relative flex flex-col items-center">
+        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+          <span
+            className="dot-ping block size-2.5 rounded-full opacity-50"
+            style={{ background: fill }}
+          />
+        </span>
+        <svg viewBox="0 0 16 22" className="h-4 w-3" aria-hidden>
+          <path
+            fill={pin}
+            d="M8 0C3.58 0 0 3.58 0 8c0 5.5 8 14 8 14s8-8.5 8-14c0-4.42-3.58-8-8-8Z"
+          />
+          <circle cx="8" cy="8" r="3" fill="#0a0a0a" />
+        </svg>
+      </span>
+    </span>
+  );
 }
 
 export function Globe() {
@@ -76,30 +181,54 @@ export function Globe() {
 
     let globe: { update: (state: object) => void; destroy: () => void } | null = null;
     let raf = 0;
+    let disposed = false;
     let phi = 2.35;
     const theta = 0.28;
     let dragging = false;
     let lastX = 0;
     let width = 0;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const markers = [
-      {
-        id: 'jeddah',
-        location: JEDDAH,
-        size: 0.06,
-        color: [0.91, 0.48, 0.18] as [number, number, number],
-      },
-      ...(visitor
-        ? [
-            {
-              id: 'you',
-              location: [visitor.lat, visitor.lon] as [number, number],
-              size: 0.07,
-              color: [0.45, 0.32, 0.95] as [number, number, number],
-            },
-          ]
-        : []),
-    ];
+
+    // every city is a dom pin drop, so cobe only draws the globe itself
+
+    // the pill inside a pin is looked up once per node instead of every frame
+    const pills = new WeakMap<HTMLElement, HTMLElement | null>();
+    const pillOf = (node: HTMLElement) => {
+      let pill = pills.get(node);
+      if (pill === undefined) {
+        pill = node.querySelector<HTMLElement>('[data-pill]');
+        pills.set(node, pill);
+      }
+      return pill;
+    };
+
+    const paint = () => {
+      if (!overlayRef.current) return;
+      const nodes = overlayRef.current.querySelectorAll<HTMLElement>('[data-pin]');
+      for (const node of nodes) {
+        const lat = Number(node.dataset.lat);
+        const lon = Number(node.dataset.lon);
+        const p = project(toXYZ(lat, lon), phi, theta, 1);
+        // a marker comes round the limb before it faces us: the pin and its pulse
+        // fade in off the edge, and the name only lands once the city is fronting up
+        const approach = smoothstep(p.z, -0.22, 0.08);
+        const named = smoothstep(p.z, 0.06, 0.42);
+        // pull the anchor in to the drawn sphere so an edge pin sits on the globe
+        node.style.left = `${(0.5 + (p.x - 0.5) * GLOBE_RADIUS) * 100}%`;
+        node.style.top = `${(0.5 + (p.y - 0.5) * GLOBE_RADIUS) * 100}%`;
+        node.style.opacity = `${approach}`;
+        node.style.transform = `translate(-50%, -100%) scale(${(0.84 + 0.16 * approach).toFixed(3)})`;
+        // depth sort so a pin in front covers the one behind it in a cluster
+        node.style.zIndex = String(200 + Math.round(p.z * 100));
+        const pill = pillOf(node);
+        if (pill) {
+          pill.style.opacity = `${named}`;
+          // a pill at partial opacity would still paint a ghost of the name over
+          // its neighbours in the gulf cluster, so keep it out of the layer until it lands
+          pill.style.visibility = named > 0.02 ? 'visible' : 'hidden';
+        }
+      }
+    };
 
     let visible = true;
     const tick = () => {
@@ -108,24 +237,19 @@ export function Globe() {
         return;
       }
       if (!dragging && !reduce) phi += 0.003;
-      globe?.update({ phi, theta, markers });
-      if (width > 0 && overlayRef.current) {
-        const aspect = 1;
-        const nodes = overlayRef.current.querySelectorAll<HTMLElement>('[data-pin]');
-        for (const node of nodes) {
-          const lat = Number(node.dataset.lat);
-          const lon = Number(node.dataset.lon);
-          const p = project(toXYZ(lat, lon), phi, theta, aspect);
-          node.style.left = `${p.x * 100}%`;
-          node.style.top = `${p.y * 100}%`;
-          node.style.opacity = p.visible ? '1' : '0';
-        }
-      }
+      globe?.update({ phi, theta });
+      if (width > 0) paint();
       raf = window.requestAnimationFrame(tick);
     };
 
     const start = async () => {
       const { default: createGlobe } = await import('cobe');
+      // the visitor lookup can land while cobe is still being imported, which
+      // re-runs this effect and disposes the pass that started the import. bail
+      // out here so a stale pass never builds a second globe on the same canvas:
+      // two cobe instances share one WebGL context and fight over its buffers,
+      // which is what raises "drawArrays: no buffer is bound to enabled attribute".
+      if (disposed) return;
       width = wrap.clientWidth;
       globe = createGlobe(canvas, {
         devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
@@ -139,12 +263,15 @@ export function Globe() {
         mapBrightness: 4.2,
         mapBaseBrightness: 0.04,
         baseColor: [1, 1, 1],
-        markerColor: [0.91, 0.48, 0.18],
+        // every city is a dom pin drop, so cobe paints no circular markers of its
+        // own — its options type still wants a default colour set
+        markerColor: [0.91, 0.72, 0.14],
         glowColor: [0.12, 0.12, 0.12],
-        markers,
         scale: 1.05,
       });
-      tick();
+      // the intersection observer may already be driving the loop; only kick it
+      // off here if nothing is running yet, so we never end up with two chains.
+      if (!raf) raf = window.requestAnimationFrame(tick);
     };
 
     void start();
@@ -182,6 +309,7 @@ export function Globe() {
     observer.observe(wrap);
 
     return () => {
+      disposed = true;
       observer.disconnect();
       window.cancelAnimationFrame(raf);
       canvas.removeEventListener('pointerdown', onDown);
@@ -190,13 +318,13 @@ export function Globe() {
       window.removeEventListener('resize', onResize);
       globe?.destroy();
     };
-  }, [visitor]);
+  }, []);
 
   return (
     <section
       className="scroll-mt-20 py-20 sm:py-24"
       id="globe"
-      data-nerd="globe: cobe webgl, ipwho.is + open-meteo"
+      data-nerd="globe: cobe webgl, dom pin drops with pulse + name pills, ipwho.is + open-meteo"
     >
       <div className="grid items-center gap-10 md:grid-cols-2">
         <div>
@@ -224,30 +352,29 @@ export function Globe() {
           <canvas
             ref={canvasRef}
             className="aspect-square h-full w-full cursor-grab touch-none active:cursor-grabbing"
-            aria-label="a globe marking where you and I are right now"
+            aria-label="a globe with pins for jeddah, madinah, dammam, doha, hyderabad, chennai, and where you are right now"
           />
           <div ref={overlayRef} className="pointer-events-none absolute inset-0" aria-hidden>
-            <span
-              data-pin
-              data-lat={JEDDAH[0]}
-              data-lon={JEDDAH[1]}
-              className="text-foreground absolute flex -translate-x-1/2 -translate-y-full items-center gap-1.5 text-[11px]"
-              style={{ zIndex: 20 }}
-            >
-              <span className="inline-block size-3.5 rounded-full bg-[#e07a2f] shadow-[0_0_0_3px_rgba(10,10,10,0.55)]" />
-              jeddah
-            </span>
+            {CITIES.map((city) => (
+              <Marker
+                key={city.name}
+                label={city.name}
+                lat={city.at[0]}
+                lon={city.at[1]}
+                fill={city.fill}
+                pin={city.pin}
+                lift={city.lift}
+              />
+            ))}
             {visitor ? (
-              <span
-                data-pin
-                data-lat={visitor.lat}
-                data-lon={visitor.lon}
-                className="text-foreground absolute flex -translate-x-1/2 -translate-y-full items-center gap-1.5 text-[11px]"
-                style={{ zIndex: 30 }}
-              >
-                <span className="inline-block size-3.5 rounded-full bg-[#7c6cf5] shadow-[0_0_0_3px_rgba(10,10,10,0.55)]" />
-                {visitor.city}
-              </span>
+              <Marker
+                key="you"
+                label={visitor.city}
+                lat={visitor.lat}
+                lon={visitor.lon}
+                fill={VISITOR_FILL}
+                pin={VISITOR_FILL}
+              />
             ) : null}
           </div>
         </div>

@@ -10,6 +10,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // the nav item was renamed from beats to community, so the old music-page
+  // route stays reachable instead of 404ing on any link still pointing at it
+  async redirects() {
+    return [{ source: '/beats', destination: '/community', permanent: true }];
+  },
   async headers() {
     return [
       {

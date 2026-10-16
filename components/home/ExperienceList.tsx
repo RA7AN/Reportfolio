@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { CompanyMark } from '@/components/home/CompanyMark';
 import { HandNote } from '@/components/layout/SiteIcons';
 import { cn } from '@/lib/utils';
-import type { Experience } from '@/lib/content/schemas';
+import type { Education, Experience } from '@/lib/content/schemas';
 
 const MONTHS: Record<string, number> = {
   jan: 0,
@@ -33,6 +33,16 @@ function parseStamp(label: string, fallback: Date) {
 
 function range(item: Experience) {
   return `${item.startDate} to ${item.endDate}`.toLowerCase();
+}
+
+// the most recent end date across the education records is when school let out
+function graduationDate(items: Education[]) {
+  let latest: Date | null = null;
+  for (const item of items) {
+    const end = parseStamp(item.endDate, new Date());
+    if (!latest || end > latest) latest = end;
+  }
+  return latest;
 }
 
 function NoteAsterisk() {
@@ -70,10 +80,11 @@ function assignLanes(spans: { start: number; end: number }[]) {
   return { lanes, count: Math.max(ends.length, 1) };
 }
 
-function ExperienceTimeline({ items }: { items: Experience[] }) {
+function ExperienceTimeline({ items, education }: { items: Experience[]; education: Education[] }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; left: number } | null>(null);
   const now = useMemo(() => new Date(), []);
+  const graduation = useMemo(() => graduationDate(education), [education]);
 
   const model = useMemo(() => {
     const GAP = 8;
@@ -142,9 +153,12 @@ function ExperienceTimeline({ items }: { items: Experience[] }) {
     // the now line rides the latest role's right edge rather than floating past it
     const nowX = active ? active.left + active.width : xOf(now);
     const width = Math.max(axisWidth, packedRight + 64, nowX + 48);
+    // a second reference mark on the axis: where school ended, deliberately
+    // unlabelled so it reads as a plain cut across the track
+    const graduationX = graduation ? xOf(graduation) : null;
 
-    return { years, width, nowX, placed, lanes, laneCount: count, recordedYears };
-  }, [items, now]);
+    return { years, width, nowX, graduationX, placed, lanes, laneCount: count, recordedYears };
+  }, [items, now, graduation]);
 
   useEffect(() => {
     const el = scrollerRef.current;
@@ -197,6 +211,20 @@ function ExperienceTimeline({ items }: { items: Experience[] }) {
               </div>
             );
           })}
+
+          {model.graduationX != null && model.graduationX <= model.width ? (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute top-4 bottom-7 z-10 border-l border-dashed border-[#f4f1ea]"
+              style={{ left: model.graduationX }}
+            >
+              {/* the label is out of flow inside a zero-width line, so it needs
+                  nowrap or every word falls onto its own line */}
+              <span className="font-hand absolute -top-1 left-2 text-sm whitespace-nowrap text-[#f4f1ea]">
+                class of &apos;25
+              </span>
+            </div>
+          ) : null}
 
           <div
             className="pointer-events-none absolute top-4 bottom-7 z-20 border-l border-dashed border-[#c4a35a]"
@@ -258,7 +286,13 @@ function ExperienceTimeline({ items }: { items: Experience[] }) {
   );
 }
 
-export function ExperienceList({ items }: { items: Experience[] }) {
+export function ExperienceList({
+  items,
+  education = [],
+}: {
+  items: Experience[];
+  education?: Education[];
+}) {
   const [mode, setMode] = useState<'list' | 'timeline'>('list');
   const [openId, setOpenId] = useState<number | null>(items[0]?.id ?? null);
   const listRef = useRef<HTMLButtonElement>(null);
@@ -303,7 +337,8 @@ export function ExperienceList({ items }: { items: Experience[] }) {
           </span>
           <div
             role="tablist"
-            className="border-border relative flex rounded-full border bg-[#111] p-1 text-[13px]"
+            aria-label="timeline view"
+            className="border-border bg-card relative flex rounded-full border p-1 text-sm"
           >
             <span
               aria-hidden
@@ -349,7 +384,7 @@ export function ExperienceList({ items }: { items: Experience[] }) {
 
       {mode === 'list' ? (
         <ul className="relative mt-8">
-          <span aria-hidden className="absolute top-5 bottom-8 left-[22px] w-px bg-white/12" />
+          <span aria-hidden className="absolute top-5 bottom-8 left-[33px] w-px bg-white/12" />
           {items.map((item) => {
             const open = openId === item.id;
             const current = isCurrent(item);
@@ -357,19 +392,26 @@ export function ExperienceList({ items }: { items: Experience[] }) {
               <li key={item.id} className="relative">
                 <button
                   type="button"
-                  className="group hover:bg-muted/60 -mx-3 flex w-[calc(100%+1.5rem)] items-start gap-3.5 rounded-2xl px-3 py-3 text-left transition-colors duration-200"
+                  className="group hover:bg-muted/60 flex w-full items-center gap-4 rounded-xl px-3 py-2.5 text-left transition-colors duration-200"
                   onClick={() => setOpenId(open ? null : item.id)}
                   aria-expanded={open}
                 >
-                  <CompanyMark company={item.company} current={current} className="mt-0.5 size-9" />
+                  <CompanyMark
+                    company={item.company}
+                    current={current}
+                    className="size-11"
+                    tileClassName="border-border bg-card rounded-lg border"
+                  />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-medium tracking-tight lowercase">
+                    <span className="block text-base font-medium tracking-tight lowercase">
                       {item.company}
                     </span>
                     <span className="block text-sm text-white/45 lowercase">{item.role}</span>
                   </span>
-                  <span className="mt-1 flex shrink-0 items-center gap-1">
-                    <span className="text-[12px] text-white/35">{range(item)}</span>
+                  <span className="flex shrink-0 items-center gap-1">
+                    <span className="text-muted-foreground/70 hidden font-mono text-[11px] sm:block">
+                      {range(item)}
+                    </span>
                     {open ? (
                       <ChevronUp className="size-3.5 text-white/35" aria-hidden />
                     ) : (
@@ -382,7 +424,7 @@ export function ExperienceList({ items }: { items: Experience[] }) {
                 </button>
                 <div className="accordion-grid" data-open={open}>
                   <div>
-                    <div className="pb-5 pl-[3.15rem]">
+                    <div className="pb-5 pl-[4.5rem]">
                       {item.highlights.map((line) => (
                         <p
                           key={line}
@@ -400,7 +442,7 @@ export function ExperienceList({ items }: { items: Experience[] }) {
           })}
         </ul>
       ) : (
-        <ExperienceTimeline items={items} />
+        <ExperienceTimeline items={items} education={education} />
       )}
     </section>
   );
