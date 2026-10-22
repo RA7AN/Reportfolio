@@ -1,57 +1,36 @@
 {
-  "generatedAt": "2026-10-01T00:45:59.304Z",
-  "windowFrom": "2025-10-05",
-  "windowTo": "2026-10-03",
-  "total": 494,
+  "generatedAt": "2026-10-22T22:11:27.643Z",
+  "windowFrom": "2025-10-26",
+  "windowTo": "2026-10-24",
+  "total": 652,
   "accounts": [
     "RA7AN",
     "abdljwd",
     "AbdulJ-7"
   ],
+  "provenance": {
+    "source": "GitHub GraphQL API — contributionsCollection, merged across accounts",
+    "reviewsApiObserved": 1,
+    "manualAdjustments": [
+      {
+        "account": "abdljwd",
+        "field": "types.reviews",
+        "reported": 30,
+        "apiObserved": 1,
+        "method": "profile-radar figure substituted for the api count",
+        "asOf": "2026-10-01",
+        "source": "PR #14"
+      }
+    ]
+  },
   "types": {
-    "commits": 176,
-    "issues": 128,
-    "prs": 166,
+    "commits": 232,
+    "issues": 176,
+    "prs": 218,
     "reviews": 30
   },
-  "repoCount": 12,
+  "repoCount": 7,
   "weeks": [
-    {
-      "start": "2025-10-05",
-      "days": [
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "start": "2025-10-12",
-      "days": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "start": "2025-10-19",
-      "days": [
-        0,
-        0,
-        0,
-        7,
-        0,
-        0,
-        0
-      ]
-    },
     {
       "start": "2025-10-26",
       "days": [
@@ -635,21 +614,57 @@
         6,
         6,
         7,
+        10,
+        11,
+        3
+      ]
+    },
+    {
+      "start": "2026-10-04",
+      "days": [
+        0,
+        2,
+        6,
         5,
+        14,
+        3,
+        27
+      ]
+    },
+    {
+      "start": "2026-10-11",
+      "days": [
+        4,
+        17,
+        10,
+        13,
+        8,
+        11,
+        0
+      ]
+    },
+    {
+      "start": "2026-10-18",
+      "days": [
+        0,
+        10,
+        1,
+        7,
+        9,
         0,
         0
       ]
     }
   ],
-  "previousTotal": 160,
+  "previousTotal": 168,
   "years": [
     {
       "year": 2026,
-      "total": 482,
+      "total": 648,
       "types": {
-        "commits": 167,
-        "issues": 128,
-        "prs": 166,
+        "commits": 230,
+        "issues": 176,
+        "prs": 218,
         "reviews": 1
       },
       "weeks": [
@@ -1128,32 +1143,32 @@
             6,
             6,
             7,
-            5,
-            0,
-            0
+            10,
+            11,
+            3
           ]
         },
         {
           "start": "2026-10-04",
           "days": [
             0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
+            2,
+            6,
+            5,
+            14,
+            3,
+            27
           ]
         },
         {
           "start": "2026-10-11",
           "days": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
+            4,
+            17,
+            10,
+            13,
+            8,
+            11,
             0
           ]
         },
@@ -1161,10 +1176,10 @@
           "start": "2026-10-18",
           "days": [
             0,
-            0,
-            0,
-            0,
-            0,
+            10,
+            1,
+            7,
+            9,
             0,
             0
           ]

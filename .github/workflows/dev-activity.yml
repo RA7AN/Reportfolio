@@ -5,11 +5,22 @@ name: dev activity
 
 on:
   schedule:
-    - cron: '17 4 * * *'
+    # weekly (mondays 04:17 utc). every run rewrites generatedAt, so it always
+    # commits to main — and vercel auto-deploys production on each push to main
+    # (confirmed by the deployments list). daily would mean a production build
+    # every night for numbers that move slowly; bump to '17 4 * * *' for daily.
+    - cron: '17 4 * * 1'
   workflow_dispatch:
 
 permissions:
   contents: write
+
+# this job commits and pushes to main; two overlapping runs would race for the same
+# branch and the second push would be rejected. a manual dispatch during a queued
+# nightly is the realistic case.
+concurrency:
+  group: dev-activity
+  cancel-in-progress: false
 
 jobs:
   refresh:
@@ -21,10 +32,10 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      # skips quietly until GH_ACTIVITY_USER_1 is set as a repository variable,
-      # so the schedule does not fail red every night on an unconfigured repo
-      - if: vars.GH_ACTIVITY_USER_1 != ''
-        run: npm run dev-activity
+      # no `if:` guard on purpose: an unconfigured schedule MUST go red. the script
+      # already exits 1 with an actionable message when no accounts are configured,
+      # and now exits 1 on a half-configured account pair as well.
+      - run: npm run dev-activity
         env:
           GH_ACTIVITY_USER_1: ${{ vars.GH_ACTIVITY_USER_1 }}
           GH_ACTIVITY_TOKEN_1: ${{ secrets.GH_ACTIVITY_TOKEN_1 }}
@@ -35,7 +46,12 @@ jobs:
       - name: commit the refreshed dataset
         run: |
           git add public/dev-activity.json
-          git diff --cached --quiet && exit 0
+          # a real refresh always rewrites generatedAt, so an empty diff means the
+          # generator produced no data — that is a failure, not a success
+          if git diff --cached --quiet -- public/dev-activity.json; then
+            echo "::error::public/dev-activity.json was not rewritten — the refresh produced no change"
+            exit 1
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "chore: refresh dev activity data"
