@@ -22,8 +22,16 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 // contributionsCollection returns only 1 review even with read:user and zero
 // restricted contributions — the radar counts review activity the api leaves out.
 // The rolling window's review total is elevated to the radar figure (per-year
-// entries stay raw). Update when the user shares a fresh radar.
+// entries stay raw).
+//
+// THIS VALUE IS MANUALLY SUPPLIED, NOT API-OBSERVED, AND IT GOES STALE. It was read
+// off the profile radar while building PR #14 and has not been re-read since; both
+// facts are emitted into the dataset's `provenance.manualAdjustments` so the
+// published number stays traceable. To refresh: re-read the radar, update the count
+// below, and set MANUAL_REVIEWS_AS_OF to the day you read it.
 const MANUAL_REVIEWS = { abdljwd: 30 };
+const MANUAL_REVIEWS_AS_OF = '2026-10-01'; // PR #14, merged 2026-10-01T00:49:51Z
+const MANUAL_REVIEWS_PR = 14;
 
 const QUERY = `query ($login: String!, $from: DateTime!, $to: DateTime!) {
   user(login: $login) {
@@ -75,7 +83,12 @@ function configuredAccounts() {
     const token = process.env[`GH_ACTIVITY_TOKEN_${index}`]?.trim();
     if (user && token) accounts.push({ user, token });
     else if (user || token) {
-      console.warn(`account ${index}: user and token must be set together — skipping`);
+      // skipping one silently would publish a total quietly LOWER than the truth,
+      // which is the same class of failure as the workflow's green no-op
+      console.error(
+        `account ${index}: GH_ACTIVITY_USER_${index} and GH_ACTIVITY_TOKEN_${index} must be set together`,
+      );
+      process.exit(1);
     }
   }
   return accounts;
@@ -199,6 +212,9 @@ async function main() {
   }
 
   const types = { commits: 0, issues: 0, prs: 0, reviews: 0 };
+  // what the api actually returned for reviews, and every place we replaced it
+  let reviewsApiObserved = 0;
+  const manualAdjustments = [];
   const repos = new Map();
   const repoFields = [
     'commitContributionsByRepository',
@@ -213,8 +229,18 @@ async function main() {
     types.issues += collection.totalIssueContributions;
     types.prs += collection.totalPullRequestContributions;
     const rawReviews = collection.totalPullRequestReviewContributions;
+    reviewsApiObserved += rawReviews;
     const manualReviews = MANUAL_REVIEWS[user] ?? 0;
     if (manualReviews > rawReviews) {
+      manualAdjustments.push({
+        account: user,
+        field: 'types.reviews',
+        reported: manualReviews,
+        apiObserved: rawReviews,
+        method: 'profile-radar figure substituted for the api count',
+        asOf: MANUAL_REVIEWS_AS_OF,
+        source: `PR #${MANUAL_REVIEWS_PR}`,
+      });
       console.log(
         `${user}: api reports ${rawReviews} review(s) — using profile-radar figure ${manualReviews}`,
       );
@@ -299,6 +325,12 @@ async function main() {
     windowTo,
     total,
     accounts: accounts.map((account) => account.user),
+    // how these numbers were produced, and which of them the api did not observe
+    provenance: {
+      source: 'GitHub GraphQL API — contributionsCollection, merged across accounts',
+      reviewsApiObserved,
+      manualAdjustments,
+    },
     types,
     // repository names stay out of the public JSON: private and employer repos
     // must never leak through the deployed site — only the aggregate count

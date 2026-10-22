@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { CountUp } from '@/components/home/CountUp';
-import type { DevActivityData, DevActivityWeek } from '@/lib/dev-activity';
+import type { DevActivityClientData, DevActivityWeek } from '@/lib/dev-activity';
 import { cn } from '@/lib/utils';
 
 // the calendar is the section's hero visual: 7px cells on a 3px gap — a 10px
@@ -165,7 +165,7 @@ function RadarChart({
   types,
   reduceMotion,
 }: {
-  types: DevActivityData['types'];
+  types: DevActivityClientData['types'];
   reduceMotion: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -396,7 +396,7 @@ function RadarChart({
   );
 }
 
-export function DevelopmentActivity({ data }: { data: DevActivityData }) {
+export function DevelopmentActivity({ data }: { data: DevActivityClientData }) {
   const reduceMotion = useReducedMotion() ?? false;
   const scrollerRef = useRef<HTMLDivElement>(null);
   // null is the default view: the rolling last-52-weeks grid ending at the latest
@@ -455,19 +455,15 @@ export function DevelopmentActivity({ data }: { data: DevActivityData }) {
       </p>
       <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">code, committed</h2>
       <p className="text-muted-foreground mt-2 max-w-xl text-sm leading-6 sm:text-base">
-        merged from {data.accounts.length} github account{data.accounts.length === 1 ? '' : 's'} —
-        no single contribution graph tells the whole story
+        merged from {data.accountCount} github account{data.accountCount === 1 ? '' : 's'} — no
+        single contribution graph tells the whole story
       </p>
-      <ul className="mt-4 flex flex-wrap gap-2">
-        {data.accounts.map((account) => (
-          <li
-            key={account}
-            className="border-border text-muted-foreground rounded-full border px-2.5 py-1 font-mono text-[10px] tracking-widest"
-          >
-            [{account}]
-          </li>
-        ))}
-      </ul>
+      {/* account handles are intentionally not rendered; the as-of date replaces the
+          pill row so the moving-window claim stays falsifiable */}
+      <p className="text-muted-foreground mt-3 font-mono text-[10px]">
+        <time dateTime={data.generatedAt}>{data.generatedAt.slice(0, 10)}</time>
+        {' · '}via the github api
+      </p>
 
       {/* grid-cols-1 pins the mobile track to minmax(0,1fr) — without it the auto
           track sizes to the w-max grid's max-content and the whole page pans sideways */}

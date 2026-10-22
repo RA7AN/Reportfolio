@@ -23,7 +23,7 @@ import { StackMarks } from '@/components/home/StackMarks';
 import { WorkGrid } from '@/components/home/WorkGrid';
 import { ScribbleArrow } from '@/components/layout/SiteIcons';
 import { PageShell } from '@/components/layout/PageShell';
-import { getDevActivity } from '@/lib/dev-activity';
+import { getDevActivity, toClientDevActivity } from '@/lib/dev-activity';
 import {
   getCommunities,
   getEducation,
@@ -159,8 +159,9 @@ export default function HomePage() {
           <Communities items={communities} />
           <StackGrid skills={skills} />
           <PublicationsPreview items={publications} />
-          {/* development activity: real merged data from the ingestion pipeline */}
-          {devActivity ? <DevelopmentActivity data={devActivity} /> : null}
+          {/* development activity: real merged data from the ingestion pipeline.
+              scrubbed to a client view so account handles never reach the browser */}
+          {devActivity ? <DevelopmentActivity data={toClientDevActivity(devActivity)} /> : null}
         </HomeInner>
 
         <Filmstrip />
